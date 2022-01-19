@@ -1,76 +1,7 @@
 import java.nio.file.Paths
 
-//process get_reads_per_barcode {
-//
-//	label "samtools"
-//	label "integration"
-//	
-//	tag { "${name}" }
-//
-//	publishDir Paths.get( params.out_dir , "qc" ),
-//		mode: "copy",
-//		overwrite: "true"
-//
-//	input:
-//		tuple val(metadata), path(bam)
-//
-//	output:
-//		tuple val(metadata), file("${csv}")
-//
-//	script:		
-//		
-//		name = metadata["name"]
-//		csv = "${name}.reads_per_barcode.csv"
-//
-//		"""
-//		samtools view \
-//			--expr '[us] == "MATCHED" && [as] == "MAPPED" && [bc]' $bam \
-//			| awk '{
-//				v=\$0; gsub(".*bc:Z:", "", v);
-//				gsub("\\t.*", "", v);
-//				printf "%s\\t%s\\n", v, \$1 }
-//			' \
-//			| sort \
-//			| uniq \
-//			| awk '{ print \$1 }' \
-//			| sort \
-//			| uniq -c \
-//			| awk '{ printf "%s,%s\\n", \$2, \$1 }' \
-//			| sort -t , -k 2,2rn \
-//			> "${csv}"
-//		"""
-//}
-
-//process get_reads_per_barcode {
-//
-//	label "python_2"
-//	label "integration"
-//	
-//	tag { "${name}" }
-//
-//	publishDir Paths.get( params.out_dir , "qc" ),
-//		mode: "copy",
-//		overwrite: "true"
-//
-//	input:
-//		tuple val(metadata), path(bam), path(bai), path(script)
-//
-//	output:
-//		tuple val(metadata), file("${csv}")
-//
-//	script:		
-//		
-//		name = metadata["name"]
-//		csv = "${name}.reads_per_barcode.csv"
-//
-//		"""
-//		python3 $script $bam $csv
-//		"""
-//}
-
 process get_barcodes {
 
-	label "samtools"
 	label "integration"
 	
 	tag { "${name}" }

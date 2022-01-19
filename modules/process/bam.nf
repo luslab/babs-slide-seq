@@ -2,7 +2,7 @@ import java.nio.file.Paths
 
 process bam_index {
 
-	label "samtools"
+	label "sequencing"
 	label "bam"
 	
 	tag { "${name}" }
@@ -30,7 +30,7 @@ process bam_index {
 
 process bam_metrics {
 
-	label "python_2"
+	label "python"
 	label "bam_merics"
 	
 	tag { "${name}" }
@@ -56,7 +56,7 @@ process bam_metrics {
 
 process bam_metrics_hmem {
 
-	label "python_2"
+	label "python"
 	label "bam_merics"
 	
 	tag { "${name}" }

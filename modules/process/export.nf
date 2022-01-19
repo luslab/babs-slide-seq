@@ -2,7 +2,7 @@
 process merge_plots {
 
 	label "export"
-	label "python_2"
+	label "python"
 	
 	tag { "${name}" }
 
