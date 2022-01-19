@@ -1,0 +1,4 @@
+#!/bin/sh
+
+singularity pull samtools.sif docker://bschiffthaler/samtools
+

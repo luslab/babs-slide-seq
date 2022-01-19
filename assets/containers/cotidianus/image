@@ -1,0 +1,6 @@
+#!/bin/sh
+
+export SINGULARITY_TMPDIR=/home/nourdine/singularity/cotidianus/tmp
+sudo -E singularity build cotidianus.sif cotidianus/
+
+

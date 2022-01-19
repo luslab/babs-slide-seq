@@ -1,0 +1,12 @@
+
+Bootstrap: docker
+From: ubuntu
+Stage: 21.04
+
+%labels
+	Author nourdine.bah@crick.ac.uk
+	Version v0.0.1
+
+%help
+	This is a container I use for several things
+

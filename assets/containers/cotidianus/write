@@ -1,0 +1,4 @@
+#!/bin/sh
+
+sudo singularity shell -B /home/nourdine/singularity:/mnt --writable cotidianus
+

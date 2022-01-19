@@ -1,0 +1,5 @@
+#!/bin/sh
+
+./hamming tmp/reads.txt tmp/barcodes.txt tmp/test.hamming.csv
+#./hamming tmp/reads_sample.txt tmp/barcodes_sample.txt tmp/test.hamming.csv
+
