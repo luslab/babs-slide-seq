@@ -56,7 +56,6 @@ include { bcl2fastq } from "./modules/process/demultiplexing"
 include { merge_lanes } from "./modules/process/demultiplexing"
 
 include { get_barcodes } from "./modules/process/integration"
-//include { get_reads_per_barcode } from "./modules/process/integration"
 include { hamming } from "./modules/process/integration"
 include { matcher } from "./modules/process/integration"
 include { add_match } from "./modules/process/integration"
@@ -148,18 +147,6 @@ plot_umis_per_barcode_script = Channel.fromPath("bin/plot/umis_per_barcode.py")
 plot_up_align_script = Channel.fromPath("bin/plot/up_align.py")
 plot_up_matching_script = Channel.fromPath("bin/plot/up_matching.py")
 
-/////////////////////////////////////////////////////////////////////////////////
-////// ANNOTATION ///////////////////////////////////////////////////////////////
-//
-//gtf = Channel.fromPath(params.gtf)
-//
-/////////////////////////////////////////////////////////////////////////////////
-////// SAMPLES //////////////////////////////////////////////////////////////////
-//
-//DATA_DIR = Channel.fromPath(params.data_dir)
-//SAMPLE_SHEET = Channel.fromPath(params.sample_sheet)
-//DATA_DIR.concat(SAMPLE_SHEET).collate(2).set{ TO_DEMULTIPLEX }
-
 ///////////////////////////////////////////////////////////////////////////////
 //// DESIGN ///////////////////////////////////////////////////////////////////
 
@@ -180,40 +167,6 @@ Channel
 //// MAIN WORKFLOW ////////////////////////////////////////////////////////////
 
 workflow {
-
-	/////////////////////////////////////////////////////////////////////////////
-	//// DEMULTIPLEXING
-
-	//bcl2fastq(TO_DEMULTIPLEX)
-
-	//bcl2fastq
-	//	.out
-	//	.fastqs
-	//	.flatten()
-	//	.map{[ it.getFileName().toString().replaceAll("_S\\d_.*", "") , it ]}
-	//	.map{[
-	//		it[0],
-	//		it[1].getFileName().toString().replaceAll(".*_L(\\d+)_.*", "\$1"),
-	//		it[1]
-	//	]}
-	//	.filter{ it[0] =~ /^Undetermined.*/ ? 0 : 1 }
-	//	.groupTuple(by:[0, 1])
-	//	.map{ [ it[0] , it[2].sort{ it.getFileName().toString() } ] }
-	//	.map{ [ it[0] , it[1][0] , it[1][1] ] }
-	//	.groupTuple()
-	//	.map{ [ ["name": it[0]] , it[1] , it[2] ] }
-	//	.set{ DEMULTIPLEXING }
-	//
-	//// merge lanes
-	//merge_lanes(DEMULTIPLEXING)
-	//
-	//merge_lanes
-	//	.out
-	//	.map{[
-	//		it[0] << ["puck": params.pucks.getAt(it[0]["name"])],
-	//		it[1], it[2]
-	//	]}
-	//	.set{ SAMPLES }
 
 	///////////////////////////////////////////////////////////////////////////
 	// MERGE
@@ -265,12 +218,6 @@ workflow {
 
 	///////////////////////////////////////////////////////////////////////////
 	// ALIGNMENT
-
-	//extract_barcode
-	//	.out
-	//	.fastq
-	//	.map{[ it[0] , params.genome_index , it[1] ]}
-	//	.set{TO_ALIGN}
 
 	star(extract_barcode.out.fastq)
 
@@ -361,16 +308,6 @@ workflow {
 
 	///////////////////////////////////////////////////////////////////////////
 	// METRICS
-
-	//reads_per_barcode_fastq(extract_barcode.out.fastq)
-	//reads_per_barcode_umi(select.out)
-	//reads_per_function(select.out)
-	//reads_up_matching(select.out)
-	//reads_barcode_matching(select.out)
-	//count_duplicates(select.out)
-	//count_mappings(select.out)
-	//count_resolved(select.out)
-	//count_select(select.out)
 
 	reads_per_barcode_fastq(
 		extract_barcode.out.fastq.combine(reads_per_barcode_fastq_script)
@@ -601,106 +538,4 @@ workflow {
 	merge_plots(TO_MERGE_PLOTS)
 	rename_coords( matcher.out.coords.filter{ it[0]["barcodes"] == "ordered"} )
 }
-
-//###############################################################################
-//process plot_balance_barcode {
-//		tuple val(metadata), path(csv), path(script)
-//		basename = name + ".balance_barcode"
-//		python3 $script $csv $basename
-//
-//process plot_balance_umi {
-//		tuple val(metadata), path(csv), path(script)
-//		basename = name + ".balance_umi"
-//		python3 $script $csv $basename
-//
-//process plot_barcode_align {
-//		tuple val(metadata), path(csv), path(script)
-//		basename = name + ".barcode_align"
-//		python3 $script $csv $basename
-//
-//process plot_barcode_extraction {
-//		tuple val(metadata), path(csv), path(script)
-//		basename = name + ".barcode_extraction"
-//		python3 $script $csv $basename
-//
-//process plot_barcode_matching {
-//		tuple val(metadata), path(csv), path(script)
-//		basename = name + ".barcode_matching"
-//		python3 $script $csv $basename
-//
-//process plot_duplicates {
-//		tuple val(metadata), path(csv), path(script)
-//		basename = name + ".duplicates"
-//		python3 $script $csv $basename
-//
-//process plot_histo_errors {
-//		tuple val(metadata), path(csv), path(script)
-//		basename = name + ".histo_errors"
-//		python3 $script $csv $basename
-//
-//process plot_histo_function {
-//		tuple val(metadata), path(csv), path(script)
-//		basename = name + ".histo_function"
-//		python3 $script $csv $basename
-//
-//process plot_up_align {
-//		tuple val(metadata), path(csv), path(script)
-//		basename = name + ".up_align"
-//		python3 $script $csv $basename
-//
-//process plot_up_matching {
-//		tuple val(metadata), path(csv), path(script)
-//		basename = name + ".up_matching"
-//		python3 $script $csv $basename
-//
-//process plot_mappings {
-//		tuple val(metadata), path(csv), path(script)
-//		basename = name + ".mappings"
-//		python3 $script $csv $basename
-//
-//process plot_reads_fraction {
-//		tuple val(metadata), path(csv), path(script)
-//		basename = name + ".reads_fraction"
-//		python3 $script $csv $basename
-//
-//process plot_resolved {
-//		tuple val(metadata), path(csv), path(script)
-//		basename = name + ".resolved"
-//		python3 $script $csv $basename
-//
-//process plot_select {
-//		tuple val(metadata), path(csv), path(script)
-//		basename = name + ".selected"
-//		python3 $script $csv $basename
-//
-//###############################################################################
-//
-//process plot_histo_hamming {
-//		tuple val(metadata), path(ordered_csv), path(shuffled_csv), path(script)
-//		basename = name + ".histo_hamming"
-//		python3 $script $ordered_csv $shuffled_csv $basename
-//
-//###############################################################################
-//
-//process plot_spatial_umis {
-//		tuple val(metadata), path(mtx), path(csv), path(script)
-//		basename = name + ".spatial_umis"
-//		python3 $script $mtx $csv $basename
-//
-//###############################################################################
-//
-//process plot_histo_genes {
-//		tuple val(metadata), path(mtx), path(script)
-//		basename = name + ".histo_genes"
-//		python3 $script $mtx $basename
-//
-//process plot_histo_umis {
-//		tuple val(metadata), path(mtx), path(script)
-//		basename = name + ".histo_umis"
-//		python3 $script $mtx $basename
-//
-//process plot_umis_per_barcode {
-//		tuple val(metadata), path(mtx), path(script)
-//		basename = name + ".umis_per_barcode"
-//		python3 $script $mtx $basename
 
