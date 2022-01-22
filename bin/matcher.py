@@ -6,21 +6,21 @@ import numpy as np
 from scipy.stats import entropy
 import pandas as pd
 
-#hamming_path = sys.argv[1]
-#reads_path = sys.argv[2]
-#coords_path = sys.argv[3]
-#base_path = sys.argv[4]
-#max_distance = int(sys.argv[5])
-#max_matches = int(sys.argv[6])
-#max_entropy = float(sys.argv[7])
+hamming_path = sys.argv[1]
+reads_path = sys.argv[2]
+coords_path = sys.argv[3]
+base_path = sys.argv[4]
+max_distance = int(sys.argv[5])
+max_matches = int(sys.argv[6])
+max_entropy = float(sys.argv[7])
 
-hamming_path = "results/qc/210611_imran_puck_15_humangbm.ordered.hamming.csv"
-reads_path = "results/qc/210611_imran_puck_15_humangbm.reads_umis_per_barcode.csv"
-coords_path = "pucks/210611_imran_puck_15_humangbm.csv"
-base_path = "tmp/matching"
-max_distance = 4
-max_matches = 5
-max_entropy = .5
+#hamming_path = "results/qc/210611_imran_puck_15_humangbm.ordered.hamming.csv"
+#reads_path = "results/qc/210611_imran_puck_15_humangbm.reads_umis_per_barcode.csv"
+#coords_path = "pucks/210611_imran_puck_15_humangbm.csv"
+#base_path = "tmp/matching"
+#max_distance = 4
+#max_matches = 5
+#max_entropy = .5
 
 """
 The hamming distance data frame contains 4 colummns:
