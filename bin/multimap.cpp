@@ -190,12 +190,12 @@ int main(int argc, char **argv)
 		}
 		else
 		{
-			std::cerr << "Problem: cannot find gene ID" << std::endl;
+			std::cerr << "Problem: cannot find duplicate status" << std::endl;
 			return 1;
 		}
 
 		// gene id
-		if ( findTagKey(tag_idx, tagsDict, "gi") ) {
+		if ( findTagKey(tag_idx, tagsDict, "qi") ) {
 			extractTagValue(id, tagsDict, tag_idx);
 		}
 		else
@@ -205,7 +205,7 @@ int main(int argc, char **argv)
 		}
 
 		// function
-		if ( findTagKey(tag_idx, tagsDict, "gf") ) {
+		if ( findTagKey(tag_idx, tagsDict, "qf") ) {
 			extractTagValue(function, tagsDict, tag_idx);
 		}
 		else

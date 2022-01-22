@@ -5,7 +5,6 @@
 import sys
 import pysam
 import pandas as pd
-from collections import defaultdict
 
 #reads_per_function
 #samtools view \
@@ -33,7 +32,7 @@ def reads_per_function(bam_path, csv_path):#
 		BS = record.get_tag("bs")
 		CS = record.get_tag("cs")
 		if BS == "MATCHED" and CS in ["UNIQUE", "INCLUDED"]:
-			GF = record.get_tag("gf")
+			GF = record.get_tag("qf")
 			functions.append(GF)
 		counter = counter + 1
 		if counter % 1000000 == 0:

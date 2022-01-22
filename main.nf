@@ -35,7 +35,8 @@ include { star } from "./modules/process/align"
 
 include { bam_index as bam_index_tag } from "./modules/process/bam"
 include { bam_index as bam_index_select } from "./modules/process/bam"
-include { bam_metrics as reads_per_barcode } from "./modules/process/bam"
+include { bam_metrics as reads_umi_threshold } from "./modules/process/bam"
+include { bam_metrics as reads_umis_per_barcode } from "./modules/process/bam"
 include { bam_metrics as reads_per_barcode_umi } from "./modules/process/bam"
 include { bam_metrics as reads_per_function } from "./modules/process/bam"
 include { bam_metrics_hmem as reads_up_matching } from "./modules/process/bam"
@@ -48,9 +49,12 @@ include { bam_metrics as count_select } from "./modules/process/bam"
 include { mark_duplicates } from "./modules/process/tagging"
 include { gene } from "./modules/process/tagging"
 include { bam_tag as tag_bam } from "./modules/process/tagging"
+include { umis_per_barcode } from "./modules/process/tagging"
 include { bam_tag_hmem as primary } from "./modules/process/tagging"
 include { bam_tag_hmem as multimap } from "./modules/process/tagging"
 include { bam_tag_hmem as select } from "./modules/process/tagging"
+include { dropseq } from "./modules/process/tagging"
+include { dropseq_tag } from "./modules/process/tagging"
 
 include { bcl2fastq } from "./modules/process/demultiplexing"
 include { merge_lanes } from "./modules/process/demultiplexing"
@@ -67,6 +71,7 @@ include { reads_per_barcode_fastq } from "./modules/process/quality_control"
 
 include { extract_barcode } from "./modules/process/up_primer"
 
+include { plot_1_val as plot_umi_threshold } from "./modules/process/plot"
 include { plot_1_arg as plot_balance_barcode } from "./modules/process/plot"
 include { plot_1_arg as plot_balance_umi } from "./modules/process/plot"
 include { plot_1_arg as plot_barcode_align } from "./modules/process/plot"
@@ -96,6 +101,7 @@ include { dge } from "./modules/process/export"
 
 extract_barcode_script = Channel.fromPath("bin/extract_barcode")
 tag_bam_script = Channel.fromPath("bin/tag_bam")
+umis_per_barcode_script = Channel.fromPath("bin/umis_per_barcode")
 shuffling_script = Channel.fromPath("bin/shuffling.py")
 matcher_script = Channel.fromPath("bin/matcher.py")
 add_match_script = Channel.fromPath("bin/add_match")
@@ -104,10 +110,12 @@ primary_script = Channel.fromPath("bin/primary")
 multimap_script = Channel.fromPath("bin/multimap")
 select_script = Channel.fromPath("bin/select")
 count_script = Channel.fromPath("bin/count")
+dropseq_tag_script = Channel.fromPath("bin/dropseq_tag")
 
 reads_per_barcode_fastq_script = Channel.fromPath("bin/fastq/reads_per_barcode.py")
 
-reads_per_barcode_script = Channel.fromPath("bin/bam/reads_per_barcode.py")
+reads_umis_per_barcode_script = Channel.fromPath("bin/bam/reads_umis_per_barcode.py")
+reads_umi_threshold_script = Channel.fromPath("bin/bam/reads_umi_threshold.py")
 reads_up_matching_script = Channel.fromPath("bin/bam/reads_up_matching.py")
 reads_barcode_matching_script = Channel.fromPath("bin/bam/reads_barcode_matching.py")
 reads_per_barcode_umi_script = Channel.fromPath("bin/bam/reads_per_barcode_umi.py")
@@ -127,6 +135,7 @@ hamming_script =
 		.collect()
 
 // plots
+plot_umi_threshold_script = Channel.fromPath("bin/plot/umi_threshold.py")
 plot_balance_barcode_script = Channel.fromPath("bin/plot/balance_barcode.py")
 plot_balance_umi_script  = Channel.fromPath("bin/plot/balance_umi.py")
 plot_barcode_align_script = Channel.fromPath("bin/plot/barcode_align.py")
@@ -168,7 +177,7 @@ Channel
 
 workflow {
 
-	///////////////////////////////////////////////////////////////////////////
+	////////////////////////////////////////////////////////////////////////////
 	// MERGE
 
 	FASTQ
@@ -188,7 +197,7 @@ workflow {
 	
 	merge_lanes(TO_MERGE)
 
-	///////////////////////////////////////////////////////////////////////////
+	////////////////////////////////////////////////////////////////////////////
 
 	FASTQ
 		.map{[
@@ -211,17 +220,17 @@ workflow {
 		.concat( shuffling.out.shuffled )
 		.set{ PUCK_BARCODES }
 
-	///////////////////////////////////////////////////////////////////////////
+	////////////////////////////////////////////////////////////////////////////
 	// SEQUENCING BARCODES
 
 	extract_barcode( merge_lanes.out.combine(extract_barcode_script) )
 
-	///////////////////////////////////////////////////////////////////////////
+	////////////////////////////////////////////////////////////////////////////
 	// ALIGNMENT
 
 	star(extract_barcode.out.fastq)
 
-	///////////////////////////////////////////////////////////////////////////
+	////////////////////////////////////////////////////////////////////////////
 	// BAM FILE TAGGING
 
 	mark_duplicates(star.out.bam)
@@ -234,15 +243,17 @@ workflow {
 			.combine(tag_bam_script)
 	)
 
-	bam_index_tag(tag_bam.out)
+	umis_per_barcode( tag_bam.out.combine(umis_per_barcode_script) )
 
-	reads_per_barcode(
+	bam_index_tag(umis_per_barcode.out)
+
+	reads_umis_per_barcode(
 		bam_index_tag
 			.out
-			.combine( Channel.from("reads_per_barcode") )
-			.combine(reads_per_barcode_script)
+			.combine( Channel.from("reads_umis_per_barcode") )
+			.combine(reads_umis_per_barcode_script)
 	)
-	get_barcodes( reads_per_barcode.out )
+	get_barcodes( reads_umis_per_barcode.out )
 
 	///////////////////////////////////////////////////////////////////////////
 	// MATCHING
@@ -258,7 +269,7 @@ workflow {
 
 	hamming
 		.out
-		.combine(reads_per_barcode.out)
+		.combine(reads_umis_per_barcode.out)
 		.filter{ it[0]["name"] == it[2]["name"] }
 		.map{ [ it[0] , it[1] , it[3] ] }
 		.combine( PUCKS )
@@ -272,7 +283,7 @@ workflow {
 		.out
 		.mapping
 		.filter{ it[0]["barcodes"] == "ordered" }
-		.combine(tag_bam.out)
+		.combine(umis_per_barcode.out)
 		.filter{ it[0]["name"] == it[2]["name"] }
 		.map{ [ *it[0..1] , it[3] ] }
 		.set{ TO_ADD_MATCH }
@@ -283,8 +294,10 @@ workflow {
 	// GENE COUNT
 
 	gene( add_match.out.combine(gene_script) )
+	dropseq(gene.out)
+	dropseq_tag( dropseq.out.combine(dropseq_tag_script) )
 	primary(
-		gene
+		dropseq_tag
 			.out
 			.combine( Channel.from("primary") )
 			.combine(primary_script)
@@ -324,6 +337,12 @@ workflow {
 		.out
 		.combine( Channel.from("reads_barcode_matching") )
 		.combine(reads_barcode_matching_script)
+	)
+	reads_umi_threshold(
+		bam_index_select
+		.out
+		.combine( Channel.from("reads_umi_threshold") )
+		.combine(reads_umi_threshold_script)
 	)
 	reads_per_barcode_umi(
 		bam_index_select
@@ -365,6 +384,13 @@ workflow {
 	///////////////////////////////////////////////////////////////////////////
 	// PLOTS
 
+	plot_umi_threshold(
+		reads_umi_threshold
+			.out
+			.combine( Channel.from(params.umis_threshold) )
+			.combine( Channel.from("umi_threshold") )
+			.combine(plot_umi_threshold_script)
+	)
 	plot_balance_barcode(
 		reads_per_barcode_umi
 			.out
@@ -514,6 +540,7 @@ workflow {
 		.concat(
 			plot_up_matching.out.pdf,
 			plot_up_align.out.pdf,
+			plot_umi_threshold.out.pdf,
 			plot_barcode_align.out.pdf,
 			plot_duplicates.out.pdf,
 			plot_mappings.out.pdf,

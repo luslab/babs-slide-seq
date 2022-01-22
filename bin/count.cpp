@@ -185,7 +185,7 @@ int main(int argc, char **argv)
 				return 1;
 			}
 
-			if ( findTagKey(tag_idx, tagsDict, "gi") ) {
+			if ( findTagKey(tag_idx, tagsDict, "qi") ) {
 				extractTagValue(id, tagsDict, tag_idx);
 			}
 			else
@@ -194,7 +194,7 @@ int main(int argc, char **argv)
 				return 1;
 			}
 
-			if ( findTagKey(tag_idx, tagsDict, "gn") ) {
+			if ( findTagKey(tag_idx, tagsDict, "qn") ) {
 				extractTagValue(symbol, tagsDict, tag_idx);
 			}
 			else

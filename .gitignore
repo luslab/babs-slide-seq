@@ -1,0 +1,10 @@
+*.sif
+*.swp
+*.tar
+.nextflow*
+data
+nextflow*
+pucks
+results*
+tmp
+work

@@ -154,6 +154,8 @@ int main(int argc, char **argv)
 		g++;
 	}
 
+	close(gff);
+
 	Trees trees;
 	for (i_it = map.begin(); i_it != map.end(); ++i_it)
 	{

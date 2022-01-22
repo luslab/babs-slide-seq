@@ -11,7 +11,7 @@ struct <-
 
 
 df <-
-	readr::read_csv("PM21231_design.csv") %>%
+	readr::read_csv("samples.csv") %>%
 	dplyr::select(sample_name, species, fastq_1, fastq_2) %>%
 	dplyr::distinct() %>%
 	dplyr::rename("name"=sample_name) %>%

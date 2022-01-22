@@ -30,7 +30,7 @@ hamming = hamming\
 	.assign(PuckBarcode=lambda x: x.PuckBarcode.str.split(":"))\
 	.explode("PuckBarcode")
 reads = pd.read_csv(reads_path, header=None)
-reads.columns = ["SeqBarcode", "Reads"]
+reads.columns = ["SeqBarcode", "Reads", "UMIs"]
 coords = pd.read_csv(coords_path).rename(columns={"Barcode": "PuckBarcode"})
 
 # default barcode

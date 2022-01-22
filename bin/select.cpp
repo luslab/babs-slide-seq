@@ -216,7 +216,7 @@ int main(int argc, char **argv)
 		}
 
 		// gene id
-		if ( findTagKey(tag_idx, tagsDict, "gi") ) {
+		if ( findTagKey(tag_idx, tagsDict, "qi") ) {
 			extractTagValue(id, tagsDict, tag_idx);
 		}
 		else
@@ -226,7 +226,7 @@ int main(int argc, char **argv)
 		}
 
 		// function
-		if ( findTagKey(tag_idx, tagsDict, "gf") ) {
+		if ( findTagKey(tag_idx, tagsDict, "qf") ) {
 			extractTagValue(function, tagsDict, tag_idx);
 		}
 		else

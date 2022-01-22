@@ -88,6 +88,30 @@ process bam_tag_hmem {
 		"""
 }
 
+process umis_per_barcode {
+
+	label "tagging"
+	label "sequencing"
+	
+	tag { "${name}" }
+
+	input:
+		tuple val(metadata), path(bam), path(script)
+
+	output:
+		tuple val(metadata), file("${name}.umis.bam")
+
+	script:		
+		
+		name = metadata["name"]
+		threshold = params.umis_threshold
+
+
+		"""
+		./$script $bam "${name}.umis.bam" $threshold
+		"""
+}
+
 process gene {
 
 	label "tagging"
@@ -111,90 +135,48 @@ process gene {
 		"""
 }
 
-//process tag_bam {
-//
-//	label "tagging"
-//	label "sequencing"
-//	
-//	tag { "${name}" }
-//
-//	input:
-//		tuple val(metadata), path(bam), path(script)
-//
-//	output:
-//		tuple val(metadata), file("${name}.tagged.bam")
-//
-//	script:		
-//		
-//		name = metadata["name"]
-//
-//		"""
-//		./$script $bam "${name}.tagged.bam"
-//		"""
-//}
-//process primary {
-//
-//	label "tagging"
-//	label "sequencing"
-//
-//	tag { "${name}" }
-//
-//	input:
-//		tuple val(metadata), path(bam), path(script)
-//
-//	output:
-//		tuple val(metadata), file("${name}.primary.bam")
-//
-//	script:		
-//		
-//		name = metadata["name"]
-//
-//		"""
-//		./$script $bam "${name}.primary.bam"
-//		"""
-//}
-//
-//process multimap {
-//
-//	label "tagging"
-//	label "sequencing"
-//
-//	tag { "${name}" }
-//
-//	input:
-//		tuple val(metadata), path(bam), path(script)
-//
-//	output:
-//		tuple val(metadata), file("${name}.multimap.bam")
-//
-//	script:		
-//		
-//		name = metadata["name"]
-//
-//		"""
-//		./$script $bam "${name}.multimap.bam"
-//		"""
-//}
-//
-//process select {
-//
-//	label "tagging"
-//	label "sequencing"
-//
-//	tag { "${name}" }
-//
-//	input:
-//		tuple val(metadata), path(bam), path(script)
-//
-//	output:
-//		tuple val(metadata), file("${name}.select.bam")
-//
-//	script:		
-//		
-//		name = metadata["name"]
-//
-//		"""
-//		./$script $bam "${name}.select.bam"
-//		"""
-//}
+process dropseq {
+
+	label "tagging"
+	label "sequencing"
+
+	tag { "${name}" }
+	
+	input:
+		tuple val(metadata), path(bam)
+
+	output:
+		tuple val(metadata), path("${out_bam}")
+
+	script:		
+		
+		name = metadata["name"]
+		out_bam = "${name}.dropseq.bam"
+		refflat = metadata["refflat"]
+
+		template "dropseq-tools/tag_read_with_gene_exon_function.sh"
+}
+
+process dropseq_tag {
+
+	label "tagging"
+	label "sequencing"
+
+	tag { "${name}" }
+
+	input:
+		tuple val(metadata), path(bam), path(script)
+
+	output:
+		tuple val(metadata), file("${name}.dropseqtag.bam")
+
+	script:		
+		
+		name = metadata["name"]
+		gtf = metadata["gtf"]
+
+		"""
+		./$script $gtf $bam "${name}.dropseqtag.bam"
+		"""
+}
 

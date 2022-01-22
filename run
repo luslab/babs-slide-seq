@@ -8,6 +8,8 @@ module load Singularity/3.6.4
 #WORK+=/work
 WORK=work
 
+NXF_SINGULARITY_CACHEDIR=$WORK/singularity
+
 nextflow run main.nf \
 	-params-file params.yml \
 	-work-dir $WORK \
