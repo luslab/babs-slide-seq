@@ -62,9 +62,17 @@ if __name__ == "__main__":
 
 	df = pd.read_csv(csv_path, header=None)
 	df.columns = ["Status", "Reads"]
-	status = {"PASS": "$\geq$5 UMIs", "TOO_LOW": "$<$5 UMIs"}
+	status = {
+		"PASS": f"$\geq${threshold} UMIs",
+		"TOO_LOW": f"$<${threshold} UMIs"
+	}
+	df = df.loc[ df.Status.isin( status.keys() ) ]
+	df = df\
+		.set_index("Status")\
+		.reindex(status.keys(), fill_value=0)\
+		.reset_index()
 	df["Status"] = df.Status.map(status)
-	df = df.set_index("Status").loc[ status.values() ].reset_index()
+	df["Status"] = pd.Categorical(df.Status, categories=status.values())
 	
 	plt = count_plot(df, "Reads with barcode that pass the UMIs threshold")
 	plt.savefig(f"{base_path}.png")

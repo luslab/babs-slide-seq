@@ -65,9 +65,8 @@ int main(int argc, char **argv)
 	std::string structure(argv[3]);
 	SeqFileOut fastq(argv[4]);
 	int up_thresh = atoi(argv[5]);
-	std::string sample(argv[6]);
-
-	int length_thresh = 41;
+	int length_thresh = atoi(argv[6]);
+	std::string sample(argv[7]);
 
 	CharString meta1;
 	CharString meta2;
@@ -215,7 +214,10 @@ int main(int argc, char **argv)
 		append(meta, ":");
 		append(meta, meta2);
 		
-		writeRecord(fastq, meta, read2, qual2);
+		if ( length_status == "LONG_ENOUGH" )
+		{
+			writeRecord(fastq, meta, read2, qual2);
+		}
 
 		/////////////////////////////////////////////////////////////////////////
 

@@ -7,18 +7,6 @@ import pysam
 import pandas as pd
 from collections import defaultdict
 
-# reads_up_matching
-#samtools view --expr '[ls] == "LONG_ENOUGH"' $bam \
-#	| sed 's/^\\([^\\t]\\+\\).*us:Z:\\([A-Z]\\+\\).*as:Z:\\([A-Z]\\+\\).*/\\1\\t\\2\\t\\3/g' \
-#	| sort \
-#	| uniq \
-#	| awk '{ print \$2 "\\t" \$3 }' \
-#	| sort \
-#	| uniq -c \
-#	| sort -rn \
-#	| awk '{ printf "%s,%s,%s\\n", \$2, \$3, \$1 }' \
-#	> "${name}.reads_up_matching.csv"
-
 ###########################################
 def reads_up_matching(bam_path, csv_path):#
 ###########################################

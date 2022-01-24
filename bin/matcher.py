@@ -14,8 +14,8 @@ max_distance = int(sys.argv[5])
 max_matches = int(sys.argv[6])
 max_entropy = float(sys.argv[7])
 
-#hamming_path = "results/qc/210611_imran_puck_15_humangbm.ordered.hamming.csv"
-#reads_path = "results/qc/210611_imran_puck_15_humangbm.reads_umis_per_barcode.csv"
+#hamming_path = "work/e8/99d60174e1c2d67e77d564e6fd641f/210611_imran_puck_15_humangbm.ordered.hamming.csv"
+#reads_path = "work/e8/99d60174e1c2d67e77d564e6fd641f/210611_imran_puck_15_humangbm.reads_umis_per_barcode.csv"
 #coords_path = "pucks/210611_imran_puck_15_humangbm.csv"
 #base_path = "tmp/matching"
 #max_distance = 4

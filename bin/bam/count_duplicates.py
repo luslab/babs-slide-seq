@@ -7,20 +7,6 @@ import pysam
 import pandas as pd
 from collections import defaultdict
 
-#count_duplicates
-#samtools view \
-#	--expr '[bs] == "MATCHED" && [as] == "MAPPED"' \
-#	$bam \
-#	| sed 's/^\\([^\\t]\\+\\).*ds:Z:\\([A-Z]\\+\\).*/\\1 \\2/g' \
-#	| sort \
-#	| uniq \
-#	| awk '{ print \$2 }' \
-#	| sort \
-#	| uniq -c \
-#	| sort -rn \
-#	| awk '{ printf "%s,%s\\n", \$2, \$1 }' \
-#	> "${name}.count_duplicates.csv"
-
 ##########################################
 def count_duplicates(bam_path, csv_path):#
 ##########################################
@@ -31,9 +17,9 @@ def count_duplicates(bam_path, csv_path):#
 
 	print("BAM iteration", file=sys.stderr)
 	for record in bam.fetch(until_eof=True):
-		BS = record.get_tag("bs")
+		US = record.get_tag("us")
 		AS = record.get_tag("as")
-		if BS == "MATCHED" and AS == "MAPPED":
+		if US == "MATCHED" and AS == "MAPPED":
 			DS = record.get_tag("ds")
 			reads[record.query_name] = DS
 		counter = counter + 1

@@ -116,7 +116,10 @@ process add_match {
 		tuple val(metadata), path(mapping), path(bam), path(script)
 
 	output:
-		tuple val(metadata), file("${name}.matched.bam")
+		tuple \
+			val(metadata),
+			file("${name}.matched.bam"),
+			file("${name}.matched.bam.bai")
 
 	script:		
 		
@@ -124,5 +127,6 @@ process add_match {
 
 		"""
 		./$script $mapping $bam "${name}.matched.bam"
+		samtools index "${name}.matched.bam"
 		"""
 }

@@ -47,21 +47,24 @@ process bam_tag {
 	label "tagging"
 	label "sequencing"
 	
-	tag { "${name}" }
+	tag { "${basename}" }
 
 	input:
 		tuple val(metadata), path(bam), val(suffix), path(script)
 
 	output:
-		tuple val(metadata), file("${name}.${suffix}.bam")
+		tuple val(metadata), path("${basename}.bam"), path("${basename}.bam.bai")
 
 	script:		
 		
 		name = metadata["name"]
+		basename = "${name}.${suffix}"
 
 
 		"""
-		./$script $bam "${name}.${suffix}.bam"
+		./$script $bam "${basename}.bam"
+		echo "Indexing..."
+		samtools index "${basename}.bam"
 		"""
 }
 
@@ -70,21 +73,24 @@ process bam_tag_hmem {
 	label "tagging"
 	label "sequencing"
 	
-	tag { "${name}" }
+	tag { "${basename}" }
 
 	input:
 		tuple val(metadata), path(bam), val(suffix), path(script)
 
 	output:
-		tuple val(metadata), file("${name}.${suffix}.bam")
+		tuple val(metadata), path("${basename}.bam"), path("${basename}.bam.bai")
 
 	script:		
 		
 		name = metadata["name"]
+		basename = "${name}.${suffix}"
 
 
 		"""
-		./$script $bam "${name}.${suffix}.bam"
+		./$script $bam "${basename}.bam"
+		echo "Indexing..."
+		samtools index "${basename}.bam"
 		"""
 }
 
@@ -96,19 +102,22 @@ process umis_per_barcode {
 	tag { "${name}" }
 
 	input:
-		tuple val(metadata), path(bam), path(script)
+		tuple val(metadata), path(bam), path(bai), path(script)
 
 	output:
-		tuple val(metadata), file("${name}.umis.bam")
+		tuple val(metadata), path("${basename}.bam"), path("${basename}.bam.bai")
 
 	script:		
 		
 		name = metadata["name"]
+		suffix = "umis"
+		basename = "${name}.${suffix}"
 		threshold = params.umis_threshold
 
-
 		"""
-		./$script $bam "${name}.umis.bam" $threshold
+		./$script $bam "${basename}.bam" $threshold
+		echo "Indexing..."
+		samtools index "${basename}.bam"
 		"""
 }
 
@@ -123,7 +132,7 @@ process gene {
 		tuple val(metadata), path(bam), path(script)
 
 	output:
-		tuple val(metadata), file("${name}.gene.bam")
+		tuple val(metadata), path("${name}.gene.bam")
 
 	script:		
 		
@@ -143,7 +152,7 @@ process dropseq {
 	tag { "${name}" }
 	
 	input:
-		tuple val(metadata), path(bam)
+		tuple val(metadata), path(bam), path(bai)
 
 	output:
 		tuple val(metadata), path("${out_bam}")
@@ -168,15 +177,17 @@ process dropseq_tag {
 		tuple val(metadata), path(bam), path(script)
 
 	output:
-		tuple val(metadata), file("${name}.dropseqtag.bam")
+		tuple val(metadata), path("${basename}.bam"), path("${basename}.bam.bai")
 
 	script:		
 		
 		name = metadata["name"]
+		basename = "${name}.dropseqtag"
 		gtf = metadata["gtf"]
 
 		"""
-		./$script $gtf $bam "${name}.dropseqtag.bam"
+		./$script $gtf $bam "${basename}.bam"
+		samtools index "${basename}.bam"
 		"""
 }
 

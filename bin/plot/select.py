@@ -21,7 +21,8 @@ def count_plot(df, title):#
 	df["Annot"] = df.Reads.apply(lambda x: "{:,}".format(round(x,2)))
 	df["Annot"] = df.Annot + " reads\n" + df.Percent.astype(str) + " %"
 
-	df = df.set_index("Status")
+	df["index"] = df.Status
+	df = df.set_index("index")
 	n = df.loc["Unique", "Reads"] + df.loc["Included", "Reads"]
 	df = df.reset_index()
 
@@ -67,8 +68,7 @@ if __name__ == "__main__":
 	df.columns = ["Status", "Reads"]
 	df["Status"] = df.Status.str.title()
 	cats = ["Unique", "Included", "Excluded", "Unresolved"]
-	df = df.set_index("Status").loc[cats]
-	df = df.reset_index()
+	df = df.loc[ df.Status.isin(cats) ]
 	df["Status"] = pd.Categorical(df.Status, categories=cats)
 	
 	plt = count_plot(df, "Selecting multi-mapped UMIs based on score")

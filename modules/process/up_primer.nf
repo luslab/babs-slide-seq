@@ -43,6 +43,7 @@ process extract_barcode {
 			"${read_structure}" \
 			"${name}.fastq.gz" \
 			${params.up_errors_threshold} \
+			${params.min_length} \
 			"${name}"
 		"""
 }

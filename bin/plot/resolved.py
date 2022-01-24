@@ -67,8 +67,7 @@ if __name__ == "__main__":
 	df.columns = ["Status", "Reads"]
 	df["Status"] = df.Status.str.title()
 	cats = ["Unique", "Included", "Unresolved"]
-	df = df.set_index("Status").loc[cats]
-	df = df.reset_index()
+	df = df.loc[ df.Status.isin(cats) ]
 	df["Status"] = pd.Categorical(df.Status, categories=cats)
 	
 	plt = count_plot(df, "Selecting multi-mapped reads based on score")

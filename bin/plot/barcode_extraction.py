@@ -63,7 +63,8 @@ def extraction_plot(df):#
 if __name__ == "__main__":
 
 	csv_path = sys.argv[1]
-	base_path = sys.argv[2]
+	threshold = int(sys.argv[2])
+	base_path = sys.argv[3]
 	
 	df = pd.read_csv(csv_path, header=None, names=["Sample", "Length", "Reads"])
 	df = df.filter(["Length", "Reads"])
@@ -71,12 +72,14 @@ if __name__ == "__main__":
 		.Length\
 		.replace({
 			"Total reads": "Total",
-			"Too short reads": "Less than\n41 bp",
-			"Long enough reads": "At least\n41 bp"
+			"Too short reads": f"Less than\n{threshold} bp",
+			"Long enough reads": f"At least\n{threshold} bp"
 		})
 	df = df\
 		.set_index("Length")\
-		.loc[ ["Total", "Less than\n41 bp", "At least\n41 bp"] ]\
+		.loc[
+			["Total", f"Less than\n{threshold} bp", f"At least\n{threshold} bp"]
+		]\
 		.reset_index()
 	
 	ddf, plt = extraction_plot(df)
