@@ -6,21 +6,21 @@ import numpy as np
 from scipy.stats import entropy
 import pandas as pd
 
-hamming_path = sys.argv[1]
-reads_path = sys.argv[2]
-coords_path = sys.argv[3]
-base_path = sys.argv[4]
-max_distance = int(sys.argv[5])
-max_matches = int(sys.argv[6])
-max_entropy = float(sys.argv[7])
+#hamming_path = sys.argv[1]
+#reads_path = sys.argv[2]
+#coords_path = sys.argv[3]
+#base_path = sys.argv[4]
+#max_distance = int(sys.argv[5])
+#max_matches = int(sys.argv[6])
+#max_entropy = float(sys.argv[7])
 
-#hamming_path = "work/e8/99d60174e1c2d67e77d564e6fd641f/210611_imran_puck_15_humangbm.ordered.hamming.csv"
-#reads_path = "work/e8/99d60174e1c2d67e77d564e6fd641f/210611_imran_puck_15_humangbm.reads_umis_per_barcode.csv"
-#coords_path = "pucks/210611_imran_puck_15_humangbm.csv"
-#base_path = "tmp/matching"
-#max_distance = 4
-#max_matches = 5
-#max_entropy = .5
+hamming_path = "results/qc/210611_imran_puck_15_humangbm.ordered.hamming.csv"
+reads_path = "results/qc/210611_imran_puck_15_humangbm.reads_umis_per_barcode.csv"
+coords_path = "pucks/210611_imran_puck_15_humangbm.csv"
+base_path = "tmp/matching"
+max_distance = 4
+max_matches = 5
+max_entropy = .5
 
 """
 The hamming distance data frame contains 4 colummns:
@@ -59,7 +59,8 @@ df = df\
 		SeqBarcode=lambda x: np.where(x.SeqBarcode.isna(), bcd, x.SeqBarcode),
 		Distance=lambda x: np.where(x.Distance.isna(), l, x.Distance),
 		Number=lambda x: np.where(x.Number.isna(), 0, x.Number),
-		Reads=lambda x: np.where(x.Reads.isna(), 0, x.Reads)
+		Reads=lambda x: np.where(x.Reads.isna(), 0, x.Reads),
+		UMIs=lambda x: np.where(x.UMIs.isna(), 0, x.UMIs)
 	)
 
 # working data frame
@@ -94,6 +95,7 @@ one = one.loc[ one.PuckBarcode.isin(indices) ]
 def select(df):#
 ################
 	values = df.Reads / df.Reads.sum()
+	#values = df.UMIs / df.UMIs.sum()
 	entrop = entropy(values, base=df.shape[0])
 
 	if entrop <= max_entropy:
