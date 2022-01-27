@@ -10,11 +10,11 @@ process {
 	publish_mode = "copy"
 	publish_overwrite = true
 
-	executor = "local"
-	//executor = "slurm"
-	//cpus = 2
-	//memory = "60G"
-	//time = "10:00:00"
+	//executor = "local"
+	executor = "slurm"
+	cpus = 2
+	memory = "60G"
+	time = "10:00:00"
 
 	//errorStrategy = "retry"
 	//maxErrors = 3
@@ -109,95 +109,95 @@ process {
 
 		module = "STAR/2.5.2a-foss-2016b"
 
-	//	executor = "slurm"
-	//	cpus = 24
-	//	memory = "150G"
+		executor = "slurm"
+		cpus = 24
+		memory = "150G"
 
-	//	//executor = "slurm"
-	//	//cpus = 24
-	//	//memory = "300G"
-	//	//time = "05:00:00"
-	//	//clusterOptions = "--partition=hmem"
+		//executor = "slurm"
+		//cpus = 24
+		//memory = "300G"
+		//time = "05:00:00"
+		//clusterOptions = "--partition=hmem"
 	}
 
-	//withName: mark_duplicates {
-
-	////	executor = "slurm"
-	////	cpus = 8
-	////	memory = "80G"
+	withName: mark_duplicates {
 
 	//	executor = "slurm"
-	//	cpus = 24
-	//	memory = "400G"
-	//	time = "06:00:00"
-	//	clusterOptions = "--partition=hmem"
-	//}
+	//	cpus = 8
+	//	memory = "80G"
+
+		executor = "slurm"
+		cpus = 24
+		memory = "400G"
+		time = "06:00:00"
+		clusterOptions = "--partition=hmem"
+	}
 
 	withName: dropseq {
 
 		container = "assets/containers/sequencing/sequencing.sif"
 
-	//	executor = "slurm"
-	//	cpus = 8
-	//	memory = "80G"
+		executor = "slurm"
+		cpus = 8
+		memory = "80G"
 
-	//	//executor = "slurm"
-	//	//cpus = 24
-	//	//memory = "400G"
-	//	//time = "06:00:00"
-	//	//clusterOptions = "--partition=hmem"
+		//executor = "slurm"
+		//cpus = 24
+		//memory = "400G"
+		//time = "06:00:00"
+		//clusterOptions = "--partition=hmem"
 	}
 
-	//withName: bam_tag {
+	withName: bam_tag {
 
-	//	executor = "slurm"
-	//	cpus = 8
-	//	memory = "80G"
-	//}
+		executor = "slurm"
+		cpus = 8
+		memory = "80G"
+	}
 
-	//withName: bam_tag_hmem {
+	withName: bam_tag_hmem {
 
-	//	//cpus = 32
-	//	//executor = "slurm"
-	//	//memory = "250G"
+		//cpus = 32
+		//executor = "slurm"
+		//memory = "250G"
 
-	//	executor = "slurm"
-	//	cpus = 32
-	//	memory = "600G"
-	//	time = "24:00:00"
-	//	clusterOptions = "--partition=hmem"
-	//}
+		executor = "slurm"
+		cpus = 32
+		memory = "600G"
+		time = "24:00:00"
+		clusterOptions = "--partition=hmem"
+	}
 
-	//withName: umis_per_barcode {
+	withName: umis_per_barcode {
 
-	//	//cpus = 32
-	//	//executor = "slurm"
-	//	//memory = "250G"
+		//cpus = 32
+		//executor = "slurm"
+		//memory = "250G"
 
-	//	executor = "slurm"
-	//	cpus = 32
-	//	memory = "600G"
-	//	time = "24:00:00"
-	//	clusterOptions = "--partition=hmem"
-	//}
+		executor = "slurm"
+		cpus = 32
+		memory = "600G"
+		time = "24:00:00"
+		clusterOptions = "--partition=hmem"
+	}
 
-	//withName: bam_metrics {
+	withName: bam_metrics {
 
-	//	cpus = 8
-	//	executor = "slurm"
-	//	memory = "80G"
-	//}
+		cpus = 8
+		executor = "slurm"
+		memory = "80G"
+	}
 
-	//withName: bam_metrics_hmem {
+	withName: bam_metrics_hmem {
 
-	//	//cpus = 32
-	//	//executor = "slurm"
-	//	//memory = "250G"
+		//cpus = 32
+		//executor = "slurm"
+		//memory = "250G"
 
-	//	cpus = 32
-	//	executor = "slurm"
-	//	memory = "400G"
-	//	time = "06:00:00"
-	//	clusterOptions = "--partition=hmem"
-	//}
+		cpus = 32
+		executor = "slurm"
+		memory = "400G"
+		time = "06:00:00"
+		clusterOptions = "--partition=hmem"
+	}
 }

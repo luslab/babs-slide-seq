@@ -135,7 +135,7 @@ unsigned long chooseAlignFromFunction(std::set<Mapping> mappings)
 	std::set<Mapping>::iterator it;
 
 	std::map<CharString, int> ranks;
-	ranks["EXONIC"] = 0;
+	ranks["CODING"] = 0;
 	ranks["UTR"] = 1;
 	ranks["INTRONIC"] = 2;
 	ranks["INTERGENIC"] = 3;

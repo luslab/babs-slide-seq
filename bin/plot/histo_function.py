@@ -17,13 +17,18 @@ def function_plot(df, title):#
 	at least 2 columns named "Function" and "Reads". The function returns the
 	modified data frame and a Figure object."""
 
-	# Percentage of total reads
+	coding = df.loc[df.Function == "CODING"].iloc[0]["Reads"]
+	utr = df.loc[df.Function == "UTR"].iloc[0]["Reads"]
 	total = df.Reads.sum()
+
+	# Percentage of total reads
 	df["Percent"] = df.Reads / total * 100
 
 	# annotation
-	df["Annot"] = df.Percent.round(1).astype(str) + " %"
-	
+	df["Percent"] = np.round(df.Reads / df.Reads.sum() * 100, 1)
+	df["Annot"] = df.Reads.apply(lambda x: "{:,}".format(round(x,2)))
+	df["Annot"] = df.Annot + " reads\n" + df.Percent.astype(str) + " %"
+
 	df["Function"] = df.Function.str.title()
 	df["Function"] = df.Function.str.replace("Utr", "UTR")
 
@@ -42,10 +47,10 @@ def function_plot(df, title):#
 	for i, annot in enumerate(df.Annot):
 		args = {
 			"s": annot,
-			"xy": (i, df.iloc[i].Reads+100),
+			"xy": (i, df.iloc[i].Reads + df.Reads.max()/50),
 			"ha": "center",
 			"va": "bottom",
-			"size": 16,
+			"size": 12,
 			"color": "black"
 		}
 		ax.annotate(**args)
@@ -55,8 +60,8 @@ def function_plot(df, title):#
 	ax.set_xticks(range(df.Reads.size))
 	ax.set_xticklabels(df.Function, size=14)
 
-	sub_title = "\n({:,} reads)".format(total)
-	ax.set_title( title + sub_title , size=18 )
+	sub_title = "({:,} Coding and UTR/{:,} reads)".format(coding+utr, total)
+	ax.set_title( title + "\n" + sub_title , size=18 )
 	
 	fig.tight_layout()
 

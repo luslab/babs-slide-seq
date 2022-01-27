@@ -136,7 +136,7 @@ unsigned long chooseReadFromFunction(std::set<Mapping> mappings)
 	std::set<Mapping>::iterator it;
 
 	std::map<CharString, int> ranks;
-	ranks["EXONIC"] = 0;
+	ranks["CODING"] = 0;
 	ranks["UTR"] = 1;
 	ranks["INTRONIC"] = 2;
 
@@ -340,7 +340,7 @@ int main(int argc, char **argv)
 			} // end selection by function
 		} // multiple reads
 
-		/////////////////////////////////////////////////////////////////////////
+		///////////////////////////////////////////////////////////////////////
 		// NOW WE ADD THE TAGS
 
 		if ( v.size() == 1 )

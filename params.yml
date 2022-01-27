@@ -1,12 +1,25 @@
 
 design: assets/design.csv
-
 min_length: 41
 up_errors_threshold: 3
 umis_threshold: 2
-
 barcode_errors_threshold: 4
 barcode_max_matches: 5
 barcode_max_entropy: 0.5
 
+#design: assets/imran/design.csv
+#min_length: 43
+#up_errors_threshold: 3
+#umis_threshold: 5
+#barcode_errors_threshold: 4
+#barcode_max_matches: 5
+#barcode_max_entropy: 0.5
+
+#design: assets/jilong/design.csv
+#min_length: 43
+#up_errors_threshold: 3
+#umis_threshold: 5
+#barcode_errors_threshold: 4
+#barcode_max_matches: 5
+#barcode_max_entropy: 0.5
 

@@ -73,7 +73,7 @@ if __name__ == "__main__":
 		.reset_index()\
 		.rename(columns={0: "Count"})
 	
-	plt = count_plot(mapping, "Multi-mapping for primary mapped reads")
+	plt = count_plot(mapping, "Multi-mapping for reads")
 	plt.savefig(f"{base_path}.png")
 	plt.savefig(f"{base_path}.pdf")
 
