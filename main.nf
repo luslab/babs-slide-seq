@@ -167,10 +167,20 @@ include { bam_filter as bam_filter_barcode_matched } from "./modules/process/bam
 //include { gene } from "./modules/process/tagging"
 //gene_script = Channel.fromPath("bin/gene")
 
-include { dropseq } from "./modules/process/tagging"
+include { htseq } from "./modules/process/tagging"
 
-include { dropseq_tag } from "./modules/process/tagging"
-dropseq_tag_script = Channel.fromPath("bin/dropseq_tag")
+include { bam_metrics as count_gene_tags } from "./modules/process/bam"
+count_gene_tags_script = Channel.fromPath("bin/bam/count_gene_tags.py")
+
+include { plot_1_arg as plot_gene_tags } from "./modules/process/plot"
+plot_gene_tags_script = Channel.fromPath("bin/plot/gene_tags.py")
+
+include { bam_filter as bam_filter_gene_tags } from "./modules/process/bam"
+
+//include { dropseq } from "./modules/process/tagging"
+
+//include { dropseq_tag } from "./modules/process/tagging"
+//dropseq_tag_script = Channel.fromPath("bin/dropseq_tag")
 ///////////////
 
 ////////////
@@ -574,109 +584,134 @@ workflow {
 
 	//gene( add_match.out.combine(gene_script) )
 
-	dropseq(bam_filter_barcode_matched.out)
-	dropseq_tag( dropseq.out.combine(dropseq_tag_script) )
+	//dropseq(bam_filter_barcode_matched.out)
+	//dropseq_tag( dropseq.out.combine(dropseq_tag_script) )
 
-	////////////////////////////////////////////////////////////////////////////
-	// FUNCTIONS
+	htseq(bam_filter_barcode_matched.out)
 
-	reads_per_function(
-		dropseq_tag
+	count_gene_tags(
+		htseq
 			.out
-			.combine( Channel.from("reads_per_function") )
-			.combine(reads_per_function_script)
+			.bam
+			.combine( Channel.from("gene_tags") )
+			.combine(count_gene_tags_script)
 	)
 
-	plot_histo_function(
-		reads_per_function
+	plot_gene_tags(
+		count_gene_tags
 			.out
-			.combine( Channel.from("histo_function") )
-			.combine(plot_histo_function_script)
+			.combine( Channel.from("gene_tags") )
+			.combine(plot_gene_tags_script)
 	)
 
-	bam_filter_coding_utr(
-		dropseq_tag
+	bam_filter_gene_tags(
+		htseq
 			.out
-			.combine( Channel.from("coding_utr") )
-			.combine( Channel.from("[qf]==\"CODING\" || [qf]==\"UTR\"") )
-	)
-
-	///////////////////////////////////////////////////////////////////////////
-	// GENES PER READ
-
-	genes_per_read(
-		bam_filter_coding_utr
-			.out
-			.map{ it[0..1] }
-			.combine( Channel.from("genes_per_read") )
-			.combine(genes_per_read_script)
-	)
-
-	count_genes_per_read(
-		genes_per_read
-			.out
-			.combine( Channel.from("genes_per_read") )
-			.combine(count_genes_per_read_script)
-	)
-
-	plot_genes_per_read(
-		count_genes_per_read
-			.out
-			.combine( Channel.from("genes_per_read") )
-			.combine(plot_genes_per_read_script)
-	)
-
-	bam_filter_unassigned(
-		genes_per_read
-			.out
-			.combine( Channel.from("has_gene") )
-			.combine( Channel.from("[rm]!=\"UNASSIGNED\"") )
+			.bam
+			.combine( Channel.from("gene_tags") )
+			.combine( Channel.from("[XF]!~\"^__.+\"") )
 	)
 
 	//////////////////////////////////////////////////////////////////////////////
-	//// READS MAPPINGS
+	//// FUNCTIONS
 
-	//count_mappings(
-	//	bam_filter_unassigned
+	//reads_per_function(
+	//	dropseq_tag
 	//		.out
-	//		.combine( Channel.from("count_mappings") )
-	//		.combine(count_mappings_script)
+	//		.combine( Channel.from("reads_per_function") )
+	//		.combine(reads_per_function_script)
 	//)
 
-	//plot_mappings(
-	//	count_mappings
+	//plot_histo_function(
+	//	reads_per_function
 	//		.out
-	//		.combine( Channel.from("mappings") )
-	//		.combine(plot_mappings_script)
+	//		.combine( Channel.from("histo_function") )
+	//		.combine(plot_histo_function_script)
 	//)
 
-	//multimap(
-	//	bam_filter_unassigned
+	//bam_filter_coding_utr(
+	//	dropseq_tag
+	//		.out
+	//		.combine( Channel.from("coding_utr") )
+	//		.combine( Channel.from("[qf]==\"CODING\" || [qf]==\"UTR\"") )
+	//)
+
+	/////////////////////////////////////////////////////////////////////////////
+	//// GENES PER READ
+
+	//genes_per_read(
+	//	bam_filter_coding_utr
 	//		.out
 	//		.map{ it[0..1] }
-	//		.combine( Channel.from("multimap") )
-	//		.combine(multimap_script)
+	//		.combine( Channel.from("genes_per_read") )
+	//		.combine(genes_per_read_script)
 	//)
 
-	//count_resolved(
-	//	multimap
+	//count_genes_per_read(
+	//	genes_per_read
 	//		.out
-	//		.combine( Channel.from("count_resolved") )
-	//		.combine(count_resolved_script)
-	//)
-	//plot_resolved(
-	//	count_resolved
-	//		.out
-	//		.combine( Channel.from("resolved") )
-	//		.combine(plot_resolved_script)
+	//		.combine( Channel.from("genes_per_read") )
+	//		.combine(count_genes_per_read_script)
 	//)
 
-	//bam_filter_multimapped_reads(
-	//	multimap
+	//plot_genes_per_read(
+	//	count_genes_per_read
 	//		.out
-	//		.combine( Channel.from("multimap_reads") )
-	//		.combine( Channel.from("[mm]==\"UNIQUE\" || [mm]==\"INCLUDED\"") )
+	//		.combine( Channel.from("genes_per_read") )
+	//		.combine(plot_genes_per_read_script)
 	//)
+
+	//bam_filter_unassigned(
+	//	genes_per_read
+	//		.out
+	//		.combine( Channel.from("has_gene") )
+	//		.combine( Channel.from("[rm]!=\"UNASSIGNED\"") )
+	//)
+
+	////////////////////////////////////////////////////////////////////////////////
+	////// READS MAPPINGS
+
+	////count_mappings(
+	////	bam_filter_unassigned
+	////		.out
+	////		.combine( Channel.from("count_mappings") )
+	////		.combine(count_mappings_script)
+	////)
+
+	////plot_mappings(
+	////	count_mappings
+	////		.out
+	////		.combine( Channel.from("mappings") )
+	////		.combine(plot_mappings_script)
+	////)
+
+	////multimap(
+	////	bam_filter_unassigned
+	////		.out
+	////		.map{ it[0..1] }
+	////		.combine( Channel.from("multimap") )
+	////		.combine(multimap_script)
+	////)
+
+	////count_resolved(
+	////	multimap
+	////		.out
+	////		.combine( Channel.from("count_resolved") )
+	////		.combine(count_resolved_script)
+	////)
+	////plot_resolved(
+	////	count_resolved
+	////		.out
+	////		.combine( Channel.from("resolved") )
+	////		.combine(plot_resolved_script)
+	////)
+
+	////bam_filter_multimapped_reads(
+	////	multimap
+	////		.out
+	////		.combine( Channel.from("multimap_reads") )
+	////		.combine( Channel.from("[mm]==\"UNIQUE\" || [mm]==\"INCLUDED\"") )
+	////)
 
 	////////////////////////////////////////////////////////////////////////////
 	// UMIS MAPPINGS
@@ -709,111 +744,111 @@ workflow {
 			.combine( Channel.from("[cs]==\"UNIQUE\" || [cs]==\"INCLUDED\"") )
 	)
 
-	////////////////////////////////////////////////////////////////////////////
-	// SEQUENCES
+	//////////////////////////////////////////////////////////////////////////////
+	//// SEQUENCES
 
-	reads_per_barcode_umi(
-		bam_filter_multimapped_umis
-			.out
-			.combine( Channel.from("reads_per_barcode_umi") )
-			.combine(reads_per_barcode_umi_script)
-	)
+	//reads_per_barcode_umi(
+	//	bam_filter_multimapped_umis
+	//		.out
+	//		.combine( Channel.from("reads_per_barcode_umi") )
+	//		.combine(reads_per_barcode_umi_script)
+	//)
 
-	plot_balance_barcode(
-		reads_per_barcode_umi
-			.out
-			.combine( Channel.from("balance_barcode") )
-			.combine(plot_balance_barcode_script)
-	)
+	//plot_balance_barcode(
+	//	reads_per_barcode_umi
+	//		.out
+	//		.combine( Channel.from("balance_barcode") )
+	//		.combine(plot_balance_barcode_script)
+	//)
 
-	plot_balance_umi(
-		reads_per_barcode_umi
-			.out
-			.combine( Channel.from("balance_umi") )
-			.combine(plot_balance_umi_script)
-	)
+	//plot_balance_umi(
+	//	reads_per_barcode_umi
+	//		.out
+	//		.combine( Channel.from("balance_umi") )
+	//		.combine(plot_balance_umi_script)
+	//)
 
-	plot_reads_fraction(
-		reads_per_barcode_umi
-			.out
-			.combine( Channel.from("reads_fraction") )
-			.combine(plot_reads_fraction_script)
-	)
+	//plot_reads_fraction(
+	//	reads_per_barcode_umi
+	//		.out
+	//		.combine( Channel.from("reads_fraction") )
+	//		.combine(plot_reads_fraction_script)
+	//)
 
-	////////////////////////////////////////////////////////////////////////////
-	// EXPRESSION MATRIX
+	//////////////////////////////////////////////////////////////////////////////
+	//// EXPRESSION MATRIX
 
-	dge( bam_filter_multimapped_umis.out.map{it[0..1]}.combine(count_script) )
+	//dge( bam_filter_multimapped_umis.out.map{it[0..1]}.combine(count_script) )
 
-	plot_histo_umis(
-		dge
-			.out
-			.combine( Channel.from("histo_umis") )
-			.combine(plot_histo_umis_script)
-	)
+	//plot_histo_umis(
+	//	dge
+	//		.out
+	//		.combine( Channel.from("histo_umis") )
+	//		.combine(plot_histo_umis_script)
+	//)
 
-	plot_histo_genes(
-		dge
-			.out
-			.combine( Channel.from("histo_genes") )
-			.combine(plot_histo_genes_script)
-	)
+	//plot_histo_genes(
+	//	dge
+	//		.out
+	//		.combine( Channel.from("histo_genes") )
+	//		.combine(plot_histo_genes_script)
+	//)
 
-	plot_umis_per_barcode(
-		dge
-			.out
-			.combine( Channel.from("umis_per_barcode") )
-			.combine(plot_umis_per_barcode_script)
-	)
+	//plot_umis_per_barcode(
+	//	dge
+	//		.out
+	//		.combine( Channel.from("umis_per_barcode") )
+	//		.combine(plot_umis_per_barcode_script)
+	//)
 
-	///////////////
-	// spatial umis
-	plot_spatial_umis(
-		dge
-			.out
-			.combine(matcher.out.coords)
-			.filter{ it[2]["barcodes"] == "ordered" }
-			.filter{ it[0]["name"] == it[2]["name"] }
-			.map{ [ * it[0..1] , it[3] ] }
-			.combine( Channel.from("spatial_umis") )
-			.combine(plot_spatial_umis_script)
-	)
-	////////////////
+	/////////////////
+	//// spatial umis
+	//plot_spatial_umis(
+	//	dge
+	//		.out
+	//		.combine(matcher.out.coords)
+	//		.filter{ it[2]["barcodes"] == "ordered" }
+	//		.filter{ it[0]["name"] == it[2]["name"] }
+	//		.map{ [ * it[0..1] , it[3] ] }
+	//		.combine( Channel.from("spatial_umis") )
+	//		.combine(plot_spatial_umis_script)
+	//)
+	//////////////////
 
-	///////////////////////////////////////////////////////////////////////////
-	// OUTPUT
-	
-	plot_barcode_extraction
-		.out
-		.pdf
-		.concat(
-			plot_up_matching.out.pdf,
-			//plot_up_align.out.pdf,
-			//plot_duplicates.out.pdf,
-			plot_umi_threshold.out.pdf,
-			plot_barcode_align.out.pdf,
-			plot_histo_function.out.pdf,
-			plot_genes_per_read.out.pdf,
-			//plot_mappings.out.pdf,
-			//plot_resolved.out.pdf,
-			plot_select.out.pdf,
-			plot_balance_barcode.out.pdf,
-			plot_balance_umi.out.pdf,
-			//plot_reads_fraction.out.pdf,
-			plot_histo_umis.out.pdf,
-			plot_histo_genes.out.pdf,
-			plot_barcode_matching.out.pdf,
-			plot_histo_errors.out.pdf,
-			plot_histo_hamming.out.pdf,
-			plot_umis_per_barcode.out.pdf,
-			plot_spatial_umis.out.pdf
-		)
-		.map{ [ it[0]["name"] , it[1] ] }
-		.groupTuple()
-		.set{ TO_MERGE_PLOTS }
-	
-	merge_plots(TO_MERGE_PLOTS)
+	/////////////////////////////////////////////////////////////////////////////
+	//// OUTPUT
+	//
+	//plot_barcode_extraction
+	//	.out
+	//	.pdf
+	//	.concat(
+	//		plot_up_matching.out.pdf,
+	//		//plot_up_align.out.pdf,
+	//		//plot_duplicates.out.pdf,
+	//		plot_umi_threshold.out.pdf,
+	//		plot_barcode_align.out.pdf,
+	//		plot_histo_function.out.pdf,
+	//		plot_genes_per_read.out.pdf,
+	//		//plot_mappings.out.pdf,
+	//		//plot_resolved.out.pdf,
+	//		plot_select.out.pdf,
+	//		plot_balance_barcode.out.pdf,
+	//		plot_balance_umi.out.pdf,
+	//		//plot_reads_fraction.out.pdf,
+	//		plot_histo_umis.out.pdf,
+	//		plot_histo_genes.out.pdf,
+	//		plot_barcode_matching.out.pdf,
+	//		plot_histo_errors.out.pdf,
+	//		plot_histo_hamming.out.pdf,
+	//		plot_umis_per_barcode.out.pdf,
+	//		plot_spatial_umis.out.pdf
+	//	)
+	//	.map{ [ it[0]["name"] , it[1] ] }
+	//	.groupTuple()
+	//	.set{ TO_MERGE_PLOTS }
+	//
+	//merge_plots(TO_MERGE_PLOTS)
 
-	rename_coords( matcher.out.coords.filter{ it[0]["barcodes"] == "ordered"} )
+	//rename_coords( matcher.out.coords.filter{ it[0]["barcodes"] == "ordered"} )
 }
 

@@ -144,6 +144,37 @@ process gene {
 		"""
 }
 
+process htseq {
+
+	label "tagging"
+	label "sequencing"
+
+	tag { "${name}" }
+	
+	input:
+		tuple val(metadata), path(bam), path(bai)
+
+	output:
+		tuple val(metadata), path("${out_bam}"), path("${out_bam}.bai"), emit: bam
+		tuple val(metadata), path("${out_txt}"), emit: txt
+
+	script:		
+		
+		name = metadata["name"]
+		out_sam = "${name}.htseq.sam"
+		out_bam = "${name}.htseq.bam"
+		out_txt = "${name}.htseq.txt"
+		gtf = metadata["gtf"]
+
+		"""
+		htseq-count --format bam --samout sample.sam $bam $gtf > $out_txt
+		samtools view -H $bam > $out_sam
+		cat sample.sam >> $out_sam
+		samtools view -S -b $out_sam > $out_bam
+		samtools index $out_bam
+		"""
+}
+
 process dropseq {
 
 	label "tagging"
