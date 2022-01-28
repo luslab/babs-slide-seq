@@ -369,17 +369,17 @@ workflow {
 			.combine(plot_barcode_extraction_script)
 	)
 
-	////////////////////////////////////////////////////////////////////////////
+	///////////////////////////////////////////////////////////////////////////
 	// ALIGNMENT
 
 	star(extract_barcode.out.fastq)
 
-	////////////////////////////////////////////////////////////////////////////
+	///////////////////////////////////////////////////////////////////////////
 	// DUPLICATES
 
 	mark_duplicates(star.out.bam)
 
-	////////////////////////////////////////////////////////////////////////////
+	///////////////////////////////////////////////////////////////////////////
 	// ADD SLIDE-SEQ, ALIGNMENT AND DUPLICATES TAGS
 
 	// slide-seq tags, alignment tag and duplicate tag
@@ -391,67 +391,63 @@ workflow {
 			.combine(tag_bam_script)
 	)
 
-	// 3 columns: Matched, Mapped, Reads
-	reads_up_matching(
-		tag_bam
-			.out
-			.combine( Channel.from("reads_up_matching") )
-			.combine(reads_up_matching_script)
-	)
-	plot_up_align(
-		reads_up_matching
-			.out
-			.combine( Channel.from("up_align") )
-			.combine(plot_up_align_script)
-	)
+	//// 3 columns: Matched, Mapped, Reads
+	//reads_up_matching(
+	//	tag_bam
+	//		.out
+	//		.combine( Channel.from("reads_up_matching") )
+	//		.combine(reads_up_matching_script)
+	//)
+	//plot_up_align(
+	//	reads_up_matching
+	//		.out
+	//		.combine( Channel.from("up_align") )
+	//		.combine(plot_up_align_script)
+	//)
 
-	bam_filter_up_matched(
-		tag_bam
-			.out
-			.combine( Channel.from("up_matched") )
-			.combine( Channel.from("[us]==\"MATCHED\" && [as]==\"MAPPED\"") )
-	)
+	//bam_filter_up_matched(
+	//	tag_bam
+	//		.out
+	//		.combine( Channel.from("up_matched") )
+	//		.combine( Channel.from("[us]==\"MATCHED\" && [as]==\"MAPPED\"") )
+	//)
 
-	////////////////////////////////////////////////////////////////////////////
-	// DUPLICATES
+	//////////////////////////////////////////////////////////////////////////////
+	//// DUPLICATES
 
-	primary(
-		bam_filter_up_matched
-			.out
-			.map{ it[0..1] }
-			.combine( Channel.from("primary") )
-			.combine(primary_script)
-	)
+	//primary(
+	//	bam_filter_up_matched
+	//		.out
+	//		.map{ it[0..1] }
+	//		.combine( Channel.from("primary") )
+	//		.combine(primary_script)
+	//)
 
-	count_duplicates(
-		primary
-			.out
-			.combine( Channel.from("count_duplicates") )
-			.combine(count_duplicates_script)
-	)
+	//count_duplicates(
+	//	primary
+	//		.out
+	//		.combine( Channel.from("count_duplicates") )
+	//		.combine(count_duplicates_script)
+	//)
 
-	plot_duplicates(
-		count_duplicates
-			.out
-			.combine( Channel.from("duplicates") )
-			.combine(plot_duplicates_script)
-	)
+	//plot_duplicates(
+	//	count_duplicates
+	//		.out
+	//		.combine( Channel.from("duplicates") )
+	//		.combine(plot_duplicates_script)
+	//)
 
-	bam_filter_duplicates(
-		primary
-			.out
-			.combine( Channel.from("duplicates") )
-			.combine( Channel.from("[ds]==\"PRIMARY\"") )
-	)
+	//bam_filter_duplicates(
+	//	primary
+	//		.out
+	//		.combine( Channel.from("duplicates") )
+	//		.combine( Channel.from("[ds]==\"PRIMARY\"") )
+	//)
 
 	////////////////////////////////////////////////////////////////////////////
 	// UMIS PER BARCODE THRESHOLD
 
-	umis_per_barcode(
-		bam_filter_duplicates
-			.out
-			.combine(umis_per_barcode_script)
-	)
+	umis_per_barcode( tag_bam.out.combine(umis_per_barcode_script) )
 
 	reads_umis_per_barcode(
 		umis_per_barcode
@@ -605,7 +601,7 @@ workflow {
 			.combine( Channel.from("[qf]==\"CODING\" || [qf]==\"UTR\"") )
 	)
 
-	////////////////////////////////////////////////////////////////////////////
+	///////////////////////////////////////////////////////////////////////////
 	// GENES PER READ
 
 	genes_per_read(
@@ -637,56 +633,56 @@ workflow {
 			.combine( Channel.from("[rm]!=\"UNASSIGNED\"") )
 	)
 
-	////////////////////////////////////////////////////////////////////////////
-	// READS MAPPINGS
+	//////////////////////////////////////////////////////////////////////////////
+	//// READS MAPPINGS
 
-	count_mappings(
-		bam_filter_unassigned
-			.out
-			.combine( Channel.from("count_mappings") )
-			.combine(count_mappings_script)
-	)
+	//count_mappings(
+	//	bam_filter_unassigned
+	//		.out
+	//		.combine( Channel.from("count_mappings") )
+	//		.combine(count_mappings_script)
+	//)
 
-	plot_mappings(
-		count_mappings
-			.out
-			.combine( Channel.from("mappings") )
-			.combine(plot_mappings_script)
-	)
+	//plot_mappings(
+	//	count_mappings
+	//		.out
+	//		.combine( Channel.from("mappings") )
+	//		.combine(plot_mappings_script)
+	//)
 
-	multimap(
-		bam_filter_unassigned
-			.out
-			.map{ it[0..1] }
-			.combine( Channel.from("multimap") )
-			.combine(multimap_script)
-	)
+	//multimap(
+	//	bam_filter_unassigned
+	//		.out
+	//		.map{ it[0..1] }
+	//		.combine( Channel.from("multimap") )
+	//		.combine(multimap_script)
+	//)
 
-	count_resolved(
-		multimap
-			.out
-			.combine( Channel.from("count_resolved") )
-			.combine(count_resolved_script)
-	)
-	plot_resolved(
-		count_resolved
-			.out
-			.combine( Channel.from("resolved") )
-			.combine(plot_resolved_script)
-	)
+	//count_resolved(
+	//	multimap
+	//		.out
+	//		.combine( Channel.from("count_resolved") )
+	//		.combine(count_resolved_script)
+	//)
+	//plot_resolved(
+	//	count_resolved
+	//		.out
+	//		.combine( Channel.from("resolved") )
+	//		.combine(plot_resolved_script)
+	//)
 
-	bam_filter_multimapped_reads(
-		multimap
-			.out
-			.combine( Channel.from("multimap_reads") )
-			.combine( Channel.from("[mm]==\"UNIQUE\" || [mm]==\"INCLUDED\"") )
-	)
+	//bam_filter_multimapped_reads(
+	//	multimap
+	//		.out
+	//		.combine( Channel.from("multimap_reads") )
+	//		.combine( Channel.from("[mm]==\"UNIQUE\" || [mm]==\"INCLUDED\"") )
+	//)
 
 	////////////////////////////////////////////////////////////////////////////
 	// UMIS MAPPINGS
 
 	select(
-		bam_filter_multimapped_reads
+		bam_filter_unassigned
 			.out
 			.map{ it[0..1] }
 			.combine( Channel.from("select") )
@@ -792,14 +788,14 @@ workflow {
 		.pdf
 		.concat(
 			plot_up_matching.out.pdf,
-			plot_up_align.out.pdf,
-			plot_duplicates.out.pdf,
+			//plot_up_align.out.pdf,
+			//plot_duplicates.out.pdf,
 			plot_umi_threshold.out.pdf,
 			plot_barcode_align.out.pdf,
 			plot_histo_function.out.pdf,
 			plot_genes_per_read.out.pdf,
-			plot_mappings.out.pdf,
-			plot_resolved.out.pdf,
+			//plot_mappings.out.pdf,
+			//plot_resolved.out.pdf,
 			plot_select.out.pdf,
 			plot_balance_barcode.out.pdf,
 			plot_balance_umi.out.pdf,

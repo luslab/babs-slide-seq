@@ -167,7 +167,6 @@ int main(int argc, char **argv)
 	CharString read;
 	CharString barcode;
 	CharString umi;
-	CharString multimap;
 	CharString id;
 	CharString function;
 	int score;
@@ -205,16 +204,6 @@ int main(int argc, char **argv)
 			return 1;
 		}
 
-		// multimapping status
-		if ( findTagKey(tag_idx, tagsDict, "mm") ) {
-			extractTagValue(multimap, tagsDict, tag_idx);
-		}
-		else
-		{
-			std::cerr << "Problem: cannot find multi-mapping status" << std::endl;
-			return 1;
-		}
-
 		// gene id
 		if ( findTagKey(tag_idx, tagsDict, "qi") ) {
 			extractTagValue(id, tagsDict, tag_idx);
@@ -248,25 +237,15 @@ int main(int argc, char **argv)
 		Molecule mol  = std::make_tuple(barcode, umi);
 		Mapping mapping = std::make_tuple(counter, read, id, function, score);
 
-		// we take only those reads
-		if ( "UNIQUE" == multimap || "INCLUDED" == multimap  )
+		if ( mappings.find(mol) == mappings.end() )
 		{
-			if ( mappings.find(mol) == mappings.end() )
-			{
-				std::set<Mapping> s;
-				s.insert(mapping);
-				mappings[mol] = s;
-			}
-			else
-			{
-				mappings[mol].insert(mapping);
-			}
+			std::set<Mapping> s;
+			s.insert(mapping);
+			mappings[mol] = s;
 		}
-
-		// we ignore ambiguous reads and duplicates
 		else
 		{
-			tag[counter] = "IGNORED";
+			mappings[mol].insert(mapping);
 		}
 
 		/////////////////////////////////////////////////////////////////////////
