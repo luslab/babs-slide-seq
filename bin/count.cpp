@@ -70,6 +70,8 @@ int main(int argc, char **argv)
 	
 	int g = 1;
 
+	std::map<CharString, CharString> names;
+
 	while ( ! atEnd(gff) )
 	{
 		readRecord(record, gff);
@@ -94,6 +96,7 @@ int main(int argc, char **argv)
 			);
 			gene_set.insert(gene);
 
+			names[ record.tagValues[idPos] ] = record.tagValues[namePos];
 		}
 		// counter
 		if ( g % (unsigned long)100000 == 0 ) {
@@ -144,114 +147,74 @@ int main(int argc, char **argv)
 		readRecord(rec, bam);
 		BamTagsDict tagsDict(rec.tags);
 
-		if ( findTagKey(tag_idx, tagsDict, "bs") ) {
-			extractTagValue(barcode_status, tagsDict, tag_idx);
+		if ( findTagKey(tag_idx, tagsDict, "bc") ) {
+			extractTagValue(barcode, tagsDict, tag_idx);
 		}
 		else
 		{
-			std::cerr << "Problem: cannot find barcode status" << std::endl;
+			std::cerr << "Problem: cannot find barcode" << std::endl;
 			return 1;
 		}
 
-		if ( findTagKey(tag_idx, tagsDict, "cs") ) {
-			extractTagValue(counting_status, tagsDict, tag_idx);
+		if ( findTagKey(tag_idx, tagsDict, "mi") ) {
+			extractTagValue(umi, tagsDict, tag_idx);
 		}
 		else
 		{
-			std::cerr << "Problem: cannot find counting status" << std::endl;
+			std::cerr << "Problem: cannot find UMI" << std::endl;
 			return 1;
 		}
 
-		if (
-				"MATCHED" == barcode_status &&
-				( "UNIQUE" == counting_status || "INCLUDED" == counting_status )
-		)
+		if ( findTagKey(tag_idx, tagsDict, "XF") ) {
+			extractTagValue(id, tagsDict, tag_idx);
+		}
+		else
 		{
-			if ( findTagKey(tag_idx, tagsDict, "bc") ) {
-				extractTagValue(barcode, tagsDict, tag_idx);
+			std::cerr << "Problem: cannot find gene ID" << std::endl;
+			return 1;
+		}
+
+		if ( count.find(id) == count.end() )
+		{
+			Umis umis;
+			Barcodes barcodes;
+			umis.insert(umi);
+			barcodes[barcode] = umis;
+			count[id] = barcodes;
+
+			n_entry++;
+		}
+		else
+		{
+			if ( count[id].find(barcode) == count[id].end() )
+			{
+				Umis umis;
+				umis.insert(umi);
+				count[id][barcode] = umis;
+
+				n_entry++;
 			}
 			else
 			{
-				std::cerr << "Problem: cannot find barcode" << std::endl;
-				return 1;
+				count[id][barcode].insert(umi);
 			}
+		}
 
-			if ( findTagKey(tag_idx, tagsDict, "mi") ) {
-				extractTagValue(umi, tagsDict, tag_idx);
-			}
-			else
-			{
-				std::cerr << "Problem: cannot find UMI" << std::endl;
-				return 1;
-			}
+		barcode_set.insert(barcode);
 
-			if ( findTagKey(tag_idx, tagsDict, "qi") ) {
-				extractTagValue(id, tagsDict, tag_idx);
-			}
-			else
-			{
-				std::cerr << "Problem: cannot find gene ID" << std::endl;
-				return 1;
-			}
-
-			if ( findTagKey(tag_idx, tagsDict, "qn") ) {
-				extractTagValue(symbol, tagsDict, tag_idx);
-			}
-			else
-			{
-				std::cerr << "Problem: cannot find gene name" << std::endl;
-				return 1;
-			}
-
-			//////////////////////////////////////////////////////////////////////
-
-			if ( "NULL" != id )
-			{
-				if ( count.find(id) == count.end() )
-				{
-					Umis umis;
-					Barcodes barcodes;
-					umis.insert(umi);
-					barcodes[barcode] = umis;
-					count[id] = barcodes;
-
-					n_entry++;
-				}
-				else
-				{
-					if ( count[id].find(barcode) == count[id].end() )
-					{
-						Umis umis;
-						umis.insert(umi);
-						count[id][barcode] = umis;
-
-						n_entry++;
-					}
-					else
-					{
-						count[id][barcode].insert(umi);
-					}
-				}
-
-				barcode_set.insert(barcode);
-
-				/*
-				std::cout
-					<< status
-					<< ", "
-					<< barcode
-					<< ", "
-					<< umi
-					<< ", "
-					<< id
-					<< ", "
-					<< symbol
-					<< std::endl;
-				// */
-
-			} // end if NULL
-
-		} // end counting reads
+		/*
+		std::cout
+			<< status
+			<< ", "
+			<< barcode
+			<< ", "
+			<< umi
+			<< ", "
+			<< id
+			<< ", "
+			<< symbol
+			<< std::endl;
+		// */
 
 		/////////////////////////////////////////////////////////////////////////
 		// counter

@@ -14,18 +14,16 @@ std::tuple<
 	unsigned long, // position in bam file
 	CharString, // read name
 	CharString, // gene id
-	CharString, // function
 	int // alignment score
 > Mapping;
 typedef std::tuple<CharString, int> GeneMapping;
-typedef std::tuple<unsigned long, int> FunctionMapping;
 typedef std::map<Molecule, std::set<Mapping>> Mappings;
 
 ///////////////////////////////////////////
 bool compareMapping(Mapping m1, Mapping m2)
 {
-	int score1 = std::get<4>(m1);
-	int score2 = std::get<4>(m2);
+	int score1 = std::get<3>(m1);
+	int score2 = std::get<3>(m2);
 	return (score1>score2);
 }
 
@@ -35,14 +33,6 @@ bool compareGeneMapping(GeneMapping gm1, GeneMapping gm2)
 	int score1 = std::get<1>(gm1);
 	int score2 = std::get<1>(gm2);
 	return (score1>score2);
-}
-
-/////////////////////////////////////////////////////////////////////
-bool compareFunctionMapping(FunctionMapping fm1, FunctionMapping fm2)
-{
-	int rank1 = std::get<1>(fm1);
-	int rank2 = std::get<1>(fm2);
-	return (rank1<rank2);
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -55,7 +45,7 @@ std::set<GeneMapping> getGeneMappings(std::set<Mapping> mappings)
 
 	for ( it = mappings.begin(); it != mappings.end(); ++it )
 	{
-		GeneMapping gm = std::make_tuple(std::get<2>(*it), std::get<4>(*it));
+		GeneMapping gm = std::make_tuple(std::get<2>(*it), std::get<3>(*it));
 		gms.insert(gm);
 	}
 
@@ -102,7 +92,7 @@ getMaxScoreRead(std::set<Mapping> mappings, int max_score)
 
 	for ( it = mappings.begin(); it != mappings.end(); ++it )
 	{
-		int score = std::get<4>(*it);
+		int score = std::get<3>(*it);
 
 		if ( max_score == score )
 		{
@@ -121,36 +111,12 @@ std::set<Mapping> selectMappings(std::set<Mapping> mappings, int score)
 	std::set<Mapping>::iterator it;
 	for ( it = mappings.begin(); it != mappings.end(); ++it )
 	{
-		if ( score == std::get<4>(*it) )
+		if ( score == std::get<3>(*it) )
 		{
 			s.insert(*it);
 		}
 	}
 	return s;
-}
-
-////////////////////////////////////////////////////////////////
-unsigned long chooseReadFromFunction(std::set<Mapping> mappings)
-{
-	std::vector<FunctionMapping> v;
-	std::set<Mapping>::iterator it;
-
-	std::map<CharString, int> ranks;
-	ranks["CODING"] = 0;
-	ranks["UTR"] = 1;
-	ranks["INTRONIC"] = 2;
-
-	for ( it = mappings.begin(); it != mappings.end(); ++it )
-	{
-		int rank = ranks[ std::get<3>(*it) ];
-		v.push_back( std::make_tuple(std::get<0>(*it), rank) );
-	}
-
-	// mappings are already orered by genome position because the bam file is
-	// supposed to be sorted because of Picar MarkDuplicates
-	std::sort(v.begin(), v.end(), compareFunctionMapping);
-
-	return std::get<0>(v[0]); 
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -168,7 +134,6 @@ int main(int argc, char **argv)
 	CharString barcode;
 	CharString umi;
 	CharString id;
-	CharString function;
 	int score;
 
 	unsigned int tag_idx = 0;
@@ -205,22 +170,12 @@ int main(int argc, char **argv)
 		}
 
 		// gene id
-		if ( findTagKey(tag_idx, tagsDict, "qi") ) {
+		if ( findTagKey(tag_idx, tagsDict, "XF") ) {
 			extractTagValue(id, tagsDict, tag_idx);
 		}
 		else
 		{
 			std::cerr << "Problem: cannot find gene ID" << std::endl;
-			return 1;
-		}
-
-		// function
-		if ( findTagKey(tag_idx, tagsDict, "qf") ) {
-			extractTagValue(function, tagsDict, tag_idx);
-		}
-		else
-		{
-			std::cerr << "Problem: cannot find function" << std::endl;
 			return 1;
 		}
 
@@ -235,7 +190,7 @@ int main(int argc, char **argv)
 		}
 
 		Molecule mol  = std::make_tuple(barcode, umi);
-		Mapping mapping = std::make_tuple(counter, read, id, function, score);
+		Mapping mapping = std::make_tuple(counter, read, id, score);
 
 		if ( mappings.find(mol) == mappings.end() )
 		{
@@ -287,7 +242,7 @@ int main(int argc, char **argv)
 		else
 		{
 			std::sort(v.begin(), v.end(), compareMapping);
-			int max_score = getMaxScore(s);
+			int max_score = getMaxScore(s); // the gene with the better score
 
 			// we can't determine unfortunately
 			if ( max_score == -1 )
@@ -301,22 +256,12 @@ int main(int argc, char **argv)
 				determined = true;
 				std::tuple<unsigned long, int> msr = getMaxScoreRead(s, max_score);
 
-				// we have only one read
-				if ( std::get<1>(msr) == 1 )
-				{
-					position = std::get<0>(msr);
-				}
+				// whether or not we have multiple choices for the read that have
+				// the highest score for this gene, we take the last read of the
+				// list (could be any read)
+				position = std::get<0>(msr);
 
-				// we still have multiple reads, so select by function and then
-				// by mapping position on the genome because the bam file is
-				// supposed to be sorted already because we called Picard
-				// MarkDuplicates previously
-				else
-				{
-					std::set<Mapping> good_mappings  = selectMappings(s, max_score);
-					position = chooseReadFromFunction(good_mappings);
-				}
-			} // end selection by function
+			} // end read choice
 		} // multiple reads
 
 		///////////////////////////////////////////////////////////////////////
