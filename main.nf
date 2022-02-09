@@ -53,9 +53,6 @@ shuffling_script = Channel.fromPath("bin/shuffling.py")
 include { extract_barcode } from "./modules/process/up_primer"
 extract_barcode_script = Channel.fromPath("bin/extract_barcode")
 
-//include { reads_per_barcode_fastq } from "./modules/process/quality_control"
-//reads_per_barcode_fastq_script = Channel.fromPath("bin/fastq/reads_per_barcode.py")
-
 include { plot_1_arg as plot_up_matching } from "./modules/process/plot"
 plot_up_matching_script = Channel.fromPath("bin/plot/up_matching.py")
 include { plot_1_arg_1_val as plot_barcode_extraction } from "./modules/process/plot"
@@ -81,21 +78,6 @@ plot_up_align_script = Channel.fromPath("bin/plot/up_align.py")
 
 include { bam_filter as bam_filter_up_matched } from "./modules/process/bam"
 /////////////////
-
-/////////////
-// duplicates
-
-//include { bam_tag_hmem as primary } from "./modules/process/tagging"
-//primary_script = Channel.fromPath("bin/primary")
-
-//include { bam_metrics as count_duplicates } from "./modules/process/bam"
-//count_duplicates_script = Channel.fromPath("bin/bam/count_duplicates.py")
-//
-//include { plot_1_arg as plot_duplicates } from "./modules/process/plot"
-//plot_duplicates_script = Channel.fromPath("bin/plot/duplicates.py")
-//
-//include { bam_filter as bam_filter_duplicates } from "./modules/process/bam"
-/////////////
 
 /////////////////////////////
 // umis per barcode threshold
@@ -161,9 +143,6 @@ include { bam_filter as bam_filter_barcode_matched } from "./modules/process/bam
 ///////////////
 // gene tagging
 
-//include { gene } from "./modules/process/tagging"
-//gene_script = Channel.fromPath("bin/gene")
-
 include { htseq } from "./modules/process/tagging"
 
 include { bam_metrics as count_gene_tags } from "./modules/process/bam"
@@ -175,54 +154,6 @@ plot_gene_tags_script = Channel.fromPath("bin/plot/gene_tags.py")
 include { bam_filter as bam_filter_gene_tags } from "./modules/process/bam"
 
 ///////////////
-
-////////////
-// functions
-
-//include { bam_metrics as reads_per_function } from "./modules/process/bam"
-//reads_per_function_script = Channel.fromPath("bin/bam/reads_per_function.py")
-//
-//include { plot_1_arg as plot_histo_function } from "./modules/process/plot"
-//plot_histo_function_script = Channel.fromPath("bin/plot/histo_function.py")
-//
-//include { bam_filter as bam_filter_coding_utr } from "./modules/process/bam"
-////////////
-
-//////////////////
-// genes per reads
-
-//include { bam_tag as genes_per_read } from "./modules/process/tagging"
-//genes_per_read_script = Channel.fromPath("bin/genes_per_read")
-//
-//include { bam_metrics as count_genes_per_read } from "./modules/process/bam"
-//count_genes_per_read_script = Channel.fromPath("bin/bam/genes_per_read.py")
-//
-//include { plot_1_arg as plot_genes_per_read } from "./modules/process/plot"
-//plot_genes_per_read_script = Channel.fromPath("bin/plot/genes_per_read.py")
-//
-//include { bam_filter as bam_filter_unassigned } from "./modules/process/bam"
-//////////////////
-
-//////////////////////
-// reads multi mapping
-
-//include { bam_metrics as count_mappings } from "./modules/process/bam"
-//count_mappings_script = Channel.fromPath("bin/bam/count_mappings.py")
-//
-//include { bam_tag_hmem as multimap } from "./modules/process/tagging"
-//multimap_script = Channel.fromPath("bin/multimap")
-//
-//include { bam_metrics as count_resolved } from "./modules/process/bam"
-//count_resolved_script = Channel.fromPath("bin/bam/count_resolved.py")
-//
-//include { plot_1_arg as plot_mappings } from "./modules/process/plot"
-//plot_mappings_script = Channel.fromPath("bin/plot/mappings.py")
-//
-//include { plot_1_arg as plot_resolved } from "./modules/process/plot"
-//plot_resolved_script = Channel.fromPath("bin/plot/resolved.py")
-//
-//include { bam_filter as bam_filter_multimapped_reads } from "./modules/process/bam"
-//////////////////////
 
 /////////////////////
 // umis multi mapping
@@ -351,10 +282,6 @@ workflow {
 
 	extract_barcode( merge_lanes.out.combine(extract_barcode_script) )
 
-	//reads_per_barcode_fastq(
-	//	extract_barcode.out.fastq.combine(reads_per_barcode_fastq_script)
-	//)
-
 	plot_up_matching(
 		extract_barcode
 			.out
@@ -372,17 +299,17 @@ workflow {
 			.combine(plot_barcode_extraction_script)
 	)
 
-	///////////////////////////////////////////////////////////////////////////
+	////////////////////////////////////////////////////////////////////////////
 	// ALIGNMENT
 
 	star(extract_barcode.out.fastq)
 
-	///////////////////////////////////////////////////////////////////////////
+	////////////////////////////////////////////////////////////////////////////
 	// DUPLICATES
 
 	mark_duplicates(star.out.bam)
 
-	///////////////////////////////////////////////////////////////////////////
+	////////////////////////////////////////////////////////////////////////////
 	// ADD SLIDE-SEQ, ALIGNMENT AND DUPLICATES TAGS
 
 	// slide-seq tags, alignment tag and duplicate tag
@@ -415,7 +342,7 @@ workflow {
 			.combine( Channel.from("[us]==\"MATCHED\" && [as]==\"MAPPED\"") )
 	)
 
-	///////////////////////////////////////////////////////////////////////////
+	////////////////////////////////////////////////////////////////////////////
 	// UMIS PER BARCODE THRESHOLD
 
 	umis_per_barcode(
@@ -453,7 +380,7 @@ workflow {
 			.combine( Channel.from("[bt]==\"PASS\"") )
 	)
 
-	///////////////////////////////////////////////////////////////////////////
+	////////////////////////////////////////////////////////////////////////////
 	// HAMMING DISTANCE
 
 	get_barcodes( reads_umis_per_barcode.out )
@@ -479,7 +406,7 @@ workflow {
 			.combine(plot_histo_hamming_script)
 	)
 
-	///////////////////////////////////////////////////////////////////////////
+	////////////////////////////////////////////////////////////////////////////
 	// BARCODE MATCHING
 
 	hamming
@@ -544,7 +471,7 @@ workflow {
 			.combine( Channel.from("[bs]==\"MATCHED\"") )
 	)
 
-	///////////////////////////////////////////////////////////////////////////
+	////////////////////////////////////////////////////////////////////////////
 	// GENE COUNT
 
 	htseq(bam_filter_barcode_matched.out)
@@ -572,7 +499,7 @@ workflow {
 			.combine( Channel.from("[XF]!~\"^__.+\"") )
 	)
 
-	///////////////////////////////////////////////////////////////////////////
+	////////////////////////////////////////////////////////////////////////////
 	// UMIS MAPPINGS
 
 	select(
@@ -603,7 +530,7 @@ workflow {
 			.combine( Channel.from("[cs]==\"UNIQUE\" || [cs]==\"INCLUDED\"") )
 	)
 
-	///////////////////////////////////////////////////////////////////////////
+	////////////////////////////////////////////////////////////////////////////
 	// SEQUENCES
 
 	reads_per_barcode_umi(
@@ -634,7 +561,7 @@ workflow {
 			.combine(plot_reads_fraction_script)
 	)
 
-	///////////////////////////////////////////////////////////////////////////
+	////////////////////////////////////////////////////////////////////////////
 	// EXPRESSION MATRIX
 
 	dge( bam_filter_multimapped_umis.out.map{it[0..1]}.combine(count_script) )
@@ -674,7 +601,7 @@ workflow {
 	)
 	////////////////
 
-	///////////////////////////////////////////////////////////////////////////
+	////////////////////////////////////////////////////////////////////////////
 	// OUTPUT
 	
 	plot_barcode_extraction

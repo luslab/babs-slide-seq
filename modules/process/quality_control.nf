@@ -27,26 +27,3 @@ process fastqc {
 		"""
 }
 
-// number of reads for each the barcodes matched or not, mapped or not
-process reads_per_barcode_fastq {
-
-	label "python"
-	label "quality_control"
-	
-	tag { "${name}" }
-
-	input:
-		tuple val(metadata), path(fastq), path(script)
-
-	output:
-		tuple val(metadata), file("${name}.reads_per_barcode_fastq.csv")
-
-	script:		
-
-		name = metadata["name"]
-		
-		"""
-		python3 $script $fastq "${name}.reads_per_barcode_fastq.csv"
-		"""
-}
-

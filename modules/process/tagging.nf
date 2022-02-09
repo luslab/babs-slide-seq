@@ -121,29 +121,6 @@ process umis_per_barcode {
 		"""
 }
 
-process gene {
-
-	label "tagging"
-	label "sequencing"
-
-	tag { "${name}" }
-
-	input:
-		tuple val(metadata), path(bam), path(script)
-
-	output:
-		tuple val(metadata), path("${name}.gene.bam")
-
-	script:		
-		
-		name = metadata["name"]
-		gtf = metadata["gtf"]
-
-		"""
-		./$script $gtf $bam "${name}.gene.bam"
-		"""
-}
-
 process htseq {
 
 	label "tagging"
@@ -172,53 +149,6 @@ process htseq {
 		cat sample.sam >> $out_sam
 		samtools view -S -b $out_sam > $out_bam
 		samtools index $out_bam
-		"""
-}
-
-process dropseq {
-
-	label "tagging"
-	label "sequencing"
-
-	tag { "${name}" }
-	
-	input:
-		tuple val(metadata), path(bam), path(bai)
-
-	output:
-		tuple val(metadata), path("${out_bam}")
-
-	script:		
-		
-		name = metadata["name"]
-		out_bam = "${name}.dropseq.bam"
-		refflat = metadata["refflat"]
-
-		template "dropseq-tools/tag_read_with_gene_exon_function.sh"
-}
-
-process dropseq_tag {
-
-	label "tagging"
-	label "sequencing"
-
-	tag { "${name}" }
-
-	input:
-		tuple val(metadata), path(bam), path(script)
-
-	output:
-		tuple val(metadata), path("${basename}.bam"), path("${basename}.bam.bai")
-
-	script:		
-		
-		name = metadata["name"]
-		basename = "${name}.dropseqtag"
-		gtf = metadata["gtf"]
-
-		"""
-		./$script $gtf $bam "${basename}.bam"
-		samtools index "${basename}.bam"
 		"""
 }
 
