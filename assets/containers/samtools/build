@@ -1,4 +1,7 @@
 #!/bin/sh
 
-singularity pull samtools.sif docker://bschiffthaler/samtools
+sudo docker build --tag bahnk/samtools:v1 .
+sudo docker build --no-cache --tag bahnk/samtools:v1 .
+sudo docker login -u "bahnk" -p "" docker.io
+sudo docker push bahnk/samtools:v1
 

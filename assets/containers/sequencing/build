@@ -1,14 +1,7 @@
 #!/bin/sh
 
-#sudo docker pull ubuntu:21.04
-
-#sudo docker image ls
-#sudo docker run -v $(pwd):/mnt -it 478aa0080b60 /bin/bash
-#sudo docker ps -a
-#sudo docker commit 3166c1b123af glmgampoi
-#sudo docker save ec7d56f403f9 -o sequencing.tar
-
-
-export SINGULARITY_TMPDIR=/home/nourdine/singularity/sequencing/tmp 
-sudo -E singularity build sequencing.sif docker-archive://sequencing.tar
+sudo docker build --no-cache --tag sequencing:v1 .
+sudo docker image tag sequencing:v1 bahnk/sequencing:v1
+sudo docker login -u "bahnk" -p "" docker.io
+sudo docker push bahnk/sequencing:v1
 

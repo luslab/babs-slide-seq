@@ -1,0 +1,6 @@
+#!/bin/sh
+
+module load Singularity/3.6.4
+
+singularity pull --disable-cache sequencing.sif docker://bahnk/sequencing:v1
+

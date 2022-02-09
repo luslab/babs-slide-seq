@@ -1,4 +1,0 @@
-#!/bin/sh
-
-sudo singularity build --sandbox cotidianus/ cotidianus.def
-
