@@ -2,7 +2,7 @@
 design: assets/design/design.csv
 min_length: 43
 up_errors_threshold: 3
-umis_threshold: 5
+umis_threshold: 10
 barcode_errors_threshold: 4
 barcode_max_matches: 5
 barcode_max_entropy: 0.5
