@@ -44,5 +44,6 @@ RUN apt-get install --yes \
 	seqan-apps \
 	seqan3-doc \
 	seqtk \
-	trimmomatic
+	trimmomatic \
+	zlib
 

@@ -7,7 +7,7 @@ process shuffling {
 	label "python"
 
 	input:
-		tuple val(name), path(barcodes), path(script)
+		tuple val(name), val(barcodes), path(script)
 
 	output:
 		tuple \
@@ -20,7 +20,7 @@ process shuffling {
 
 	script:		
 		"""
-		python3 $script $barcodes $name
+		python3 $script "${barcodes}" "${name}"
 		"""
 }
 

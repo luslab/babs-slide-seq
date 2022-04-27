@@ -59,7 +59,7 @@ process dge {
 		directory = "${name}_dge"
 
 		"""
-		./$script $gtf $bam .
+		./$script --directory . $gtf $bam
 
 		mkdir $directory
 		cat matrix.mtx | gzip -c > $directory/matrix.mtx.gz

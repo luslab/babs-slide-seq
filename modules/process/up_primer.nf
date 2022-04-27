@@ -38,13 +38,11 @@ process extract_barcode {
 
 		"""
 		./$script \
-			$read1 \
-			$read2 \
-			"${read_structure}" \
-			"${name}.fastq.gz" \
-			${params.up_errors_threshold} \
-			${params.min_length} \
-			"${name}"
+			--sample "${name}" \
+			--fastq "${name}.fastq.gz" \
+			--read-structure "${read_structure}" \
+			--max-distance ${params.up_errors_threshold} \
+			$read1 $read2
 		"""
 }
 

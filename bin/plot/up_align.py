@@ -85,8 +85,20 @@ if __name__ == "__main__":
 
 	csv_path = sys.argv[1]
 	base_path = sys.argv[2]
-	
+
 	df = pd.read_csv(csv_path, header=None, names=["Matched", "Mapped", "Reads"])
+
+	# reindex
+	index = [
+		("UNMATCHED", "UNMAPPED"),
+		("UNMATCHED", "MAPPED"),
+		("MATCHED", "UNMAPPED"),
+		("MATCHED", "MAPPED")
+		]
+	df = df.set_index(["Matched", "Mapped"])
+	df = df.reindex(index, fill_value=0)
+	df = df.reset_index()
+
 	df["Matched"] = df.Matched.replace({"MATCHED": True, "UNMATCHED": False})
 	df["Mapped"] = df.Mapped.replace({"MAPPED": True, "UNMAPPED": False})
 	

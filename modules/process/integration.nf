@@ -61,6 +61,7 @@ process hamming {
 		csv = "${basename}.hamming.csv"
 
 		"""
+		hostname
 		./$script $read_barcodes $puck_barcodes "${csv}"
 		"""
 }

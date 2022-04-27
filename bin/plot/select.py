@@ -68,6 +68,7 @@ if __name__ == "__main__":
 	df.columns = ["Status", "Reads"]
 	df["Status"] = df.Status.str.title()
 	cats = ["Unique", "Included", "Excluded", "Unresolved"]
+	df = df.set_index("Status").reindex(cats, fill_value=0).reset_index()
 	df = df.loc[ df.Status.isin(cats) ]
 	df["Status"] = pd.Categorical(df.Status, categories=cats)
 	

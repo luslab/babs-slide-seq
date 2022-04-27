@@ -14,9 +14,21 @@ max_distance = int(sys.argv[5])
 max_matches = int(sys.argv[6])
 max_entropy = float(sys.argv[7])
 
-#hamming_path = "results/qc/210611_imran_puck_15_humangbm.ordered.hamming.csv"
-#reads_path = "results/qc/210611_imran_puck_15_humangbm.reads_umis_per_barcode.csv"
-#coords_path = "pucks/210611_imran_puck_15_humangbm.csv"
+#hamming_path = "/camp/stp/babs/working/bahn/projects/tybulewiczv/micaela.sartoretti/PM21235/results/qc/25-06.ordered.hamming.csv"
+#reads_path = "/camp/stp/babs/working/bahn/projects/tybulewiczv/micaela.sartoretti/PM21235/results/qc/25-06.reads_umis_per_barcode.csv"
+#coords_path = "/camp/stp/babs/working/bahn/projects/tybulewiczv/micaela.sartoretti/PM21235/pucks/211025_06.csv"
+#base_path = "tmp/matching"
+#max_distance = 4
+#max_matches = 5
+#max_entropy = .5
+
+#hamming_path = "results/qc/sample1.ordered.hamming.csv"
+#hamming_path = "results/qc/sample1.shuffled.hamming.csv"
+#reads_path = "results/qc/sample1.reads_umis_per_barcode.csv"
+#hamming_path = "results/qc/sample2.shuffled.hamming.csv"
+#hamming_path = "results/qc/sample2.ordered.hamming.csv"
+#reads_path = "results/qc/sample2.reads_umis_per_barcode.csv"
+#coords_path = "test/puck2.csv"
 #base_path = "tmp/matching"
 #max_distance = 4
 #max_matches = 5
@@ -115,10 +127,15 @@ more = more.loc[ ~ more.SeqBarcode.isin(one.SeqBarcode) ]
 more = more.loc[ ~ more.PuckBarcode.isin(one.PuckBarcode) ]
 more = more.loc[ more.Distance <= max_distance ]
 more = more.loc[ more.Number <= max_matches ]
-more = more.groupby("PuckBarcode").apply(select)
-more = more.loc[ more.Matched == "MATCHED" ]
-more = more.reset_index().drop("Matched", axis=1)
-more = more.drop_duplicates("SeqBarcode", keep=False)
+
+# mainly for the fake data, because on real data this always exists
+if more.shape[0] > 0:
+	more = more.groupby("PuckBarcode").apply(select)
+	more = more.loc[ more.Matched == "MATCHED" ]
+	more = more.reset_index().drop("Matched", axis=1)
+	more = more.drop_duplicates("SeqBarcode", keep=False)
+else:
+	more = more[ ["SeqBarcode", "PuckBarcode"] ]
 
 ################
 # final matching

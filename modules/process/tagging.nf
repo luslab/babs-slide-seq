@@ -115,7 +115,7 @@ process umis_per_barcode {
 		threshold = params.umis_threshold
 
 		"""
-		./$script $bam "${basename}.bam" $threshold
+		./$script --threshold $threshold $bam "${basename}.bam"
 		echo "Indexing..."
 		samtools index "${basename}.bam"
 		"""
