@@ -67,6 +67,21 @@ if __name__ == "__main__":
 	base_path = sys.argv[3]
 	
 	df = pd.read_csv(csv_path, header=None, names=["Sample", "Length", "Reads"])
+
+	# reindex
+	index = [
+		"Bead barcode length",
+		"Long enough reads",
+		"Total reads",
+		"UMI length",
+		"UP primer length",
+		"UP primer match",
+		"UP primer non match"
+		]
+	df = df.set_index("Length")
+	df = df.reindex(index, fill_value=0)
+	df = df.reset_index()
+
 	df = df.filter(["Length", "Reads"])
 	df["Length"] = df\
 		.Length\
