@@ -72,6 +72,7 @@ if __name__ == "__main__":
 	index = [
 		"Bead barcode length",
 		"Long enough reads",
+		"Too short reads",
 		"Total reads",
 		"UMI length",
 		"UP primer length",
