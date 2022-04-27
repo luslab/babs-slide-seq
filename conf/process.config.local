@@ -17,7 +17,8 @@ process {
 
 	//errorStrategy = "finish"
 	errorStrategy = "retry"
-	maxErrors = 3
+	maxRetries = 3
+	maxErrors = 10
 	
 	publishDir = [
 		path: { Paths.get( params.out_dir ) },
@@ -32,6 +33,7 @@ process {
 
 		executor = "slurm"
 		clusterOptions = "--partition=gpu --gres=gpu:1"
+		memory = "250G"
 	}
 
 	withLabel: pucks {
