@@ -39,6 +39,8 @@ int main(int argc, char **argv)
 	std::vector<std::string> reads = get_sequences(argv[1]);
 	std::vector<std::string> barcodes = get_sequences(argv[2]);
 
+	std::cout << reads[0] << ", " << barcodes[0] << std::endl;
+
 	int N_READS = reads.size();
 	int N_BARCODES = barcodes.size();
 
@@ -60,10 +62,13 @@ int main(int argc, char **argv)
 		return FUNCTION_FAILURE;
 	}
 
+	std::cout << "Pass 1" << std::endl;
+
 	///////////////////////////////////////////////////////////////////////////
 	// MATCH RECORDS
 	
 	Match* matches = (Match*)malloc(N_READS*sizeof(Match));
+	std::cout << "Pass 2" << std::endl;
 	
 	///////////////////////////////////////////////////////////////////////////
 	// CONVERSION TO DIGITS
@@ -73,6 +78,7 @@ int main(int argc, char **argv)
 	{
 		numbers[i] = seq_to_num(barcodes[i]);
 	}
+	std::cout << "Pass 3" << std::endl;
 
 	///////////////////////////////////////////////////////////////////////////
 	// GPU
