@@ -41,5 +41,9 @@ sample2,test/sample2_L005_R1.fastq.gz,test/sample2_L005_R2.fastq.gz,test/puck2.c
 ensembl/GRCm38/release-95/gtf/Mus_musculus.GRCm38.95.gtf
 ```
 
+## About the sample names and `FASTQ` paths
+
+## About the read structure definition
+
 ![Oligos](oligos.png)
 
