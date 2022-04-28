@@ -1,7 +1,5 @@
 
-#design: assets/design/design.csv
 design: test/design.csv
-#min_length: 43
 up_errors_threshold: 3
 umis_threshold: 1
 barcode_errors_threshold: 4
