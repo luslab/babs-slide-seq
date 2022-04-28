@@ -88,15 +88,55 @@ In red is the case where we shuffled the puck barcodes sequences, and in blue is
 
 ### Sixth step: gene annotation of reads 2 (page 6)
 
+We mapped reads 2 on the genome, now we need to annotate them.
+We use [HTSeq](https://htseq.readthedocs.io/en/master/).
+HTSeq can be successful or not in annotating a given mapping with a gene.
+Here, we plot the reads for which HTSeq was successful.
+
 ![Page 6](example_output/pages/page-06.png)
 
 ### Seventh step: deduplication (page 7)
+
+The deduplication step is to pick one read when a (barcode,UMI) pair is associated with multiple reads.
+In our case we want to have unique (barcode,UMI,gene) tuples in order to produce the count matrix.
+
+The `unique` column is when there is a unique (barcode,UMI,gene) tuple.
+In this case, we don't need to do anything and we can just pick this tuple.
+
+The `Included` and `Excluded` correspond to the case where there are multiple (barcode,UMI,gene) tuples, but one of these mappings has an alignmnent score that stands out.
+For example:
+
+ * (ACGTACTTCATGCA,TGCAACGT,GeneA,54)
+ * (ACGTACTTCATGCA,TGCAACGT,GeneB,54)
+ * (ACGTACTTCATGCA,TGCAACGT,GeneB,61)
+ * (ACGTACTTCATGCA,TGCAACGT,GeneC,49)
+
+In this situation, we can include the third (`Included`) and exclude the others (`Excluded`).
+
+The `Unresolved` column is the case where there are multiple (barcode,UMI,gene) tuples, but none of them stands out.
+For example:
+
+ * (ACGTACTTCATGCA,TGCAACGT,GeneA,60)
+ * (ACGTACTTCATGCA,TGCAACGT,GeneB,60)
+ * (ACGTACTTCATGCA,TGCAACGT,GeneC,60)
+
+In this situation we throw everything.
 
 ![Page 7](example_output/pages/page-07.png)
 
 ### Checking the read structure specification (pages 8 and 9)
 
+Barcodes and UMIs are generated randomly.
+So, we should get ~25 % of all bases at each position.
+Therefore, we plot the bases frequencies in order to spot possible mistakes in the read structure specification.
+
+
+For the barcodes:
+
 ![Page 8](example_output/pages/page-08.png)
+
+For the UMIs:
+
 ![Page 9](example_output/pages/page-09.png)
 
 ### Library complexity (pages 10, 11, 12 and 16)
