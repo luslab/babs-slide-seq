@@ -106,19 +106,19 @@ In this case, we don't need to do anything and we can just pick this tuple.
 The `Included` and `Excluded` correspond to the case where there are multiple (barcode,UMI,gene) tuples, but one of these mappings has an alignmnent score that stands out.
 For example:
 
- * (ACGTACTTCATGCA,TGCAACGT,GeneA,54)
- * (ACGTACTTCATGCA,TGCAACGT,GeneB,54)
- * (ACGTACTTCATGCA,TGCAACGT,GeneB,61)
- * (ACGTACTTCATGCA,TGCAACGT,GeneC,49)
+ * (`ACGTACTTCATGCA`,`TGCAACGT`,GeneA,54)
+ * (`ACGTACTTCATGCA`,`TGCAACGT`,GeneB,54)
+ * (`ACGTACTTCATGCA`,`TGCAACGT`,GeneB,61)
+ * (`ACGTACTTCATGCA`,`TGCAACGT`,GeneC,49)
 
 In this situation, we can include the third (`Included`) and exclude the others (`Excluded`).
 
 The `Unresolved` column is the case where there are multiple (barcode,UMI,gene) tuples, but none of them stands out.
 For example:
 
- * (ACGTACTTCATGCA,TGCAACGT,GeneA,60)
- * (ACGTACTTCATGCA,TGCAACGT,GeneB,60)
- * (ACGTACTTCATGCA,TGCAACGT,GeneC,60)
+ * (`ACGTACTTCATGCA`,`TGCAACGT`,GeneA,60)
+ * (`ACGTACTTCATGCA`,`TGCAACGT`,GeneB,60)
+ * (`ACGTACTTCATGCA`,`TGCAACGT`,GeneC,60)
 
 In this situation we throw everything.
 
@@ -141,12 +141,29 @@ For the UMIs:
 
 ### Library complexity (pages 10, 11, 12 and 16)
 
+There are numerous ways to assess library complexity.
+Here are some metrics that we use.
+
+The saturation of the total reads by the TOP 10 % barcodes with the highest number of UMIs (page 10).
+<span style="color:green">This plot is probably poorly made in the pipeline. It needs to be recoded.</span>
+
 ![Page 10](example_output/pages/page-10.png)
-![Page 11](example_output/pages/page-11.png)
-![Page 12](example_output/pages/page-12.png)
+
+The average number of UMIs per barcode for all the barcodes and for the TOP 10 % barcodes with the highest number of UMIs (page 16).
+
 ![Page 16](example_output/pages/page-16.png)
 
+Histogram of the number of UMIs per barcode (page 11).
+
+![Page 11](example_output/pages/page-11.png)
+
+Histogram of the number of genes per barcode (page 11).
+
+![Page 12](example_output/pages/page-12.png)
+
 ### Looking for histological structures
+
+The best way to see if the pipeline was successul is to plot the number of UMIs per bead on the XY plane and search for known histological structures.
 
 ![Page 17](example_output/pages/page-17.png)
 
