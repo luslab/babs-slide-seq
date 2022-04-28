@@ -1,5 +1,5 @@
 
 # Slide-Seq
 
-[Output](docs/output.md)
+[Output](doc/output.md)
 
