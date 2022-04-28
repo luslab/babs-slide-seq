@@ -42,7 +42,7 @@ On the following picture, there are 68,647,673 reads in total and all of them ar
 ### Second step: matching UP primer (page 2)
 
 The second step is to match the UP primer sequence on read 1 (among those that are long enough).
-You can allow a certain tolerance in the matching by setting the maximum hamming distance (usually 3 or 4).
+You can allow a certain tolerance in the matching by setting the maximum Hamming distance (usually 3 or 4).
 On the following picture, there 52,055,737 reads that match the UP primer (among the 68,647,673 read pairs that are long enough).
 
 ![Page 2](example_output/pages/page-02.png)
@@ -62,20 +62,51 @@ Here, we kept everything for example.
 
 ![Page 4](example_output/pages/page-04.png)
 
-### Fifth step: barcode matching (page 5, 13, 14, and 15)
+### Fifth step: barcode matching (pages 5, 13, 14, and 15)
+
+The fifth step is to match the sequencing barcodes with the puck barcodes (among the reads pairs that match the UP primer and can be mapped on the genome).
+
+Here (page 13) we can see that the sequencing data contained 2,572,149 bead barcodes and the puck contained 77,938 bead barcodes.
+Among all the sequencing barcodes, we were able to associate 58,725 of them to a puck barcode.
+
+![Page 13](example_output/pages/page-13.png)
+On the following picture (page 5), we can see that among the 40,420,278 reads pairs that are UP-matched and genome-mapped there are 29,815,832 reads whose the barcode could be associated with a puck barcode.
 
 ![Page 5](example_output/pages/page-05.png)
-![Page 13](example_output/pages/page-13.png)
+
+During the barcode matching, we allow mismatches by using the Hamming distance.
+The following histogram shows the location of these mismatches in the barcode sequence.
+This can highlight mistakes in the read structure specification, or reveal unsucessful ligations during the base call.
+
 ![Page 14](example_output/pages/page-14.png)
+
+A successful barcode matching can be revealed by comparing it with its counterpart performed with shuffled sequences.
+This histogram shows, for each sequencing barcode, the smallest Hamming distance found among the puck barcodes.
+In red is the case where we shuffled the puck barcodes sequences, and in blue is where we left the sequences unchaged.
+
 ![Page 15](example_output/pages/page-15.png)
 
+### Sixth step: gene annotation of reads 2 (page 6)
 
 ![Page 6](example_output/pages/page-06.png)
+
+### Seventh step: deduplication (page 7)
+
 ![Page 7](example_output/pages/page-07.png)
+
+### Checking the read structure specification (pages 8 and 9)
+
 ![Page 8](example_output/pages/page-08.png)
 ![Page 9](example_output/pages/page-09.png)
+
+### Library complexity (pages 10, 11, 12 and 16)
+
+![Page 10](example_output/pages/page-10.png)
 ![Page 11](example_output/pages/page-11.png)
 ![Page 12](example_output/pages/page-12.png)
 ![Page 16](example_output/pages/page-16.png)
+
+### Looking for histological structures
+
 ![Page 17](example_output/pages/page-17.png)
 
