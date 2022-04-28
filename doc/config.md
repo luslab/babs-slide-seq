@@ -1,6 +1,5 @@
 
-
-# Configuration
+# Pipeline configuration
 
 The pipeline is configured with a `CSV` file which looks like that:
 

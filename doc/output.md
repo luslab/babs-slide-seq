@@ -1,5 +1,5 @@
 
-# Output
+# Pipeline output
 
 The pipeline outputs are in the `results` directory.
 For example, here we have two samples (`sample1` and `sample2`):
@@ -20,6 +20,9 @@ You are interested in the following files:
 
 ## Digital matrix expression and bead coordinates
 
+
+The `sample1.csv` file contains the barcodes coordinates and the `sample1_dge` contains the count matrix files.
+
 ```
 $ tree results/sample1.csv results/sample1_dge
 results/sample1.csv [error opening dir]
@@ -28,6 +31,8 @@ results/sample1_dge
 ├── features.tsv.gz
 └── matrix.mtx.gz
 ```
+
+We can import the count matrix and the coordinates in R this way:
 
 ```
 library(Seurat)
@@ -45,6 +50,8 @@ df <-
 md = df[colnames(counts),]
 obj <- Seurat::CreateSeuratObject(counts=counts, meta.data=md, assay="Spatial")
 ```
+
+If you use python:
 
 ```
 import panda as pd
