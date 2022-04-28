@@ -1,0 +1,9 @@
+#!/bin/sh
+
+if [[ ! -d pages ]]
+then
+	mkdir -v pages
+fi
+
+convert example.pdf -scene 1 pages/page-%02d.png
+
