@@ -29,6 +29,36 @@ results/sample1_dge
 └── matrix.mtx.gz
 ```
 
+```
+library(Seurat)
+library(dplyr)
+library(readr)
+library(tibble)
+
+counts <- Seurat::Read10X("imran_puck_15_humangbm_dge")
+
+df <-
+	readr::read_csv("imran_puck_15_humangbm.csv") %>%
+	dplyr::mutate(Barcode=paste0(Barcode, "-1")) %>%
+	tibble::column_to_rownames("Barcode")
+
+md = df[colnames(counts),]
+obj <- Seurat::CreateSeuratObject(counts=counts, meta.data=md, assay="Spatial")
+```
+
+```
+import panda as pd
+import scanpy as sc
+
+coords = pd\
+	.read_csv("results/sample1.csv")\
+	.rename(columns={"PuckBarcode": "Barcode"})\
+	.set_index("SeqBarcode")
+
+adata = sc.read_10x_mtx("results/sample1_dge")
+adata.obs = coords.loc[ adata.obs.index ]
+```
+
 ## QC metrics
 
 ### First step: checking for barcode length (page 1)
