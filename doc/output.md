@@ -205,6 +205,9 @@ The best way to see if the pipeline was successul is to plot the number of UMIs 
 ![Page 17](example_output/pages/page-17.png)
 
 [a](###first-step:-checking-for-barcode-length-(page-1))
+[b](#test)
+
+## test
 
 second-step:-matching-up-primer-(page-2)
 third-step:-mapping-read-2-on-the-genome-(page-3)
