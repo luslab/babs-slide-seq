@@ -204,7 +204,7 @@ The best way to see if the pipeline was successul is to plot the number of UMIs 
 
 ![Page 17](example_output/pages/page-17.png)
 
-[a](###first-step:-checking-for-barcode-length-(page-1))
+[a](#looking-for-histological-structures)
 [b](#test)
 
 ## test
@@ -217,4 +217,3 @@ sixth-step:-gene-annotation-of-reads-2-(page-6)
 seventh-step:-deduplication-(page-7)
 checking-the-read-structure-specification-(pages-8-and-9)
 library-complexity-(pages-10,-11,-12-and-16)
-looking-for-histological-structures
