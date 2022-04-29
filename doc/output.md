@@ -205,7 +205,7 @@ The best way to see if the pipeline was successul is to plot the number of UMIs 
 ![Page 17](example_output/pages/page-17.png)
 
 [a](#looking-for-histological-structures)
-[c]second-step:-matching-up-primer--page-2-)
+[c](#second-step:-matching-up-primer--page-2-)
 [b](#test)
 
 ## test
