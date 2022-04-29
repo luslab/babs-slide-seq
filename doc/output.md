@@ -204,16 +204,13 @@ The best way to see if the pipeline was successul is to plot the number of UMIs 
 
 ![Page 17](example_output/pages/page-17.png)
 
-[a](#looking-for-histological-structures)
-[c](#second-step-matching-up-primer-page-2)
-[b](#test)
-
-## test
-
-third-step:-mapping-read-2-on-the-genome-(page-3)
-fourth-step:-filtering-the-barcodes-with-too-few-umis-(page-4)
-fifth-step:-barcode-matching-(pages-5,-13,-14,-and-15)
-sixth-step:-gene-annotation-of-reads-2-(page-6)
-seventh-step:-deduplication-(page-7)
-checking-the-read-structure-specification-(pages-8-and-9)
-library-complexity-(pages-10,-11,-12-and-16)
+[First step: checking for barcode length (page 1)](#first-step-checking-for-barcode-length-page-1)
+[Second step: matching UP primer (page 2)](#second-step-matching-up-primer-page-2)
+[Third step: mapping read 2 on the genome (page 3)](#third-step-mapping-read-2-on-the-genome-page-3)
+[Fourth step: filtering the barcodes with too few UMIs (page 4)](#fourth-step-filtering-the-barcodes-with-too-few-umis-page-4)
+[Fifth step: barcode matching (pages 5, 13, 14, and 15)](#fifth-step-barcode-matching-pages-5-13-14-and-15)
+[Sixth step: gene annotation of reads 2 (page 6)](#sixth-step-gene-annotation-of-reads-2-page-6)
+[Seventh step: deduplication (page 7)](#seventh-step-deduplication-page-7)
+[Checking the read structure specification (pages 8 and 9)](#checking-the-read-structure-specification-pages-8-and-9)
+[Library complexity (pages 10, 11, 12 and 16)](#library-complexity-pages-10-11-12-and-16)
+[Looking for histological structures](#looking-for-histological-structures)
