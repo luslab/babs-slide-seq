@@ -236,51 +236,6 @@ include { rename_coords } from "./modules/process/export"
 ///////////////////////////////////////////////////////////////////////////////
 //// DESIGN ///////////////////////////////////////////////////////////////////
 
-println(params)
-
-if ( params.test )
-{
-	println("Testing the pipeline on your system")
-
-	def user = System.getenv("USER")
-	def now = System.currentTimeMillis()
-	def root = "./${user}-slideseq-test-${now}"
-
-	println("Creating the directory " + root)
-	def dir_cmd = ["/bin/mkdir", "-pv", root]
-	println(dir_cmd.join(" "))
-	def dir_proc = dir_cmd.execute()
-
-	dir_proc.waitForOrKill(5000)
-	println("Downloading test dataset")
-	def archive = "${root}/pipeline.zip"
-	File zip = new File(archive)
-	URL url = new URL("https://api.github.com/repos/bahnk/SlideSeq/zipball/module")
-	zip.bytes = url.bytes
-
-	println("Extracting test dataset")
-	def zip_cmd = ["/usr/bin/unzip", "-d", root, archive]
-	println(zip_cmd.join(" "))
-	def zip_proc = zip_cmd.execute()
-	zip_proc.waitForOrKill(5000)
-
-	// get the subdirectory name
-	def list_cmd = ["/usr/bin/unzip", "-l", archive]
-	def files = list_cmd.execute().text.split("\n")
-	def directory = files[4].replaceAll(".* ", "").replace("/", "")
-
-	def design = "${root}/${directory}/test/design.csv"
-
-	// change name in design file
-	def f = new File(design)
-	def lines = f.text.split("\n")
-	f.text = ""
-	lines.each{ f.append( it.replaceAll("test/", "${root}/${directory}/test/") + "\n" ) }
-
-	// set parameters
-	params.design = design
-}
-
 Channel
 	.fromPath(params.design)
 	.splitCsv(header: true)
