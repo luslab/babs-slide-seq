@@ -1,7 +1,7 @@
 
 design: test/design.csv
 up_errors_threshold: 3
-umis_threshold: 5
+umis_threshold: 1 # this should be set at 10 at least
 barcode_errors_threshold: 4
 barcode_max_matches: 5
 barcode_max_entropy: 0.5
