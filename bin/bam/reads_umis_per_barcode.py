@@ -18,6 +18,7 @@ def reads_umis_per_barcode(bam_path, csv_path):#
 	counter = 0
 
 	
+	# TODO: check if at least one barcode passes the UMI threshold
 	for record in bam.fetch(until_eof=True):
 		up = record.get_tag("us")
 		align = record.get_tag("as")
