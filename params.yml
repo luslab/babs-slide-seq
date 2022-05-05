@@ -1,6 +1,7 @@
 
-design: test/design.csv
-up_errors_threshold: 3
+#design: test/design.csv
+design: tmp/imran/design.csv
+up_errors_threshold: 2
 umis_threshold: 1 # this should be set at 10 at least
 barcode_errors_threshold: 4
 barcode_max_matches: 5

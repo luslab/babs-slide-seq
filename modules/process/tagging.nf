@@ -144,7 +144,7 @@ process htseq {
 		gtf = metadata["gtf"]
 
 		"""
-		htseq-count --format bam --samout sample.sam $bam $gtf > $out_txt
+		htseq-count --stranded reverse --format bam --samout sample.sam $bam $gtf > $out_txt
 		samtools view -H $bam > $out_sam
 		cat sample.sam >> $out_sam
 		samtools view -S -b $out_sam > $out_bam

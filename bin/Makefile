@@ -145,7 +145,10 @@ select: obj/utils.o obj/record.o obj/mapping.o obj/mappings.o obj/molecule.o obj
 count_bin: obj/utils.o obj/gene.o obj/counts.o obj/counter.o
 	$(CC) obj/utils.o obj/gene.o obj/counts.o obj/counter.o src/count.cpp $(ARGS) -o count
 
-all_bin: extract_barcode tag_bam add_match umis_per_barcode select count_bin
+antisense_bin:
+	$(CC) obj/utils.o src/antisense.cpp $(ARGS) -o antisense
+
+all_bin: extract_barcode tag_bam add_match umis_per_barcode select count_bin antisense_bin
 	@echo "Done"
 
 ###############################################################################
@@ -195,6 +198,7 @@ clean_bin:
 	rm -fv umis_per_barcode
 	rm -fv select
 	rm -fv count
+	rm -fv antisense
 
 ###############################################################################
 ## PROGRAMS TESTS #############################################################
@@ -232,3 +236,10 @@ count_test:
 		/camp/svc/reference/Genomics/babs/mus_musculus/ensembl/GRCm38/release-95/gtf/Mus_musculus.GRCm38.95.gtf \
 		/camp/stp/babs/working/bahn/projects/luscomben/chris.cheshire/radiation_kidney/results/files/211004_02.multimap_umis.bam
 
+antisense_test:
+	./antisense \
+		/camp/svc/reference/Genomics/babs/mus_musculus/ensembl/GRCm38/release-95/gtf/Mus_musculus.GRCm38.95.gtf \
+		/camp/stp/babs/working/bahn/projects/rodriquess/sam.rodriques/032_spatial_transcriptomics/sequencing/test_keith/results/files/211013_21.gene_tags.bam \
+		test.bam
+
+		#/camp/stp/babs/working/bahn/projects/rodriquess/sam.rodriques/032_spatial_transcriptomics/bin/SlideSeq/results/files/imran.htseq.bam \
