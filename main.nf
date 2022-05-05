@@ -170,6 +170,12 @@ include { htseq } from "./modules/process/tagging"
 include { bam_metrics as count_gene_tags } from "./modules/process/bam"
 count_gene_tags_script = Channel.fromPath("bin/bam/count_gene_tags.py")
 
+include { bam_metrics as count_reads_per_umi } from "./modules/process/bam"
+count_reads_per_umi_script = Channel.fromPath("bin/bam/reads_per_umi.py")
+
+include { bam_metrics as count_reads_per_umi_gene } from "./modules/process/bam"
+count_reads_per_umi_gene_script = Channel.fromPath("bin/bam/reads_per_umi_gene.py")
+
 include { plot_1_arg as plot_gene_tags } from "./modules/process/plot"
 plot_gene_tags_script = Channel.fromPath("bin/plot/gene_tags.py")
 
@@ -180,8 +186,11 @@ include { bam_filter as bam_filter_gene_tags } from "./modules/process/bam"
 /////////////////////
 // umis multi mapping
 
-include { bam_tag_hmem as select } from "./modules/process/tagging"
+include { select } from "./modules/process/tagging"
 select_script = Channel.fromPath("bin/select")
+
+include { duplicates } from "./modules/process/quality_control"
+duplicates_script = Channel.fromPath("bin/duplicates.py")
 
 include { bam_metrics as count_select } from "./modules/process/bam"
 count_select_script = Channel.fromPath("bin/bam/count_select.py")
@@ -526,6 +535,20 @@ workflow {
 			.combine( Channel.from("[XF]!~\"^__.+\"") )
 	)
 
+	count_reads_per_umi(
+		bam_filter_gene_tags
+			.out
+			.combine( Channel.from("reads_per_umi") )
+			.combine(count_reads_per_umi_script)
+	)
+
+	count_reads_per_umi_gene(
+		bam_filter_gene_tags
+			.out
+			.combine( Channel.from("reads_per_umi_gene") )
+			.combine(count_reads_per_umi_gene_script)
+	)
+
 	///////////////////////////////////////////////////////////////////////////
 	// UMIS MAPPINGS
 
@@ -537,9 +560,21 @@ workflow {
 			.combine(select_script)
 	)
 
+	select
+		.out
+		.unique_reads
+		.concat(select.out.resolved_reads)
+		.concat(select.out.unresolved_reads)
+		.combine(merge_lanes.out)
+		.filter{ it[0]["name"] == it[3]["name"] }
+		.map{ [ addValue(it[0], "status", it[1]) , it[2] , *it[4..5] ] }
+		.set{ TO_DUPLICATES }
+	duplicates(TO_DUPLICATES.combine(duplicates_script))
+
 	count_select(
 		select
 			.out
+			.bam
 			.combine( Channel.from("count_select") )
 			.combine(count_select_script)
 	)
@@ -553,6 +588,7 @@ workflow {
 	bam_filter_multimapped_umis(
 		select
 			.out
+			.bam
 			.combine( Channel.from("multimap_umis") )
 			.combine( Channel.from("[cs]==\"UNIQUE\" || [cs]==\"INCLUDED\"") )
 	)

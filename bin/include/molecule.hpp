@@ -21,6 +21,7 @@ class Molecule
 		std::set<Record> records;
 		Mappings mappings;
 		std::map<std::string, long long> frequencies;
+		std::string status;
 	
 	public:
 		Molecule();
@@ -29,6 +30,7 @@ class Molecule
 		std::string GetBarcode() const;
 		std::string GetUMI() const;
 		std::string GetSeq() const;
+		std::string GetStatus() const;
 		std::set<Record> GetRecords() const;
 		std::string GetRecordString() const;
 		std::set<std::string> GetGenes() const;
@@ -42,7 +44,9 @@ class Molecule
 		void ComputeFrequencies();
 		long long GetMaxFrequency() const;
 		bool IsThereAMajority() const;
-		std::map<unsigned long long, std::string> GetFrequencyBasedRecordTags() const;
+		std::map<unsigned long long, std::string> GetFrequencyBasedRecordTags();
+		std::set<std::string> GetReads() const;
+		std::string GetCSVString(char, char) const;
 		friend std::ostream& operator<<(std::ostream&, const Molecule&);
 		friend bool operator<(const Molecule&, const Molecule&);
 		friend Molecule operator+(Molecule&, Molecule&);

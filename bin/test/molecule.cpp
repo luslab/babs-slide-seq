@@ -273,6 +273,12 @@ int main(int argc, char** argv)
 
 	////////////////////////////////////////////////////////////////////////////
 
+	std::cout << std::endl;
+	std::cout << "Test of the GetCSVString() method:" << std::endl;
+	std::cout << mm7.GetCSVString('|', '/') << std::endl;
+
+	////////////////////////////////////////////////////////////////////////////
+
 	return 0;
 }
 

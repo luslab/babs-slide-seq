@@ -224,7 +224,8 @@ umis_per_barcode_test:
 
 select_test:
 	./select \
-		/camp/stp/babs/working/bahn/projects/luscomben/chris.cheshire/radiation_kidney/results/files/211004_02.gene_tags.bam \
+		test \
+		/camp/stp/babs/working/bahn/projects/rodriquess/sam.rodriques/032_spatial_transcriptomics/bin/SlideSeq/results/files/imran.gene_tags.bam \
 		test.bam
 
 count_test:

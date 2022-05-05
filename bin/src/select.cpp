@@ -7,7 +7,9 @@
 #include <map>
 #include <set>
 #include <vector>
+#include <string>
 #include <algorithm>
+#include <fstream>
 #include <seqan/basic.h>
 #include <seqan/arg_parse.h>
 #include <seqan/bam_io.h>
@@ -27,6 +29,7 @@ using namespace seqan;
 
 struct SelectOptions
 {
+	CharString name;
 	CharString bam_in;
 	CharString bam_out;
 };
@@ -50,7 +53,7 @@ parseCommandLine(SelectOptions& options, int argc, char const** argv)
 	setDate(parser, "Mar 2022");
 
 	// Add use and description lines
-	addUsageLine(parser, "[\\fIOPTIONS\\fP] \\fIBAM_IN\\fP \\fIBAM_OUT\\fP ");
+	addUsageLine(parser, "[\\fIOPTIONS\\fP] \\fINAME\\fP \\fIBAM_IN\\fP \\fIBAM_OUT\\fP ");
 	addDescription(parser,
 		"A barcode-UMI pair is usually associated with multiple alignment records, "
 		"and each record is associated with a gene. "
@@ -68,14 +71,17 @@ parseCommandLine(SelectOptions& options, int argc, char const** argv)
 		"The input BAM file must contain the following tags for each record: "
 		"\\fIbc\\fP for the barcode, \\fImi\\fP for the UMI, \\fIXF\\fP for the "
 		"gene and \\fIAS\\fP for the alignment score. "
-		"The \\fIXF\\fP tag must be set to a gene and nothing else."
+		"The \\fIXF\\fP tag must be set to a gene and nothing else. "
+		"The reads status are output in CSV files whose file name is based on \\fINAME\\fP."
 	);
 
 	// Add positional arguments and set their valid file types
+	addArgument(parser, ArgParseArgument(ArgParseArgument::STRING, "NAME"));
 	addArgument(parser, ArgParseArgument(ArgParseArgument::INPUT_FILE, "BAM_IN"));
 	addArgument(parser, ArgParseArgument(ArgParseArgument::OUTPUT_FILE, "BAM_OUT"));
-	setValidValues(parser, 0, "bam BAM sam SAM");
+	setValidValues(parser, 0, "");
 	setValidValues(parser, 1, "bam BAM sam SAM");
+	setValidValues(parser, 2, "bam BAM sam SAM");
 
 	// Parse the arguments
 	ArgumentParser::ParseResult res = parse(parser, argc, argv);
@@ -87,8 +93,9 @@ parseCommandLine(SelectOptions& options, int argc, char const** argv)
 	}
 
 	// Export arguments
-	getArgumentValue(options.bam_in, parser, 0);
-	getArgumentValue(options.bam_out, parser, 1);
+	getArgumentValue(options.name, parser, 0);
+	getArgumentValue(options.bam_in, parser, 1);
+	getArgumentValue(options.bam_out, parser, 2);
 
 	return seqan::ArgumentParser::PARSE_OK;
 }
@@ -203,10 +210,24 @@ int main(int argc, char const** argv)
 		return res == seqan::ArgumentParser::PARSE_ERROR;
 	}
 
-	bool test = false;
+	bool test = true;
 
 	// The Molecule class allows to try to find a gene for a barcode-UMI pair
 	Molecules molecules = ExtractMoleculesFromBAM(options.bam_in, test);
+
+	// Ouput files tracking reads status
+	std::map<std::string, std::ofstream> files;
+	std::vector<std::string> status = {"UNIQUE", "RESOLVED", "UNRESOLVED"};
+	for (auto& st : status)
+	{
+		std::string st_lower;
+		for (int i=0; i<st.size(); i++)
+		{
+			st_lower.push_back( std::tolower(st[i]) );
+		}
+		std::string filename = std::string(toCString(options.name)) + "." + st_lower + ".csv";
+		files[st] = std::ofstream(filename);
+	}
 
 	// For each alignment record, assign a mapping tag:
 	// UNIQUE, INCLUDED, EXCLUDED, UNRESOLVED
@@ -222,10 +243,21 @@ int main(int argc, char const** argv)
 			tags[pos] = tag;
 		}
 
+		// Reads status
+		files[mol.GetStatus()]
+			<< mol.GetBarcode() + "," + mol.GetUMI() + "," + mol.GetCSVString('|', '/')
+			<< std::endl;
+
 		i++;
 		if ( (i+1) % (unsigned long long)1000000 == 0 ) {
 			std::cerr << "Processing " << (i+1) << "..." << std::endl;
 		}
+	}
+
+	// Close output files
+	for (auto& st : status)
+	{
+		files[st].close();
 	}
 
 	// Write the records with the mapping tags in a new BAM file

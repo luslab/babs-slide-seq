@@ -1,7 +1,7 @@
 #!/bin/sh
 
-module load Nextflow/20.12.0-edge
-module load Singularity/3.6.4
+#module load Nextflow/20.12.0-edge
+#module load Singularity/3.6.4
 
 WORK=work
 

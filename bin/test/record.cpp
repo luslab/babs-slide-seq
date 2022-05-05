@@ -30,5 +30,10 @@ int main(int argc, char** argv)
 		std::cout << "In set, " << rec << std::endl;
 	}
 
+	for (auto& rec: records)
+	{
+		std::cout << rec.GetCSVString('/') << std::endl;
+	}
+
 	return 0;
 }

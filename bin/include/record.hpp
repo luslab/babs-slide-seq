@@ -22,6 +22,7 @@ class Record
 		std::string GetRead() const;
 		long GetScore() const;
 		std::string GetGene() const;
+		std::string GetCSVString(char) const;
 		friend std::ostream& operator<<(std::ostream&, const Record&);
 		friend bool operator<(const Record&, const Record&);
 };

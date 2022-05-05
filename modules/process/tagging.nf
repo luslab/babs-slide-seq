@@ -152,3 +152,46 @@ process htseq {
 		"""
 }
 
+process select {
+
+	label "tagging"
+	label "sequencing"
+	
+	tag { "${basename}" }
+
+	publishDir Paths.get( params.out_dir ),
+		mode: "copy",
+		overwrite: "true",
+		saveAs: { filename ->
+			if ( filename.indexOf(".csv") != -1 )
+			{
+				"qc/${filename}"
+			}
+			else
+			{
+				"files/${filename}"
+			}
+		}
+
+	input:
+		tuple val(metadata), path(bam), val(suffix), path(script)
+
+	output:
+		tuple val(metadata), path("${basename}.bam"), path("${basename}.bam.bai"), emit: bam
+		tuple val(metadata), val("unique"), path("${basename}.unique.csv"), emit: unique_reads
+		tuple val(metadata), val("resolved"), path("${basename}.resolved.csv"), emit: resolved_reads
+		tuple val(metadata), val("unresolved"), path("${basename}.unresolved.csv"), emit: unresolved_reads
+
+	script:		
+		
+		name = metadata["name"]
+		basename = "${name}.${suffix}"
+
+
+		"""
+		./$script "${basename}" $bam "${basename}.bam"
+		echo "Indexing..."
+		samtools index "${basename}.bam"
+		"""
+}
+

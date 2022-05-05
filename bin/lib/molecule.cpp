@@ -86,6 +86,15 @@ std::string Molecule::GetSeq() const
 }
 
 // ----------------------------------------------------------------------------
+// GetStatus()
+// ----------------------------------------------------------------------------
+
+std::string Molecule::GetStatus() const
+{
+	return status;
+}
+
+// ----------------------------------------------------------------------------
 // GetRecords()
 // ----------------------------------------------------------------------------
 
@@ -370,12 +379,16 @@ bool Molecule::IsThereAMajority() const
 // GetFrequencyBasedRecordTags()
 // ----------------------------------------------------------------------------
 
-std::map<unsigned long long, std::string> Molecule::GetFrequencyBasedRecordTags() const
+std::map<unsigned long long, std::string> Molecule::GetFrequencyBasedRecordTags()
 {
 	std::map<unsigned long long, std::string> map;
 
+	std::string status;
+
 	if ( GetGenes().size() == 1 && records.size() == 1 )
 	{
+		status = "UNIQUE";
+
 		for (auto& rec : records)
 		{
 			map[rec.GetPos()] = "UNIQUE";
@@ -386,6 +399,8 @@ std::map<unsigned long long, std::string> Molecule::GetFrequencyBasedRecordTags(
 
 	if ( IsThereAMajority() )
 	{
+		status = "RESOLVED";
+
 		long long max = GetMaxFrequency();
 		std::string selected_gene;
 		for (auto& [gene, frequency] : frequencies)
@@ -413,13 +428,55 @@ std::map<unsigned long long, std::string> Molecule::GetFrequencyBasedRecordTags(
 
 	else
 	{
+		status = "UNRESOLVED";
+
 		for (auto& rec : records)
 		{
 			map[rec.GetPos()] = "UNRESOLVED";
 		}
 	}
 
+	this->status = status;
+
 	return map;
+}
+
+// ----------------------------------------------------------------------------
+// GetReads()
+// ----------------------------------------------------------------------------
+
+std::set<std::string> Molecule::GetReads() const
+{
+	std::set<std::string> reads;
+
+	for (auto& record : records)
+	{
+		reads.insert( record.GetRead() );
+	}
+
+	return reads;
+}
+
+// ----------------------------------------------------------------------------
+// GetCSVString()
+// ----------------------------------------------------------------------------
+
+std::string Molecule::GetCSVString(char molecule_delimiter, char record_delimiter) const
+{
+	std::string str;
+	unsigned long long i = 0;
+
+	for (auto& record : records)
+	{
+		str.append( record.GetCSVString(record_delimiter) );
+		i++;
+		if ( i < records.size() )
+		{
+			str.push_back(molecule_delimiter);
+		}
+	}
+
+	return str;
 }
 
 // ============================================================================
