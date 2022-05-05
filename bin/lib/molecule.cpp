@@ -300,6 +300,128 @@ std::map<unsigned long long, std::string> Molecule::GetRecordTags() const
 	return map;
 }
 
+// ----------------------------------------------------------------------------
+// ComputeFrequencies()
+// ----------------------------------------------------------------------------
+
+void Molecule::ComputeFrequencies()
+{
+	std::map<std::string, long long> frequencies;
+	for (auto& rec : records)
+	{
+		frequencies[ rec.GetGene() ]++;
+	}
+
+	this->frequencies = frequencies;
+}
+
+// ----------------------------------------------------------------------------
+// GetMaxFrequency()
+// ----------------------------------------------------------------------------
+
+long long Molecule::GetMaxFrequency() const
+{
+	long long max = -1;
+
+	for (auto& [gene, frequency] : frequencies)
+	{
+		if ( frequency > max )
+		{
+			max = frequency;
+		}
+	}
+
+	return max;
+}
+
+// ----------------------------------------------------------------------------
+// IsThereAMajority()
+// ----------------------------------------------------------------------------
+
+bool Molecule::IsThereAMajority() const
+{
+	long long max = GetMaxFrequency();
+	long n = 0;
+
+	for (auto& [gene, frequency] : frequencies)
+	{
+		if ( frequency == max )
+		{
+			n++;
+		}
+	}
+
+	if ( n == 0 )
+	{
+		std::cerr << "Error: the maximal frequency can't be found in the " << *this << " molecule" << std::endl;
+		exit(EXIT_FAILURE);
+	}
+	else if ( n == 1 )
+	{
+		return true;
+	}
+	else
+	{
+		return false;
+	}
+}
+
+// ----------------------------------------------------------------------------
+// GetFrequencyBasedRecordTags()
+// ----------------------------------------------------------------------------
+
+std::map<unsigned long long, std::string> Molecule::GetFrequencyBasedRecordTags() const
+{
+	std::map<unsigned long long, std::string> map;
+
+	if ( GetGenes().size() == 1 && records.size() == 1 )
+	{
+		for (auto& rec : records)
+		{
+			map[rec.GetPos()] = "UNIQUE";
+		}
+
+		return map;
+	}
+
+	if ( IsThereAMajority() )
+	{
+		long long max = GetMaxFrequency();
+		std::string selected_gene;
+		for (auto& [gene, frequency] : frequencies)
+		{
+			if ( frequency == max )
+			{
+				selected_gene = gene;
+			}
+		}
+
+		bool found = false;
+		for (auto& rec : records)
+		{
+			if ( !found && rec.GetGene() == selected_gene )
+			{
+				map[rec.GetPos()] = "INCLUDED";
+				found = true;
+			}
+			else
+			{
+				map[rec.GetPos()] = "EXCLUDED";
+			}
+		}
+	}
+
+	else
+	{
+		for (auto& rec : records)
+		{
+			map[rec.GetPos()] = "UNRESOLVED";
+		}
+	}
+
+	return map;
+}
+
 // ============================================================================
 // Operators
 // ============================================================================

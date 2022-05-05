@@ -205,6 +205,74 @@ int main(int argc, char** argv)
 
 	////////////////////////////////////////////////////////////////////////////
 
+	std::cout << std::endl;
+	std::cout << "Test of the GetFrequencyBasedRecordTags() method:" << std::endl;
+
+	mm1.ComputeFrequencies();
+	for (auto& rec : mm1)
+	{
+		std::cout << rec << ", " << rec.GetScore() << std::endl;
+	}
+	for (auto& [pos, tag]: mm1.GetFrequencyBasedRecordTags())
+	{
+		std::cout << pos << ", " << tag << std::endl;
+	}
+
+	mm2.ComputeFrequencies();
+	for (auto& rec : mm2)
+	{
+		std::cout << rec << ", " << rec.GetScore() << std::endl;
+	}
+	for (auto& [pos, tag]: mm2.GetFrequencyBasedRecordTags())
+	{
+		std::cout << pos << ", " << tag << std::endl;
+	}
+
+	Molecule mm6 = Molecule("ACGTACGTACGTACGT", "ACGTACGT", rec1);
+	mm6.ComputeFrequencies();
+	for (auto& rec : mm6)
+	{
+		std::cout << rec << ", " << rec.GetScore() << std::endl;
+	}
+	for (auto& [pos, tag] : mm6.GetFrequencyBasedRecordTags())
+	{
+		std::cout << pos << ", " << tag << std::endl;
+	}
+
+	Molecule mm7 = Molecule("ACGTACGTACGTACGT", "ACGTACGT", rec1);
+	mm7.Insert(rec3);
+	mm7.Insert(rec4);
+	mm7.Insert(rec5);
+	mm7.Insert(rec6);
+	mm7.Insert(rec7);
+	mm7.Insert(rec8);
+	mm7.Insert(rec9);
+	mm7.ComputeFrequencies();
+	for (auto& rec : mm7)
+	{
+		std::cout << rec << ", " << rec.GetScore() << std::endl;
+	}
+	for (auto& [pos, tag] : mm7.GetFrequencyBasedRecordTags())
+	{
+		std::cout << pos << ", " << tag << std::endl;
+	}
+
+	Molecule mm8 = Molecule("ACGTACGTACGTACGT", "ACGTACGT", rec2);
+	mm8.Insert(rec3);
+	mm8.Insert(rec6);
+	mm8.Insert(rec7);
+	mm8.ComputeFrequencies();
+	for (auto& rec : mm8)
+	{
+		std::cout << rec << ", " << rec.GetScore() << std::endl;
+	}
+	for (auto& [pos, tag] : mm8.GetFrequencyBasedRecordTags())
+	{
+		std::cout << pos << ", " << tag << std::endl;
+	}
+
+	////////////////////////////////////////////////////////////////////////////
+
 	return 0;
 }
 

@@ -215,9 +215,9 @@ int main(int argc, char const** argv)
 	for (auto& molecule : molecules)
 	{
 		Molecule mol = Molecule(molecule);
-		mol.ExtractMappings();
+		mol.ComputeFrequencies();
 
-		for (auto& [pos, tag] : mol.GetRecordTags())
+		for (auto& [pos, tag] : mol.GetFrequencyBasedRecordTags())
 		{
 			tags[pos] = tag;
 		}

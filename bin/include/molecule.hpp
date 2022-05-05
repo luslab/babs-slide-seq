@@ -20,6 +20,7 @@ class Molecule
 		std::string sequence;
 		std::set<Record> records;
 		Mappings mappings;
+		std::map<std::string, long long> frequencies;
 	
 	public:
 		Molecule();
@@ -38,6 +39,10 @@ class Molecule
 		long GetMaxScore() const;
 		bool IsThereAMaxima() const;
 		std::map<unsigned long long, std::string> GetRecordTags() const;
+		void ComputeFrequencies();
+		long long GetMaxFrequency() const;
+		bool IsThereAMajority() const;
+		std::map<unsigned long long, std::string> GetFrequencyBasedRecordTags() const;
 		friend std::ostream& operator<<(std::ostream&, const Molecule&);
 		friend bool operator<(const Molecule&, const Molecule&);
 		friend Molecule operator+(Molecule&, Molecule&);
