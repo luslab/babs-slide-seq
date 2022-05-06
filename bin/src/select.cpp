@@ -210,7 +210,7 @@ int main(int argc, char const** argv)
 		return res == seqan::ArgumentParser::PARSE_ERROR;
 	}
 
-	bool test = true;
+	bool test = false;
 
 	// The Molecule class allows to try to find a gene for a barcode-UMI pair
 	Molecules molecules = ExtractMoleculesFromBAM(options.bam_in, test);

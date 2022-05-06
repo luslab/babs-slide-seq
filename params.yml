@@ -1,6 +1,5 @@
 
-#design: test/design.csv
-design: tmp/anna_design.csv
+design: test/design.csv
 up_errors_threshold: 3
 umis_threshold: 1 # this should be set at 10 at least
 barcode_errors_threshold: 4
