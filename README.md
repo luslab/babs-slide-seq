@@ -1,7 +1,7 @@
 
 # Slide-Seq
 
-This pipeline pre-configured for people working at th [Francis Crick Institue](https://www.crick.ac.uk/?gclid=EAIaIQobChMIodDA66K59wIVF-vtCh3_SwEJEAAYAiAAEgKrkvD_BwE).
+This pipeline pre-configured for people working at the [Francis Crick Institue](https://www.crick.ac.uk/?gclid=EAIaIQobChMIodDA66K59wIVF-vtCh3_SwEJEAAYAiAAEgKrkvD_BwE).
 If you're not from the Crick, it should be easy to configure the pipeline for your system.
 Just modify these two files:
 
