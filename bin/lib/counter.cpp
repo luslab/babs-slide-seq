@@ -167,7 +167,7 @@ void Counter::GetDGE(std::ostream& feat, std::ostream& bcd, std::ostream& mtx)
 	mtx << GetNumberOfGenes() << " " << GetNumberOfBarcodes() << " " << GetNumberOfEntries() << std::endl;
 
 	// DGE's rows are genes and columns are barcodes. So, we reshape the counts
-	struct GeneComp { bool operator() (const Gene& g1, const Gene& g2) const { return g1.GetSymbol() < g2.GetSymbol(); } };
+	struct GeneComp { bool operator() (const Gene& g1, const Gene& g2) const { return g1.GetID() < g2.GetID(); } };
 	std::map<Gene, std::map<std::string, unsigned long long>, GeneComp> dge;
 	std::map<Gene, unsigned long long>::iterator it;
 	for (auto& ent : counts)
@@ -180,8 +180,9 @@ void Counter::GetDGE(std::ostream& feat, std::ostream& bcd, std::ostream& mtx)
 	}
 
 	// Matrix
-	for (auto& [gene, cnts] : dge)
+	for (auto& gene : genes_v)
 	{
+		std::map<std::string, unsigned long long> cnts = dge[gene];
 		for (auto& [barcode, cnt] : cnts)
 		{
 			mtx << positions[gene] << " " << pos[barcode] << " " << cnt << std::endl;

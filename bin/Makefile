@@ -230,6 +230,10 @@ select_test:
 
 count_test:
 	./count \
-		/camp/svc/reference/Genomics/babs/mus_musculus/ensembl/GRCm38/release-95/gtf/Mus_musculus.GRCm38.95.gtf \
-		/camp/stp/babs/working/bahn/projects/luscomben/chris.cheshire/radiation_kidney/results/files/211004_02.multimap_umis.bam
+		/camp/svc/reference/Genomics/10x/10x_transcriptomes/GRCm38-release-89/genes/genes.gtf \
+		../tmp/jilong.multimap_umis.bam
+# /camp/svc/reference/Genomics/babs/mus_musculus/ensembl/GRCm38/release-95/gtf/Mus_musculus.GRCm38.95.gtf \
+#		/camp/svc/reference/Genomics/10x/10x_transcriptomes/GRCm38-release-89/genes/genes.gtf \
+#		/camp/svc/reference/Genomics/babs/mus_musculus/ensembl/GRCm38/release-95/gtf/Mus_musculus.GRCm38.95.gtf \
+#		/camp/stp/babs/working/bahn/projects/luscomben/chris.cheshire/radiation_kidney/results/files/211004_02.multimap_umis.bam
 
