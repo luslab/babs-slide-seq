@@ -304,7 +304,7 @@ workflow {
 	///////////////////////////////////////////////////////////////////////////
 	// PUCK BARCODES
 
-	shuffling( PUCKS.combine )
+	shuffling( PUCKS )
 
 	shuffling
 		.out
