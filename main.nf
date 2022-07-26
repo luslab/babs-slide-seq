@@ -66,7 +66,6 @@ include { fastqc } from "./modules/process/quality_control"
 // pucks
 
 include { shuffling } from "./modules/process/pucks"
-shuffling_script = Channel.fromPath("bin/shuffling.py")
 ////////
 
 /////////////////////
@@ -305,7 +304,7 @@ workflow {
 	///////////////////////////////////////////////////////////////////////////
 	// PUCK BARCODES
 
-	shuffling( PUCKS.combine(shuffling_script) )
+	shuffling( PUCKS.combine )
 
 	shuffling
 		.out
