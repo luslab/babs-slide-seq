@@ -125,11 +125,10 @@ include { MERGE_LANES } from "./modules/process/demultiplexing"
 include { FASTQC      } from "./modules/process/quality_control"
 //////////
 
-// ////////
-// // pucks
-
-// include { shuffling } from "./modules/process/pucks"
-// ////////
+////////
+// pucks
+include { SHUFFLING } from "./modules/process/pucks"
+////////
 
 // /////////////////////
 // // barcode extraction
@@ -363,16 +362,17 @@ workflow {
 
 	FASTQC( ch_fastqc )
 
-	// ///////////////////////////////////////////////////////////////////////////
-	// // PUCK BARCODES
+	///////////////////////////////////////////////////////////////////////////
+	// PUCK BARCODES
 
-	// shuffling( PUCKS.combine )
+	SHUFFLING( ch_pucks )
 
-	// shuffling
-	// 	.out
-	// 	.ordered
-	// 	.concat( shuffling.out.shuffled )
-	// 	.set{ PUCK_BARCODES }
+	SHUFFLING
+		.out
+		.ordered
+		.concat( SHUFFLING.out.shuffled )
+		.set{ ch_puck_barcodes }
+	//ch_puck_barcodes | view
 
 	// ///////////////////////////////////////////////////////////////////////////
 	// // SEQUENCING BARCODES
