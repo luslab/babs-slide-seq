@@ -92,7 +92,6 @@ for (param in checkPathParamList) { if (param) { file(param, checkIfExists: true
 
 // Check mandatory parameters that cannot be checked in the groovy lib as we want a channel for them
 if (params.design)     { ch_input = file(params.design) } else { exit 1, "Design samplesheet not specified!" }
-if (params.star_index) { ch_star_index = file(params.star_index) } else { exit 1, "Star index not specified!" }
 
 // ch_blacklist = Channel.empty()
 // if (params.blacklist) {
@@ -117,6 +116,10 @@ if (anno_readme && file(anno_readme).exists()) {
 ///////////////////////////////////////////////////////////////////////////////
 //// INCLUDES ////////////////////////////////////////////////////////////////
 
+//////////
+// genome
+
+include { UNTAR as UNTAR_STAR_INDEX } from './modules/nf-core/modules/untar/main'
 
 //////////
 // samples
@@ -328,6 +331,15 @@ ch_fastq
 
 workflow {
 	///////////////////////////////////////////////////////////////////////////
+	// PREPARE GENOMES
+
+    if (params.star_index.endsWith(".tar.gz")) {
+        ch_star_index = UNTAR_STAR_INDEX ( [ [], params.star_index ] ).untar.map{ row -> [ row[1] ] }
+    } else {
+        ch_star_index = file(params.star_index)
+    }
+
+	///////////////////////////////////////////////////////////////////////////
 	// MERGE
 
 	ch_fastq
@@ -387,10 +399,10 @@ workflow {
 
 	STAR( EXTRACT_BARCODE.out.fastq, ch_star_index )
 
-	// ///////////////////////////////////////////////////////////////////////////
-	// // DUPLICATES
+	///////////////////////////////////////////////////////////////////////////
+	// DUPLICATES
 
-	// mark_duplicates(star.out.bam)
+	MARK_DUPLICATES( STAR.out.bam )
 
 	// ///////////////////////////////////////////////////////////////////////////
 	// // ADD SLIDE-SEQ, ALIGNMENT AND DUPLICATES TAGS
