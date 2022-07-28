@@ -1,6 +1,6 @@
 import java.nio.file.Paths
 
-process bcl2fastq {
+process BCL2FASTQ {
 
 	//label "demultiplexing"
 
@@ -36,7 +36,7 @@ process bcl2fastq {
 		template "bcl2fastq.sh"
 }
 
-process merge_lanes {
+process MERGE_LANES {
 
 	label "demultiplexing"
 

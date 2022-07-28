@@ -1,6 +1,6 @@
 import java.nio.file.Paths
 
-process fastqc {
+process FASTQC {
 
 	label "sequencing"
 	//label "quality_control"
@@ -27,7 +27,7 @@ process fastqc {
 		"""
 }
 
-process duplicates {
+process DUPLICATES {
 
 	label "python"
 	//label "quality_control"

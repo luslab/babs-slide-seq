@@ -70,7 +70,7 @@ class Utils {
         return channels
     }
 
-    public static void  dropKeys(map, keys) {
+    public static void dropKeys(map, keys) {
         // because Map.dropWhile doesn't with the current Java version of Nextflow,
         // apparently requires Java9
         def new_map = [:]
@@ -80,5 +80,27 @@ class Utils {
             }
         }
         return new_map
+    }
+
+    public static void removeKeys(map, keys) {
+        def new_map = [:]
+
+        map.each{
+            if ( ! keys.contains(it.key) )
+            {
+                new_map.put(it.key, it.value)
+            }
+        }
+
+        return new_map
+    }
+
+    public static void getMinLength(structure) {
+        return structure.split("[A-Z]").collect{it as int }.sum()
+    }
+
+    public static void getPuckName(puck) {
+        def f = new File(puck)
+        return f.getName().toString().replaceAll('\\.csv$', '') // single quotes!
     }
 }
