@@ -51,6 +51,15 @@ def getPuckName(puck) {//
 }
 
 ///////////////////////////////////////////////////////////////////////////////
+//// PARAMETER CHECKING ///////////////////////////////////////////////////////
+
+params.fasta     = WorkflowMain.getGenomeAttribute(params, 'fasta')
+params.bowtie2   = WorkflowMain.getGenomeAttribute(params, 'bowtie2')
+params.gtf       = WorkflowMain.getGenomeAttribute(params, 'gtf')
+params.gene_bed  = WorkflowMain.getGenomeAttribute(params, 'bed12')
+params.blacklist = WorkflowMain.getGenomeAttribute(params, 'blacklist')
+
+///////////////////////////////////////////////////////////////////////////////
 //// PROCESSES ////////////////////////////////////////////////////////////////
 
 
@@ -72,9 +81,8 @@ include { shuffling } from "./modules/process/pucks"
 // barcode extraction
 
 include { extract_barcode } from "./modules/process/extract_barcode"
+include { PLOT as PLOT_UP_MATCHING } from "./modules/process/plot"
 
-include { plot_1_arg as plot_up_matching } from "./modules/process/plot"
-plot_up_matching_script = Channel.fromPath("bin/plot/up_matching.py")
 include { plot_1_arg_1_val as plot_barcode_extraction } from "./modules/process/plot"
 plot_barcode_extraction_script  = Channel.fromPath("bin/plot/barcode_extraction.py")
 /////////////////////
