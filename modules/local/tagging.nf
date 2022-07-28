@@ -1,7 +1,6 @@
 import java.nio.file.Paths
 
 process MARK_DUPLICATES {
-	//label "tagging"
 	label "sequencing"
 	label 'process_high'
 
@@ -42,7 +41,6 @@ process MARK_DUPLICATES {
 }
 
 process TAG_BAM {
-	label "tagging"
 	label "sequencing"
 	label "process_low"
 	tag { "${name}" }
@@ -64,36 +62,30 @@ process TAG_BAM {
 	"""
 }
 
-process umis_per_barcode {
-
-	label "tagging"
+process UMIS_PER_BARCODE {
 	label "sequencing"
-	
+	label "process_low"
 	tag { "${name}" }
 
 	input:
-		tuple val(metadata), path(bam), path(bai), path(script)
+	tuple val(metadata), path(bam), path(bai)
 
 	output:
-		tuple val(metadata), path("${basename}.bam"), path("${basename}.bam.bai")
+	tuple val(metadata), path("*.bam"), path("*.bam.bai")
 
 	script:		
-		
-		name = metadata["name"]
-		suffix = "umis"
-		basename = "${name}.${suffix}"
-		threshold = params.umis_threshold
+	name = metadata["name"]
+	suffix = "umis"
+	threshold = params.umis_threshold
 
-		"""
-		./$script --threshold $threshold $bam "${basename}.bam"
-		echo "Indexing..."
-		samtools index "${basename}.bam"
-		"""
+	"""
+	umis_per_barcode --threshold $threshold $bam "${name}.${suffix}.bam"
+	echo "Indexing..."
+	samtools index "${name}.${suffix}.bam"
+	"""
 }
 
 process htseq {
-
-	label "tagging"
 	label "sequencing"
 
 	tag { "${name}" }
@@ -123,8 +115,6 @@ process htseq {
 }
 
 process select {
-
-	label "tagging"
 	label "sequencing"
 	
 	tag { "${basename}" }

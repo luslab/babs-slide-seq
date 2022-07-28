@@ -150,17 +150,16 @@ include { MARK_DUPLICATES } from "./modules/local/tagging"
 
 /////////////////
 // slide seq tags
-include { TAG_BAM } from "./modules/local/tagging"
-include { BAM_METRICS as READS_UP_MATCHING } from "./modules/local/bam"
-include { PLOT as PLOT_UP_ALIGN } from "./modules/local/plot"
+include { TAG_BAM                             } from "./modules/local/tagging"
+include { BAM_METRICS as READS_UP_MATCHING    } from "./modules/local/bam"
+include { PLOT as PLOT_UP_ALIGN               } from "./modules/local/plot"
 include { BAM_FILTER as BAM_FILTER_UP_MATCHED } from "./modules/local/bam"
 /////////////////
 
 /////////////////////////////
 // umis per barcode threshold
 
-// include { umis_per_barcode } from "./modules/local/tagging"
-// umis_per_barcode_script = Channel.fromPath("bin/umis_per_barcode")
+include { UMIS_PER_BARCODE } from "./modules/local/tagging"
 
 // include { bam_metrics as reads_umis_per_barcode } from "./modules/local/bam"
 // reads_umis_per_barcode_script = Channel.fromPath("bin/bam/reads_umis_per_barcode.py")
@@ -411,14 +410,10 @@ workflow {
 
 	BAM_FILTER_UP_MATCHED( TAG_BAM.out )
 
-	// ///////////////////////////////////////////////////////////////////////////
-	// // UMIS PER BARCODE THRESHOLD
+	///////////////////////////////////////////////////////////////////////////
+	// UMIS PER BARCODE THRESHOLD
 
-	// umis_per_barcode(
-	// 	bam_filter_up_matched
-	// 		.out
-	// 		.combine(umis_per_barcode_script)
-	// )
+	UMIS_PER_BARCODE( BAM_FILTER_UP_MATCHED.out )
 
 	// reads_umis_per_barcode(
 	// 	umis_per_barcode
