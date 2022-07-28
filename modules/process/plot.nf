@@ -1,9 +1,10 @@
 process PLOT {
 	label 'plot'
-	tag 'FILL_TAG_IN'
+	label 'ultra_low'
+	tag "$name"
 
 	input:
-	tuple val(metadata), val(value)
+	tuple val(metadata), path(file), val(value)
 
 	output:
 	tuple val(metadata), file("*.png"), emit: png
@@ -13,10 +14,10 @@ process PLOT {
 	name = metadata["name"]
 
 	def args    = task.ext.args ?: ''
-	def script    = task.ext.script ?: ''
-    def ext     = task.ext.ext ?: 'txt'
+	def script  = task.ext.script ?: ''
+    def suffix  = task.ext.suffix ?: '.NO_SUFFIX'
     """
-    python3 $script $args $value ${name}.${ext}
+    $script $args $file $value ${name}.${suffix}
     """
 }
 

@@ -130,15 +130,13 @@ include { FASTQC      } from "./modules/process/quality_control"
 include { SHUFFLING } from "./modules/process/pucks"
 ////////
 
-// /////////////////////
-// // barcode extraction
+/////////////////////
+// barcode extraction
 
-// include { extract_barcode } from "./modules/process/extract_barcode"
-// include { PLOT as PLOT_UP_MATCHING } from "./modules/process/plot"
-
-// include { plot_1_arg_1_val as plot_barcode_extraction } from "./modules/process/plot"
-// plot_barcode_extraction_script  = Channel.fromPath("bin/plot/barcode_extraction.py")
-// /////////////////////
+include { EXTRACT_BARCODE } from "./modules/process/extract_barcode"
+include { PLOT as PLOT_UP_MATCHING } from "./modules/process/plot"
+include { PLOT as PLOT_BARCODE_EXTRACTION } from "./modules/process/plot"
+/////////////////////
 
 // ///////////////////////////
 // // alignment and duplicates
@@ -374,27 +372,14 @@ workflow {
 		.set{ ch_puck_barcodes }
 	//ch_puck_barcodes | view
 
-	// ///////////////////////////////////////////////////////////////////////////
-	// // SEQUENCING BARCODES
+	///////////////////////////////////////////////////////////////////////////
+	// SEQUENCING BARCODES
 
-	// extract_barcode( merge_lanes.out.combine(extract_barcode_script) )
+	EXTRACT_BARCODE( MERGE_LANES.out )
+	//EXTRACT_BARCODE.out.metrics | view
 
-	// plot_up_matching(
-	// 	extract_barcode
-	// 		.out
-	// 		.metrics
-	// 		.combine( Channel.from("up_matching") )
-	// 		.combine(plot_up_matching_script)
-	// )
-
-	// plot_barcode_extraction(
-	// 	extract_barcode
-	// 		.out
-	// 		.metrics
-	// 		.combine( Channel.from("barcode_extraction") )
-	// 		.combine(plot_barcode_extraction_script)
-	// 		.map{ [ it[0] , it[1] , it[0]["min_length"] , it[2] , it[3] ] }
-	// )
+	PLOT_UP_MATCHING( EXTRACT_BARCODE.out.metrics.map{ [ it[0] , it[1], '' ] } )
+	PLOT_BARCODE_EXTRACTION( EXTRACT_BARCODE.out.metrics.map{ [ it[0] , it[1], it[0]["min_length"] ] } )
 
 	// ///////////////////////////////////////////////////////////////////////////
 	// // ALIGNMENT

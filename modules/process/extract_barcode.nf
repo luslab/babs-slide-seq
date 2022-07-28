@@ -1,12 +1,10 @@
 import java.nio.file.Paths
 
-process extract_barcode {
-
+process EXTRACT_BARCODE {
 	label "sequencing"
-	
 	tag { "${name}" }
 
-	publishDir Paths.get( params.out_dir ),
+	publishDir Paths.get( params.outdir ),
 		mode: "copy",
 		overwrite: "true",
 		saveAs: { filename ->
@@ -21,15 +19,12 @@ process extract_barcode {
 		}
 
 	input:
-		tuple val(metadata), path(read1), path(read2), path(script)
+	tuple val(metadata), path(read1), path(read2)
 
 	output:
-		tuple val(metadata), path("${name}.fastq.gz"), emit: fastq
-		tuple val(metadata), path("${name}.extract_barcode.csv"), emit: metrics
-		tuple \
-			val(metadata),
-			path("${name}.extract_barcode.up_distances.csv"),
-			emit: distances
+	tuple val(metadata), path("${name}.fastq.gz"), emit: fastq
+	tuple val(metadata), path("${name}.extract_barcode.csv"), emit: metrics
+	tuple val(metadata), path("${name}.extract_barcode.up_distances.csv"), emit: distances
 
 	script:		
 		
