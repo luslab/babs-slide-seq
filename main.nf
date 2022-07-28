@@ -1,6 +1,76 @@
 #!/usr/bin/env nextflow
 
+import java.nio.file.Paths
+@Grab('com.xlson.groovycsv:groovycsv:1.3')
+import static com.xlson.groovycsv.CsvParser.parseCsv
+
 nextflow.enable.dsl=2
+
+///////////////////////////////////////////////////////////////////////////////
+//// FUNCTONS /////////////////////////////////////////////////////////////////
+
+//
+// NOURDINE CUSTOM FUNCTIONS
+//
+
+def absPath(path) {
+	def f = new File(path)
+
+	if ( ! f.isAbsolute() ) {
+		return Paths.get(workflow.projectDir.toString(), path).toString()
+	} else {
+		return path
+	}
+}
+
+def addValue(map, key, value) {
+	def new_map = map.clone()
+	new_map.put(key, value)
+	return new_map
+}
+
+def parseSeries(metadata, path) {
+	def csv = parseCsv( new File(path).text )
+	def channels = []
+	for ( row in csv ) {
+		channels.add( metadata.clone() << row.toMap() )
+	}
+	return channels
+}
+
+def dropKeys(map, keys) {
+	// because Map.dropWhile doesn't with the current Java version of Nextflow,
+	// apparently requires Java9
+	def new_map = [:]
+	map.each{ k, v ->
+		if ( ! keys.contains(k) ) {
+			new_map[k] = v
+		}
+	}
+	return new_map
+}
+
+def removeKeys(map, keys) {
+	def new_map = [:]
+
+	map.each{
+		if ( ! keys.contains(it.key) )
+		{
+			new_map.put(it.key, it.value)
+		}
+	}
+
+	return new_map
+}
+
+def getMinLength(structure) {
+	return structure.split("[A-Z]").collect{it as int }.sum()
+}
+
+def getPuckName(puck) {
+	def f = new File(puck)
+	return f.getName().toString().replaceAll('\\.csv$', '') // single quotes!
+}
 
 ///////////////////////////////////////////////////////////////////////////////
 //// PARAMETER CHECKING ///////////////////////////////////////////////////////
@@ -244,6 +314,7 @@ Channel
 	.map{ addValue(it, "fastq_1", new File(it["fastq_1"]).getAbsolutePath()) }
 	.map{ addValue(it, "fastq_2", new File(it["fastq_2"]).getAbsolutePath()) }
 	.set{ ch_fastq }
+//ch_fastq | view
 
 ///////////////////////////////////////////////////////////////////////////////
 //// PUCKS ////////////////////////////////////////////////////////////////////
@@ -252,12 +323,12 @@ ch_fastq
 	.map{ [ it["puck"] , it["puck_path"] ] }
 	.unique()
 	.set{ ch_pucks }
+//ch_pucks | view
 
 ///////////////////////////////////////////////////////////////////////////////
 //// MAIN WORKFLOW ////////////////////////////////////////////////////////////
 
 workflow {
-
 	///////////////////////////////////////////////////////////////////////////
 	// MERGE
 

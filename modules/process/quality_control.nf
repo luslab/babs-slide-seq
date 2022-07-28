@@ -4,12 +4,7 @@ process FASTQC {
 
 	label "sequencing"
 	//label "quality_control"
-	
 	tag { "${name}" }
-
-	publishDir Paths.get( params.out_dir , "qc" , "fastqc" ),
-		mode: "copy",
-		overwrite: "true"
 
 	input:
 		tuple val(metadata), path(fastq1), path(fastq2)
@@ -33,10 +28,6 @@ process DUPLICATES {
 	//label "quality_control"
 	
 	tag { "${basename}" }
-
-	publishDir Paths.get( params.out_dir , "qc" ),
-		mode: "copy",
-		overwrite: "true"
 
 	input:
 		tuple val(metadata), path(csv), path(fastq1), path(fastq2), path(script)
