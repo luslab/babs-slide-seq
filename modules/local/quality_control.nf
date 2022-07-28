@@ -14,7 +14,6 @@ process FASTQC {
 		tuple val(metadata), file("*_fastqc.zip"), emit: zip
 
 	script:		
-
 		name = metadata["name"]
 		
 		"""

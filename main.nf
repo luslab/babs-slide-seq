@@ -148,10 +148,9 @@ include { STAR            } from "./modules/local/align"
 include { MARK_DUPLICATES } from "./modules/local/tagging"
 ///////////////////////////
 
-// /////////////////
-// // slide seq tags
-// include { bam_tag as tag_bam } from "./modules/process/tagging"
-// tag_bam_script = Channel.fromPath("bin/tag_bam")
+/////////////////
+// slide seq tags
+include { TAG_BAM } from "./modules/local/tagging"
 
 // include { bam_metrics_hmem as reads_up_matching } from "./modules/process/bam"
 // reads_up_matching_script = Channel.fromPath("bin/bam/reads_up_matching.py")
@@ -404,17 +403,11 @@ workflow {
 
 	MARK_DUPLICATES( STAR.out.bam )
 
-	// ///////////////////////////////////////////////////////////////////////////
-	// // ADD SLIDE-SEQ, ALIGNMENT AND DUPLICATES TAGS
+	///////////////////////////////////////////////////////////////////////////
+	// ADD SLIDE-SEQ, ALIGNMENT AND DUPLICATES TAGS
 
-	// // slide-seq tags, alignment tag and duplicate tag
-	// tag_bam(
-	// 	mark_duplicates
-	// 		.out
-	// 		.bam
-	// 		.combine( Channel.from("tagged") )
-	// 		.combine(tag_bam_script)
-	// )
+	// slide-seq tags, alignment tag and duplicate tag
+	TAG_BAM( MARK_DUPLICATES.out.bam )
 
 	// // 3 columns: Matched, Mapped, Reads
 	// reads_up_matching(

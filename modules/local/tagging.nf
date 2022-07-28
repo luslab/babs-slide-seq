@@ -41,56 +41,27 @@ process MARK_DUPLICATES {
 		"""
 }
 
-process BAM_TAG {
-
+process TAG_BAM {
 	label "tagging"
 	label "sequencing"
-	
-	tag { "${basename}" }
+	label "process_low"
+	tag { "${name}" }
 
 	input:
-		tuple val(metadata), path(bam), val(suffix), path(script)
+	tuple val(metadata), path(bam)
 
 	output:
-		tuple val(metadata), path("${basename}.bam"), path("${basename}.bam.bai")
+	tuple val(metadata), path("*.bam"), path("*.bam.bai")
 
-	script:		
-		
-		name = metadata["name"]
-		basename = "${name}.${suffix}"
-
-
-		"""
-		./$script $bam "${basename}.bam"
-		echo "Indexing..."
-		samtools index "${basename}.bam"
-		"""
-}
-
-process BAM_TAH_HMEM {
-
-	label "tagging"
-	label "sequencing"
-	
-	tag { "${basename}" }
-
-	input:
-		tuple val(metadata), path(bam), val(suffix), path(script)
-
-	output:
-		tuple val(metadata), path("${basename}.bam"), path("${basename}.bam.bai")
-
-	script:		
-		
-		name = metadata["name"]
-		basename = "${name}.${suffix}"
-
-
-		"""
-		./$script $bam "${basename}.bam"
-		echo "Indexing..."
-		samtools index "${basename}.bam"
-		"""
+	script:
+	name = metadata["name"]
+    def suffix  = task.ext.suffix ?: 'tagged'
+	"""
+	echo "Tagging..."
+	tag_bam $bam "${name}.${suffix}.bam"
+	echo "Indexing..."
+	samtools index "${name}.${suffix}.bam"
+	"""
 }
 
 process umis_per_barcode {
