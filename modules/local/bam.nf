@@ -20,32 +20,28 @@ process BAM_METRICS {
 	"""
 }
 
-process bam_filter {
-
+process BAM_FILTER {
 	label "samtools"
+	label 'process_low'
 	
-	tag { "${basename}" }
-
-	publishDir Paths.get( params.out_dir , "files" ),
-		mode: "copy",
-		overwrite: "true"
+	tag { "${name}" }
 
 	input:
-		tuple val(metadata), path(bam), path(bai), val(suffix), val(expr)
+	tuple val(metadata), path(bam), path(bai)
 
 	output:
-		tuple val(metadata), path("${basename}.bam"), path("${basename}.bam.bai")
+	tuple val(metadata), path("*.bam"), path("*.bam.bai")
 
 	script:		
-
-		name = metadata["name"]
-		basename = "${name}.${suffix}"
-		
-		"""
-		samtools view --expr '${expr}' --output "${basename}.bam" $bam
-		echo "Indexing..."
-		samtools index "${basename}.bam"
-		"""
+	name = metadata["name"]
+	def suffix  = task.ext.suffix ?: 'NO_SUFFIX'
+	def expr    = task.ext.expr ?: ''
+	"""
+	echo "Filtering..."
+	samtools view --expr '${expr}' --output "${name}.${suffix}.bam" $bam
+	echo "Indexing..."
+	samtools index "${name}.${suffix}.bam"
+	"""
 }
 
 process bam_metrics_hmem {

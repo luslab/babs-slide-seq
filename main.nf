@@ -153,35 +153,34 @@ include { MARK_DUPLICATES } from "./modules/local/tagging"
 include { TAG_BAM } from "./modules/local/tagging"
 include { BAM_METRICS as READS_UP_MATCHING } from "./modules/local/bam"
 include { PLOT as PLOT_UP_ALIGN } from "./modules/local/plot"
+include { BAM_FILTER as BAM_FILTER_UP_MATCHED } from "./modules/local/bam"
+/////////////////
 
-// include { bam_filter as bam_filter_up_matched } from "./modules/process/bam"
-// /////////////////
+/////////////////////////////
+// umis per barcode threshold
 
-// /////////////////////////////
-// // umis per barcode threshold
-
-// include { umis_per_barcode } from "./modules/process/tagging"
+// include { umis_per_barcode } from "./modules/local/tagging"
 // umis_per_barcode_script = Channel.fromPath("bin/umis_per_barcode")
 
-// include { bam_metrics as reads_umis_per_barcode } from "./modules/process/bam"
+// include { bam_metrics as reads_umis_per_barcode } from "./modules/local/bam"
 // reads_umis_per_barcode_script = Channel.fromPath("bin/bam/reads_umis_per_barcode.py")
 
-// include { bam_metrics as reads_umi_threshold } from "./modules/process/bam"
+// include { bam_metrics as reads_umi_threshold } from "./modules/local/bam"
 // reads_umi_threshold_script = Channel.fromPath("bin/bam/reads_umi_threshold.py")
 
-// include { bam_filter as bam_filter_umi_threshold } from "./modules/process/bam"
+// include { bam_filter as bam_filter_umi_threshold } from "./modules/local/bam"
 
-// include { bam_metrics as reads_barcode_matching } from "./modules/process/bam"
+// include { bam_metrics as reads_barcode_matching } from "./modules/local/bam"
 // reads_barcode_matching_script = Channel.fromPath("bin/bam/reads_barcode_matching.py")
 
-// include { plot_1_val as plot_umi_threshold } from "./modules/process/plot"
+// include { plot_1_val as plot_umi_threshold } from "./modules/local/plot"
 // plot_umi_threshold_script = Channel.fromPath("bin/plot/umi_threshold.py")
 // /////////////////////////////
 
 // ///////////////////
 // // hamming distance
 
-// include { hamming } from "./modules/process/integration"
+// include { hamming } from "./modules/local/integration"
 // hamming_script =
 // 	Channel
 // 		.fromPath("bin/hamming/hamming")
@@ -191,92 +190,92 @@ include { PLOT as PLOT_UP_ALIGN } from "./modules/local/plot"
 // 		)
 // 		.collect()
 
-// include { plot_2_args as plot_histo_hamming } from "./modules/process/plot"
+// include { plot_2_args as plot_histo_hamming } from "./modules/local/plot"
 // plot_histo_hamming_script = Channel.fromPath("bin/plot/histo_hamming.py")
 // ///////////////////
 
 // ///////////////////
 // // barcode matching
 
-// include { get_barcodes } from "./modules/process/integration"
+// include { get_barcodes } from "./modules/local/integration"
 
-// include { matcher } from "./modules/process/integration"
+// include { matcher } from "./modules/local/integration"
 // matcher_script = Channel.fromPath("bin/matcher.py")
 
-// include { add_match } from "./modules/process/integration"
+// include { add_match } from "./modules/local/integration"
 // add_match_script = Channel.fromPath("bin/add_match")
 
-// include { plot_1_arg as plot_barcode_matching } from "./modules/process/plot"
+// include { plot_1_arg as plot_barcode_matching } from "./modules/local/plot"
 // plot_barcode_matching_script = Channel.fromPath("bin/plot/barcode_matching.py")
 
-// include { plot_1_arg as plot_barcode_align } from "./modules/process/plot"
+// include { plot_1_arg as plot_barcode_align } from "./modules/local/plot"
 // plot_barcode_align_script = Channel.fromPath("bin/plot/barcode_align.py")
 
-// include { plot_1_arg as plot_histo_errors } from "./modules/process/plot"
+// include { plot_1_arg as plot_histo_errors } from "./modules/local/plot"
 // plot_histo_errors_script = Channel.fromPath("bin/plot/histo_errors.py")
 
-// include { bam_filter as bam_filter_barcode_matched } from "./modules/process/bam"
+// include { bam_filter as bam_filter_barcode_matched } from "./modules/local/bam"
 // ///////////////////
 
 // ///////////////
 // // gene tagging
 
-// include { htseq } from "./modules/process/tagging"
+// include { htseq } from "./modules/local/tagging"
 
-// include { bam_metrics as count_gene_tags } from "./modules/process/bam"
+// include { bam_metrics as count_gene_tags } from "./modules/local/bam"
 // count_gene_tags_script = Channel.fromPath("bin/bam/count_gene_tags.py")
 
-// include { bam_metrics as count_reads_per_umi } from "./modules/process/bam"
+// include { bam_metrics as count_reads_per_umi } from "./modules/local/bam"
 // count_reads_per_umi_script = Channel.fromPath("bin/bam/reads_per_umi.py")
 
-// include { bam_metrics as count_reads_per_umi_gene } from "./modules/process/bam"
+// include { bam_metrics as count_reads_per_umi_gene } from "./modules/local/bam"
 // count_reads_per_umi_gene_script = Channel.fromPath("bin/bam/reads_per_umi_gene.py")
 
-// include { plot_1_arg as plot_gene_tags } from "./modules/process/plot"
+// include { plot_1_arg as plot_gene_tags } from "./modules/local/plot"
 // plot_gene_tags_script = Channel.fromPath("bin/plot/gene_tags.py")
 
-// include { bam_filter as bam_filter_gene_tags } from "./modules/process/bam"
+// include { bam_filter as bam_filter_gene_tags } from "./modules/local/bam"
 
 // ///////////////
 
 // /////////////////////
 // // umis multi mapping
 
-// include { select } from "./modules/process/tagging"
+// include { select } from "./modules/local/tagging"
 // select_script = Channel.fromPath("bin/select")
 
-// include { duplicates } from "./modules/process/quality_control"
+// include { duplicates } from "./modules/local/quality_control"
 // duplicates_script = Channel.fromPath("bin/duplicates.py")
 
-// include { bam_metrics as count_select } from "./modules/process/bam"
+// include { bam_metrics as count_select } from "./modules/local/bam"
 // count_select_script = Channel.fromPath("bin/bam/count_select.py")
 
-// include { plot_1_arg as plot_select } from "./modules/process/plot"
+// include { plot_1_arg as plot_select } from "./modules/local/plot"
 // plot_select_script = Channel.fromPath("bin/plot/select.py")
 
-// include { bam_filter as bam_filter_multimapped_umis } from "./modules/process/bam"
+// include { bam_filter as bam_filter_multimapped_umis } from "./modules/local/bam"
 // /////////////////////
 
 // ////////////
 // // sequences
 
-// include { bam_metrics as reads_per_barcode_umi } from "./modules/process/bam"
+// include { bam_metrics as reads_per_barcode_umi } from "./modules/local/bam"
 // reads_per_barcode_umi_script = Channel.fromPath("bin/bam/reads_per_barcode_umi.py")
 
-// include { plot_1_arg as plot_balance_barcode } from "./modules/process/plot"
+// include { plot_1_arg as plot_balance_barcode } from "./modules/local/plot"
 // plot_balance_barcode_script = Channel.fromPath("bin/plot/balance_barcode.py")
 
-// include { plot_1_arg as plot_balance_umi } from "./modules/process/plot"
+// include { plot_1_arg as plot_balance_umi } from "./modules/local/plot"
 // plot_balance_umi_script  = Channel.fromPath("bin/plot/balance_umi.py")
 
-// include { plot_1_arg as plot_reads_fraction } from "./modules/process/plot"
+// include { plot_1_arg as plot_reads_fraction } from "./modules/local/plot"
 // plot_reads_fraction_script = Channel.fromPath("bin/plot/reads_fraction.py")
 // ////////////
 
 // //////
 // // dge
 
-// include { dge } from "./modules/process/export"
+// include { dge } from "./modules/local/export"
 // count_script = Channel.fromPath("bin/count")
 
 // plot_histo_genes_script = Channel.fromPath("bin/plot/histo_genes.py")
@@ -284,17 +283,17 @@ include { PLOT as PLOT_UP_ALIGN } from "./modules/local/plot"
 // plot_spatial_umis_script  = Channel.fromPath("bin/plot/spatial_umi.py")
 // plot_umis_per_barcode_script = Channel.fromPath("bin/plot/umis_per_barcode.py")
 
-// include { plot_1_arg as plot_histo_genes } from "./modules/process/plot"
-// include { plot_1_arg as plot_histo_umis } from "./modules/process/plot"
-// include { plot_1_arg as plot_umis_per_barcode } from "./modules/process/plot"
-// include { plot_2_args as plot_spatial_umis } from "./modules/process/plot"
+// include { plot_1_arg as plot_histo_genes } from "./modules/local/plot"
+// include { plot_1_arg as plot_histo_umis } from "./modules/local/plot"
+// include { plot_1_arg as plot_umis_per_barcode } from "./modules/local/plot"
+// include { plot_2_args as plot_spatial_umis } from "./modules/local/plot"
 // //////
 
 // /////////
 // // output 
 
-// include { merge_plots } from "./modules/process/export"
-// include { rename_coords } from "./modules/process/export"
+// include { merge_plots } from "./modules/local/export"
+// include { rename_coords } from "./modules/local/export"
 // /////////
 
 
@@ -410,12 +409,7 @@ workflow {
 
 	PLOT_UP_ALIGN( READS_UP_MATCHING.out.map{ [ it[0] , it[1], 'up_align' ] } )
 
-	// bam_filter_up_matched(
-	// 	tag_bam
-	// 		.out
-	// 		.combine( Channel.from("up_matched") )
-	// 		.combine( Channel.from("[us]==\"MATCHED\" && [as]==\"MAPPED\"") )
-	// )
+	BAM_FILTER_UP_MATCHED( TAG_BAM.out )
 
 	// ///////////////////////////////////////////////////////////////////////////
 	// // UMIS PER BARCODE THRESHOLD
