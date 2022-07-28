@@ -15,7 +15,7 @@ process PLOT {
 
 	def args    = task.ext.args ?: ''
 	def script  = task.ext.script ?: ''
-    def suffix  = task.ext.suffix ?: '.NO_SUFFIX'
+    def suffix  = task.ext.suffix ?: 'NO_SUFFIX'
     """
     $script $args $file $value ${name}.${suffix}
     """

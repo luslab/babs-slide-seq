@@ -151,11 +151,9 @@ include { MARK_DUPLICATES } from "./modules/local/tagging"
 /////////////////
 // slide seq tags
 include { TAG_BAM } from "./modules/local/tagging"
+include { BAM_METRICS as READS_UP_MATCHING } from "./modules/local/bam"
 
-// include { bam_metrics_hmem as reads_up_matching } from "./modules/process/bam"
-// reads_up_matching_script = Channel.fromPath("bin/bam/reads_up_matching.py")
-
-// include { plot_1_arg as plot_up_align } from "./modules/process/plot"
+// include { plot_1_arg as plot_up_align } from "./modules/local/plot"
 // plot_up_align_script = Channel.fromPath("bin/plot/up_align.py")
 
 // include { bam_filter as bam_filter_up_matched } from "./modules/process/bam"
@@ -409,13 +407,9 @@ workflow {
 	// slide-seq tags, alignment tag and duplicate tag
 	TAG_BAM( MARK_DUPLICATES.out.bam )
 
-	// // 3 columns: Matched, Mapped, Reads
-	// reads_up_matching(
-	// 	tag_bam
-	// 		.out
-	// 		.combine( Channel.from("reads_up_matching") )
-	// 		.combine(reads_up_matching_script)
-	// )
+	// 3 columns: Matched, Mapped, Reads
+	READS_UP_MATCHING( TAG_BAM.out )
+
 	// plot_up_align(
 	// 	reads_up_matching
 	// 		.out
