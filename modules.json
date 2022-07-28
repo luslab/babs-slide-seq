@@ -1,0 +1,11 @@
+{
+    "name": "babs-slide-seq",
+    "homePage": "",
+    "repos": {
+        "nf-core/modules": {
+            "gunzip": {
+                "git_sha": "fa37e0662690c4ec4260dae282fbce08777503e6"
+            }
+        }
+    }
+}

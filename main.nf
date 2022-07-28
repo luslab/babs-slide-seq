@@ -91,7 +91,8 @@ checkPathParamList = [
 for (param in checkPathParamList) { if (param) { file(param, checkIfExists: true) } }
 
 // Check mandatory parameters that cannot be checked in the groovy lib as we want a channel for them
-if (params.design) { ch_input = file(params.design) } else { exit 1, "Design samplesheet not specified!" }
+if (params.design)     { ch_input = file(params.design) } else { exit 1, "Design samplesheet not specified!" }
+if (params.star_index) { ch_star_index = file(params.star_index) } else { exit 1, "Star index not specified!" }
 
 // ch_blacklist = Channel.empty()
 // if (params.blacklist) {
@@ -120,29 +121,29 @@ if (anno_readme && file(anno_readme).exists()) {
 //////////
 // samples
 
-include { BCL2FASTQ   } from "./modules/process/demultiplexing"
-include { MERGE_LANES } from "./modules/process/demultiplexing"
-include { FASTQC      } from "./modules/process/quality_control"
+include { BCL2FASTQ   } from "./modules/local/demultiplexing"
+include { MERGE_LANES } from "./modules/local/demultiplexing"
+include { FASTQC      } from "./modules/local/quality_control"
 //////////
 
 ////////
 // pucks
-include { SHUFFLING } from "./modules/process/pucks"
+include { SHUFFLING } from "./modules/local/pucks"
 ////////
 
 /////////////////////
 // barcode extraction
 
-include { EXTRACT_BARCODE } from "./modules/process/extract_barcode"
-include { PLOT as PLOT_UP_MATCHING } from "./modules/process/plot"
-include { PLOT as PLOT_BARCODE_EXTRACTION } from "./modules/process/plot"
+include { EXTRACT_BARCODE                 } from "./modules/local/extract_barcode"
+include { PLOT as PLOT_UP_MATCHING        } from "./modules/local/plot"
+include { PLOT as PLOT_BARCODE_EXTRACTION } from "./modules/local/plot"
 /////////////////////
 
-// ///////////////////////////
-// // alignment and duplicates
-// include { star } from "./modules/process/align"
-// include { mark_duplicates } from "./modules/process/tagging"
-// ///////////////////////////
+///////////////////////////
+// alignment and duplicates
+include { STAR            } from "./modules/local/align"
+include { MARK_DUPLICATES } from "./modules/local/tagging"
+///////////////////////////
 
 // /////////////////
 // // slide seq tags
@@ -381,10 +382,10 @@ workflow {
 	PLOT_UP_MATCHING( EXTRACT_BARCODE.out.metrics.map{ [ it[0] , it[1], '' ] } )
 	PLOT_BARCODE_EXTRACTION( EXTRACT_BARCODE.out.metrics.map{ [ it[0] , it[1], it[0]["min_length"] ] } )
 
-	// ///////////////////////////////////////////////////////////////////////////
-	// // ALIGNMENT
+	///////////////////////////////////////////////////////////////////////////
+	// ALIGNMENT
 
-	// star(extract_barcode.out.fastq)
+	STAR( EXTRACT_BARCODE.out.fastq, ch_star_index )
 
 	// ///////////////////////////////////////////////////////////////////////////
 	// // DUPLICATES

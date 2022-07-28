@@ -1,14 +1,13 @@
 import java.nio.file.Paths
 
-process mark_duplicates {
-
+process MARK_DUPLICATES {
 	//label "tagging"
 	label "sequencing"
-	time "10:00:00"
+	label 'process_high'
 
 	tag { "${name}" }
 
-	publishDir Paths.get( params.out_dir ),
+	publishDir Paths.get( params.outdir ),
 		mode: "copy",
 		overwrite: "true",
 		saveAs: { filename ->
@@ -42,7 +41,7 @@ process mark_duplicates {
 		"""
 }
 
-process bam_tag {
+process BAM_TAG {
 
 	label "tagging"
 	label "sequencing"
@@ -68,7 +67,7 @@ process bam_tag {
 		"""
 }
 
-process bam_tag_hmem {
+process BAM_TAH_HMEM {
 
 	label "tagging"
 	label "sequencing"
