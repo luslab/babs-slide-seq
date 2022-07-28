@@ -37,7 +37,7 @@ process extract_barcode {
 		read_structure = metadata["read_structure"]
 
 		"""
-		./$script \
+		extract_barcode \
 			--sample "${name}" \
 			--fastq "${name}.fastq.gz" \
 			--read-structure "${read_structure}" \

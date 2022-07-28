@@ -71,8 +71,7 @@ include { shuffling } from "./modules/process/pucks"
 /////////////////////
 // barcode extraction
 
-include { extract_barcode } from "./modules/process/up_primer"
-extract_barcode_script = Channel.fromPath("bin/extract_barcode")
+include { extract_barcode } from "./modules/process/extract_barcode"
 
 include { plot_1_arg as plot_up_matching } from "./modules/process/plot"
 plot_up_matching_script = Channel.fromPath("bin/plot/up_matching.py")
@@ -304,7 +303,7 @@ workflow {
 	///////////////////////////////////////////////////////////////////////////
 	// PUCK BARCODES
 
-	shuffling( PUCKS )
+	shuffling( PUCKS.combine )
 
 	shuffling
 		.out
