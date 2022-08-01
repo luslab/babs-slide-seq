@@ -159,17 +159,14 @@ include { BAM_FILTER as BAM_FILTER_UP_MATCHED } from "./modules/local/bam"
 /////////////////////////////
 // umis per barcode threshold
 
-include { UMIS_PER_BARCODE } from "./modules/local/tagging"
-include { BAM_METRICS as READS_UMIS_PER_BARCODE } from "./modules/local/bam"
-include { BAM_METRICS as READ_UMI_THRESHOLD } from "./modules/local/bam"
-
-// include { bam_filter as bam_filter_umi_threshold } from "./modules/local/bam"
+include { UMIS_PER_BARCODE                       } from "./modules/local/tagging"
+include { BAM_METRICS as READS_UMIS_PER_BARCODE  } from "./modules/local/bam"
+include { BAM_METRICS as READS_UMI_THRESHOLD     } from "./modules/local/bam"
+include { PLOT as PLOT_UMI_THRESHOLD             } from "./modules/local/plot"
+include { BAM_FILTER as BAM_FILTER_UMI_THRESHOLD } from "./modules/local/bam"
 
 // include { bam_metrics as reads_barcode_matching } from "./modules/local/bam"
 // reads_barcode_matching_script = Channel.fromPath("bin/bam/reads_barcode_matching.py")
-
-// include { plot_1_val as plot_umi_threshold } from "./modules/local/plot"
-// plot_umi_threshold_script = Channel.fromPath("bin/plot/umi_threshold.py")
 // /////////////////////////////
 
 // ///////////////////
@@ -413,22 +410,11 @@ workflow {
 
 	READS_UMIS_PER_BARCODE( UMIS_PER_BARCODE.out )
 
-	READ_UMI_THRESHOLD( UMIS_PER_BARCODE.out )
+	READS_UMI_THRESHOLD( UMIS_PER_BARCODE.out )
 
-	// plot_umi_threshold(
-	// 	reads_umi_threshold
-	// 		.out
-	// 		.combine( Channel.from(params.umis_threshold) )
-	// 		.combine( Channel.from("umi_threshold") )
-	// 		.combine(plot_umi_threshold_script)
-	// )
+	PLOT_UMI_THRESHOLD( READS_UMI_THRESHOLD.out.map{ [ it[0] , it[1], params.umi_threshold ] } )
 
-	// bam_filter_umi_threshold(
-	// 	umis_per_barcode
-	// 		.out
-	// 		.combine( Channel.from("umi_threshold") )
-	// 		.combine( Channel.from("[bt]==\"PASS\"") )
-	// )
+	BAM_FILTER_UMI_THRESHOLD( UMIS_PER_BARCODE.out )
 
 	// ///////////////////////////////////////////////////////////////////////////
 	// // HAMMING DISTANCE

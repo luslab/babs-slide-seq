@@ -57,8 +57,8 @@ def count_plot(df, title):#
 if __name__ == "__main__":
 
 	csv_path = sys.argv[1]
-	base_path = sys.argv[2]
-	threshold = int( sys.argv[3] )
+	base_path = sys.argv[3]
+	threshold = int( sys.argv[2] )
 
 	df = pd.read_csv(csv_path, header=None)
 	df.columns = ["Status", "Reads"]
