@@ -37,8 +37,7 @@ def reads_umis_per_barcode(bam_path, csv_path):#
 	for k in counts.keys():
 		rows.append( {"Barcode": k, "Reads": counts[k], "UMIs": umis[k]} )
 
-	df = pd\
-		.DataFrame\
+	df = pd.DataFrame\
 		.from_records(rows)\
 		.sort_values("UMIs", ascending=False)
 	
@@ -50,4 +49,3 @@ if __name__ == "__main__":
 	path = sys.argv[1]
 	csv = sys.argv[2]
 	reads_umis_per_barcode(path, csv)
-

@@ -13,8 +13,9 @@ process BAM_METRICS {
 	script:		
 	name = metadata["name"]
 	def suffix  = task.ext.suffix ?: 'NO_SUFFIX'
+	def script  = task.ext.script ?: ''
 	"""
-	reads_up_matching.py $bam "${name}.${suffix}.csv"
+	$script $bam ${name}.${suffix}.csv
 	"""
 }
 

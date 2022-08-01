@@ -160,9 +160,7 @@ include { BAM_FILTER as BAM_FILTER_UP_MATCHED } from "./modules/local/bam"
 // umis per barcode threshold
 
 include { UMIS_PER_BARCODE } from "./modules/local/tagging"
-
-// include { bam_metrics as reads_umis_per_barcode } from "./modules/local/bam"
-// reads_umis_per_barcode_script = Channel.fromPath("bin/bam/reads_umis_per_barcode.py")
+include { BAM_METRICS as READS_UMIS_PER_BARCODE } from "./modules/local/bam"
 
 // include { bam_metrics as reads_umi_threshold } from "./modules/local/bam"
 // reads_umi_threshold_script = Channel.fromPath("bin/bam/reads_umi_threshold.py")
@@ -415,12 +413,7 @@ workflow {
 
 	UMIS_PER_BARCODE( BAM_FILTER_UP_MATCHED.out )
 
-	// reads_umis_per_barcode(
-	// 	umis_per_barcode
-	// 		.out
-	// 		.combine( Channel.from("reads_umis_per_barcode") )
-	// 		.combine(reads_umis_per_barcode_script)
-	// )
+	READS_UMIS_PER_BARCODE( UMIS_PER_BARCODE.out )
 
 	// reads_umi_threshold(
 	// 	umis_per_barcode
