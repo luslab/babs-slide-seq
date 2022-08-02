@@ -39,7 +39,7 @@ process HAMMING {
 	csv = "${name}.${bcd}.hamming.csv"
 	"""
 	hostname
-	sudo hamming $read_barcodes $puck_barcodes "${csv}"
+	hamming $read_barcodes $puck_barcodes "${csv}"
 	"""
 }
 
