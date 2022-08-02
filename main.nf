@@ -176,11 +176,10 @@ include { GET_BARCODES } from "./modules/local/integration"
 // // hamming distance
 
 include { HAMMING } from "./modules/local/integration"
+include { PLOT as PLOT_HISTO_HAMMING } from "./modules/local/plot"
+
 
 //include { BAM_FILTER as READS_BARCODE_MATCHING   } from "./modules/local/bam"
-
-// include { plot_2_args as plot_histo_hamming } from "./modules/local/plot"
-// plot_histo_hamming_script = Channel.fromPath("bin/plot/histo_hamming.py")
 // ///////////////////
 
 // include { matcher } from "./modules/local/integration"

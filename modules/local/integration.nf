@@ -25,7 +25,7 @@ process HAMMING {
 	label "integration"
 	label "process_low"
 	tag { "${name}" }
-	container 'chrischeshire/slideseq-hamming:latest'
+	//container 'chrischeshire/slideseq-hamming:latest'
 
 	input:
 	tuple val(metadata), path(read_barcodes), path(puck_barcodes)
@@ -43,68 +43,50 @@ process HAMMING {
 	"""
 }
 
-process matcher {
-
+process MATCHER {
 	label "integration"
 	label "python"
-	time "02:00:00"
-	
-	tag { "${basename}" }
-
-	publishDir Paths.get( params.out_dir , "qc" ),
-		mode: "copy",
-		overwrite: "true"
-
-	input:
-		tuple val(metadata), path(hamming), path(reads), path(puck), path(script)
-
-	output:
-		tuple val(metadata), file("${basename}.map.matching.csv"), emit: mapping
-		tuple val(metadata), file("${basename}.values.matching.csv"), emit: values
-		tuple val(metadata), file("${basename}.metrics.matching.csv"), emit: metrics
-		tuple val(metadata), file("${basename}.csv"), emit: coords
-
-	script:		
-		
-		name = metadata["name"]
-		shuf = metadata["barcodes"]
-		basename = name + "." + shuf
-
-		"""
-		python3 $script $hamming $reads $puck "${basename}" \
-			$params.barcode_errors_threshold \
-			$params.barcode_max_matches \
-			$params.barcode_max_entropy
-		"""
-}
-
-process add_match {
-
-	label "integration"
-	label "sequencing"
-	time "03:00:00"
-	
+	label "process_low"
 	tag { "${name}" }
 
-	publishDir Paths.get( params.out_dir , "files" ),
-		mode: "copy",
-		overwrite: "true"
-
 	input:
-		tuple val(metadata), path(mapping), path(bam), path(script)
+	tuple val(metadata), path(hamming), path(reads), path(puck)
 
 	output:
-		tuple \
-			val(metadata),
-			file("${name}.matched.bam"),
-			file("${name}.matched.bam.bai")
+	tuple val(metadata), file("*.map.matching.csv"    ), emit: mapping
+	tuple val(metadata), file("*values.matching.csv"  ), emit: values
+	tuple val(metadata), file("*.metrics.matching.csv"), emit: metrics
+	tuple val(metadata), file("*.csv"                 ), emit: coords
+
+	script:				
+	name = metadata["name"]
+	shuf = metadata["barcodes"]
+	basename = name + "." + shuf
+	"""
+	matcher.py $hamming $reads $puck "${basename}" \
+		$params.barcode_errors_threshold \
+		$params.barcode_max_matches \
+		$params.barcode_max_entropy
+	"""
+}
+
+process ADD_MATCH {
+	label "integration"
+	label "sequencing"
+	label "process_low"
+	tag { "${name}" }
+
+	input:
+		tuple val(metadata), path(mapping), path(bam)
+
+	output:
+	tuple val(metadata), file("${name}.matched.bam"), file("${name}.matched.bam.bai")
 
 	script:		
-		
-		name = metadata["name"]
+	name = metadata["name"]
 
-		"""
-		./$script $mapping $bam "${name}.matched.bam"
-		samtools index "${name}.matched.bam"
-		"""
+	"""
+	./$script $mapping $bam "${name}.matched.bam"
+	samtools index "${name}.matched.bam"
+	"""
 }
