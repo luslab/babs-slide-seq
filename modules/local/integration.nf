@@ -39,9 +39,6 @@ process HAMMING {
 	csv = "${name}.${bcd}.hamming.csv"
 	"""
 	hostname
-	nvidia-smi
-	yum -y install clinfo
-	clinfo
 	hamming $read_barcodes $puck_barcodes "${csv}"
 	"""
 }
