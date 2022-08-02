@@ -40,6 +40,8 @@ process HAMMING {
 	"""
 	hostname
 	nvidia-smi
+	yum -y install clinfo
+	clinfo
 	hamming $read_barcodes $puck_barcodes "${csv}"
 	"""
 }

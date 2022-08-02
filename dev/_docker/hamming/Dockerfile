@@ -1,4 +1,4 @@
-FROM nvidia/cuda:11.0.3-cudnn8-devel-centos7
+FROM nvidia/cuda:11.0.3-runtime-centos7
 
 # Install packages
 RUN yum -y install gcc gcc-c++ make kernel-devel lshw
