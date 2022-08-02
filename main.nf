@@ -165,31 +165,23 @@ include { BAM_METRICS as READS_UMI_THRESHOLD     } from "./modules/local/bam"
 include { PLOT as PLOT_UMI_THRESHOLD             } from "./modules/local/plot"
 include { BAM_FILTER as BAM_FILTER_UMI_THRESHOLD } from "./modules/local/bam"
 
-// include { bam_metrics as reads_barcode_matching } from "./modules/local/bam"
-// reads_barcode_matching_script = Channel.fromPath("bin/bam/reads_barcode_matching.py")
 // /////////////////////////////
-
-// ///////////////////
-// // hamming distance
-
-// include { hamming } from "./modules/local/integration"
-// hamming_script =
-// 	Channel
-// 		.fromPath("bin/hamming/hamming")
-// 		.concat(
-// 			Channel
-// 				.fromPath("bin/hamming/cl")
-// 		)
-// 		.collect()
-
-// include { plot_2_args as plot_histo_hamming } from "./modules/local/plot"
-// plot_histo_hamming_script = Channel.fromPath("bin/plot/histo_hamming.py")
-// ///////////////////
 
 // ///////////////////
 // // barcode matching
 
-// include { get_barcodes } from "./modules/local/integration"
+include { GET_BARCODES } from "./modules/local/integration"
+
+// ///////////////////
+// // hamming distance
+
+include { HAMMING } from "./modules/local/integration"
+
+//include { BAM_FILTER as READS_BARCODE_MATCHING   } from "./modules/local/bam"
+
+// include { plot_2_args as plot_histo_hamming } from "./modules/local/plot"
+// plot_histo_hamming_script = Channel.fromPath("bin/plot/histo_hamming.py")
+// ///////////////////
 
 // include { matcher } from "./modules/local/integration"
 // matcher_script = Channel.fromPath("bin/matcher.py")
@@ -419,16 +411,16 @@ workflow {
 	// ///////////////////////////////////////////////////////////////////////////
 	// // HAMMING DISTANCE
 
-	// get_barcodes( reads_umis_per_barcode.out )
+	GET_BARCODES( READS_UMIS_PER_BARCODE.out )
 
-	// get_barcodes
-	// 	.out
-	// 	.combine( PUCK_BARCODES )
-	// 	.filter{ it[0]["puck"] == it[2] }
-	// 	.map{ [ addValue(it[0], "barcodes", it[3]) , it[1] , it[4] ] }
-	// 	.set{ TO_HAMMING }
+	GET_BARCODES.out
+		.combine( ch_puck_barcodes )
+		.filter{ it[0]["puck"] == it[2] }
+		.map{ [ addValue(it[0], "barcodes", it[3]) , it[1] , it[4] ] }
+		.set{ ch_hamming_input }
+	//ch_hamming_input | view
 
-	// hamming( TO_HAMMING.combine(hamming_script) )
+	HAMMING( ch_hamming_input )
 
 	// plot_histo_hamming(
 	// 	hamming

@@ -1,69 +1,46 @@
-import java.nio.file.Paths
-
-process get_barcodes {
-
+process GET_BARCODES {
 	label "integration"
-	
+	label "process_low"
 	tag { "${name}" }
-
-	publishDir Paths.get( params.out_dir , "qc" ),
-		mode: "copy",
-		overwrite: "true"
+	container 'ubuntu:20.04'
 
 	input:
-		tuple val(metadata), path(csv)
+	tuple val(metadata), path(csv)
 
 	output:
-		tuple val(metadata), file("${name}.barcodes.txt")
+	tuple val(metadata), file("${name}.barcodes.txt")
 
-	script:		
-		
-		name = metadata["name"]
-
-		"""
-		cat $csv \
-			| sed 's/,.*//g' \
-			| sort \
-			| uniq \
-			> "${name}.barcodes.txt"
-		"""
+	script:			
+	name = metadata["name"]
+	"""
+	cat $csv \
+		| sed 's/,.*//g' \
+		| sort \
+		| uniq \
+		> "${name}.barcodes.txt"
+	"""
 }
 
-process hamming {
-
+process HAMMING {
 	label "integration"
-	label "gpu"
-	
-	time "06:00:00"
-	memory "40G"
-
-	tag { "${basename}" }
-
-	publishDir Paths.get( params.out_dir , "qc" ),
-		mode: "copy",
-		overwrite: "true"
+	label "process_low"
+	tag { "${name}" }
+	//container 'ubuntu:20.04'
 
 	input:
-		tuple \
-			val(metadata),
-			path(read_barcodes),
-			path(puck_barcodes),
-			path(script), path(cl)
+	tuple val(metadata), path(read_barcodes), path(puck_barcodes)
 
 	output:
-		tuple val(metadata), file("${csv}")
+	tuple val(metadata), file("*.csv")
 
-	script:		
-		
-		name = metadata["name"]
-		bcd = metadata["barcodes"]
-		basename = "${name}.${bcd}"
-		csv = "${basename}.hamming.csv"
-
-		"""
-		hostname
-		./$script $read_barcodes $puck_barcodes "${csv}"
-		"""
+	script:			
+	name = metadata["name"]
+	bcd = metadata["barcodes"]
+	csv = "${name}.${bcd}.hamming.csv"
+	"""
+	hostname
+	hamming $read_barcodes $puck_barcodes "${csv}"
+	"""
 }
 
 process matcher {

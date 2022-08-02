@@ -11,12 +11,12 @@
 {
 	int gid = get_global_id(0);
 
-	unsigned long long int barcode = barcodes[gid];
+	unsigned long barcode = barcodes[gid];
 
 	char dist = 0;
-	unsigned long long int base1;
-	unsigned long long int base2;
-	unsigned long long int mask = 7;
+	unsigned long base1;
+	unsigned long base2;
+	unsigned long mask = 7;
 
 	for (int i=0; i<seq_length[0]; i++)
 	{
