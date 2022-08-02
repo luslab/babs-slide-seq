@@ -25,7 +25,7 @@ process HAMMING {
 	label "integration"
 	label "process_low"
 	tag { "${name}" }
-	//container 'chrischeshire/slideseq-hamming:latest'
+	container 'chrischeshire/slideseq-hamming:latest'
 
 	input:
 	tuple val(metadata), path(read_barcodes), path(puck_barcodes)
