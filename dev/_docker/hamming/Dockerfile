@@ -7,7 +7,7 @@ FROM nvidia/cuda:11.0.3-cudnn8-devel-centos7
 
 RUN yum -y install gcc gcc-c++ make kernel-devel lshw
 
-ENV LD_LIBRARY_PATH /usr/local/lib
+ENV LD_LIBRARY_PATH /usr/local/lib:/usr/lib:/usr/local/lib64:/usr/lib64
 ENV LD_LIBRARY_PATH /home/hamming/opencl/lib:$LD_LIBRARY_PATH
 
 # Copy files over
