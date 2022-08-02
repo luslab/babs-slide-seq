@@ -39,6 +39,7 @@ process HAMMING {
 	csv = "${name}.${bcd}.hamming.csv"
 	"""
 	hostname
+	nvidia-smi
 	hamming $read_barcodes $puck_barcodes "${csv}"
 	"""
 }
