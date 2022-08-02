@@ -91,7 +91,7 @@ checkPathParamList = [
 for (param in checkPathParamList) { if (param) { file(param, checkIfExists: true) } }
 
 // Check mandatory parameters that cannot be checked in the groovy lib as we want a channel for them
-if (params.design)     { ch_input = file(params.design) } else { exit 1, "Design samplesheet not specified!" }
+if (params.design) { ch_input = file(params.design) } else { exit 1, "Design samplesheet not specified!" }
 
 // ch_blacklist = Channel.empty()
 // if (params.blacklist) {
