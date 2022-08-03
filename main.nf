@@ -441,7 +441,7 @@ workflow {
 		.map{ [ *it[0..2] , it[4] ] }
 		.set{ ch_matching }
 	
-	MATCHING( ch_matching )
+	MATCHER( ch_matching )
 
 	// matcher
 	// 	.out
