@@ -176,7 +176,7 @@ include { GET_BARCODES } from "./modules/local/integration"
 // // hamming distance
 
 include { HAMMING } from "./modules/local/integration"
-include { PLOT as PLOT_HISTO_HAMMING } from "./modules/local/plot"
+include { PLOT_HAMMING_HISTO } from "./modules/local/plot"
 
 //include { BAM_FILTER as READS_BARCODE_MATCHING   } from "./modules/local/bam"
 // ///////////////////
@@ -420,16 +420,13 @@ workflow {
 
 	HAMMING( ch_hamming_input )
 
-	ch_test = HAMMING.out.map{ [ it[0]["name"] , *it ] }
-			.groupTuple()
-			.map{
-				it[1][0]["barcodes"] == "ordered" ? [it[1][0], *it[2]] : [it[1][1], *it[2].reverse()]
-			}
-	ch_test | view 
+	ch_plot_hamming = HAMMING.out.map{ [ it[0]["name"] , *it ] }.groupTuple()
+		.map{
+			it[1][0]["barcodes"] == "ordered" ? [it[1][0], *it[2]] : [it[1][1], *it[2].reverse()]
+		}
+	//ch_plot_hamming | view 
 
-	// PLOT_HISTO_HAMMING(
-
-	// )
+	PLOT_HAMMING_HISTO ( ch_plot_hamming )
 
 	// ///////////////////////////////////////////////////////////////////////////
 	// // BARCODE MATCHING
