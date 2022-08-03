@@ -178,11 +178,9 @@ include { GET_BARCODES } from "./modules/local/integration"
 include { HAMMING } from "./modules/local/integration"
 include { PLOT_HAMMING_HISTO } from "./modules/local/plot"
 
-//include { BAM_FILTER as READS_BARCODE_MATCHING   } from "./modules/local/bam"
 // ///////////////////
 
-// include { matcher } from "./modules/local/integration"
-// matcher_script = Channel.fromPath("bin/matcher.py")
+include { MATCHER } from "./modules/local/integration"
 
 // include { add_match } from "./modules/local/integration"
 // add_match_script = Channel.fromPath("bin/add_match")
@@ -198,6 +196,8 @@ include { PLOT_HAMMING_HISTO } from "./modules/local/plot"
 
 // include { bam_filter as bam_filter_barcode_matched } from "./modules/local/bam"
 // ///////////////////
+
+//include { BAM_FILTER as READS_BARCODE_MATCHING   } from "./modules/local/bam"
 
 // ///////////////
 // // gene tagging
@@ -431,17 +431,17 @@ workflow {
 	// ///////////////////////////////////////////////////////////////////////////
 	// // BARCODE MATCHING
 
-	// hamming
-	// 	.out
-	// 	.combine(reads_umis_per_barcode.out)
-	// 	.filter{ it[0]["name"] == it[2]["name"] }
-	// 	.map{ [ it[0] , it[1] , it[3] ] }
-	// 	.combine( PUCKS )
-	// 	.filter{ it[0]["puck"] == it[3] }
-	// 	.map{ [ *it[0..2] , it[4] ] }
-	// 	.set{ TO_MATCHING }
+	HAMMING
+		.out
+		.combine(READS_UMIS_PER_BARCODE.out)
+		.filter{ it[0]["name"] == it[2]["name"] }
+		.map{ [ it[0] , it[1] , it[3] ] }
+		.combine( ch_pucks )
+		.filter{ it[0]["puck"] == it[3] }
+		.map{ [ *it[0..2] , it[4] ] }
+		.set{ ch_matching }
 	
-	// matcher( TO_MATCHING.combine(matcher_script) )
+	MATCHING( ch_matching )
 
 	// matcher
 	// 	.out
