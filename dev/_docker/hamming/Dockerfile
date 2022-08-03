@@ -105,6 +105,8 @@ ADD hamming /home/hamming
 WORKDIR /home/hamming
 RUN make hamming
 
+ENV PATH /home/hamming:${PATH}
+
 
 
 
