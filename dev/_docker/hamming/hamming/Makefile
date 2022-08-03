@@ -1,7 +1,3 @@
-
-#module load CUDA/10.1.105
-#module load GCCcore/8.2.0
-
 CC=g++
 INC=-I include
 LIBS=-lOpenCL

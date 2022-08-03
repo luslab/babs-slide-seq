@@ -83,6 +83,8 @@ int main(int argc, char **argv)
 	///////////////////////////////////////////////////////////////////////////
 	// GPU
 
+	std::cout << "GPU Setup" << std::endl;
+
 	cl_int err;
 	cl_platform_id *platforms;
 	cl_uint *num_platforms;
@@ -99,12 +101,16 @@ int main(int argc, char **argv)
 	devices = (cl_device_id*)malloc( maxD * sizeof(cl_device_id) );
 	num_devices = (cl_uint*)malloc( maxD * sizeof(cl_uint) );
 
+	std::cout << "Get Platform" << std::endl;
+
 	// platform
 	err = clGetPlatformIDs(maxP, platforms, num_platforms);
 	if ( err != CL_SUCCESS ) {
 		printf("Error: cannot get platform ID %d\n", err);
 		return -1;
 	}
+
+	std::cout << "Get Devices" << std::endl;
 
 	// device
 	err = clGetDeviceIDs(
@@ -114,6 +120,8 @@ int main(int argc, char **argv)
 		return -1;
 	}
 
+	std::cout << "Create Context" << std::endl;
+
 	// context
 	context = clCreateContext(NULL, 1, devices, NULL, NULL, &err);
 	if ( err != CL_SUCCESS ) {
@@ -121,12 +129,16 @@ int main(int argc, char **argv)
 		return -1;
 	}
 
+	std::cout << "Create command queue" << std::endl;
+
 	// command queue
 	queue = clCreateCommandQueueWithProperties(context, devices[0], NULL, &err);
 	if ( err != CL_SUCCESS ) {
 		printf("Error: cannot create command queue %d\n", err);
 		return -1;
 	}
+
+	std::cout << "OpenCl Configured" << std::endl;
 
 	///////////////////////////////////////////////////////////////////////////
 	// PROGRAMS
@@ -245,6 +257,8 @@ int main(int argc, char **argv)
 	char min_dist;
 	char* flags;
 	flags = (char*)malloc(N_BARCODES*sizeof(char));
+
+	std::cout << "Main Loop" << std::endl;
 
 	for (int i=0; i<reads.size(); i++)
 	{
