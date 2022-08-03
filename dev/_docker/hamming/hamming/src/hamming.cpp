@@ -142,15 +142,19 @@ int main(int argc, char **argv)
 
 	///////////////////////////////////////////////////////////////////////////
 	// PROGRAMS
+
+	std::cout << "Creating Kernals" << std::endl;
 	
 	cl_kernel* hamming_krn =
-		new_kernel(context, devices, "cl/hamming.cl", "hamming");
+		new_kernel(context, devices, "/home/hamming/cl/hamming.cl", "hamming");
 
 	cl_kernel* min_krn =
-		new_kernel(context, devices, "cl/min_dist.cl", "min_dist");
+		new_kernel(context, devices, "/home/hamming/cl/min_dist.cl", "min_dist");
 
 	///////////////////////////////////////////////////////////////////////////
 	// SOME BUFFERS FOR HAMMING KERNEL
+
+	std::cout << "Creating buffers" << std::endl;
 
 	// sequences numbers
 	cl_mem* nbuf;
@@ -250,6 +254,8 @@ int main(int argc, char **argv)
 	}
 
 	///////////////////////////////////////////////////////////////////////////
+
+	std::cout << "Loop Init" << std::endl;
 	
 	size_t global_item_size = (size_t)N_BARCODES;
 	size_t local_item_size = (size_t)1;
