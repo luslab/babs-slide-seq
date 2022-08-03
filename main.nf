@@ -183,10 +183,8 @@ include { PLOT_HAMMING_HISTO } from "./modules/local/plot"
 include { MATCHER } from "./modules/local/integration"
 include { PLOT as PLOT_BARCODE_MATCHING } from "./modules/local/plot"
 include { PLOT as PLOT_HISTO_ERROR } from "./modules/local/plot"
-
-
-// include { add_match } from "./modules/local/integration"
-// add_match_script = Channel.fromPath("bin/add_match")
+include { ADD_MATCH } from "./modules/local/integration"
+include { BAM_FILTER as READS_BARCODE_MATCHING } from "./modules/local/bam"
 
 // include { plot_1_arg as plot_barcode_align } from "./modules/local/plot"
 // plot_barcode_align_script = Channel.fromPath("bin/plot/barcode_align.py")
@@ -196,7 +194,7 @@ include { PLOT as PLOT_HISTO_ERROR } from "./modules/local/plot"
 // include { bam_filter as bam_filter_barcode_matched } from "./modules/local/bam"
 // ///////////////////
 
-//include { BAM_FILTER as READS_BARCODE_MATCHING   } from "./modules/local/bam"
+
 
 // ///////////////
 // // gene tagging
@@ -442,14 +440,6 @@ workflow {
 	
 	MATCHER( ch_matching )
 
-	MATCHER.out.mapping
-		.filter{ it[0]["barcodes"] == "ordered" }
-		.combine(BAM_FILTER_UMI_THRESHOLD.out)
-		.filter{ it[0]["name"] == it[2]["name"] }
-		.map{ [ *it[0..1] , it[3] ] }
-		.set{ ch_add_match }
-	//ch_add_match | view
-
 	PLOT_BARCODE_MATCHING(
 		MATCHER.out.metrics
 			.filter{ it[0]["barcodes"] == "ordered" }
@@ -462,14 +452,17 @@ workflow {
 			.combine( Channel.from("histo_errors") )
 	)
 
-	// add_match( TO_ADD_MATCH.combine(add_match_script) )
+	MATCHER.out.mapping
+	.filter{ it[0]["barcodes"] == "ordered" }
+	.combine(BAM_FILTER_UMI_THRESHOLD.out)
+	.filter{ it[0]["name"] == it[2]["name"] }
+	.map{ [ *it[0..1] , it[3] ] }
+	.set{ ch_add_match }
+	//ch_add_match | view
 
-	// reads_barcode_matching(
-	// 	add_match
-	// 		.out
-	// 		.combine( Channel.from("reads_barcode_matching") )
-	// 		.combine(reads_barcode_matching_script)
-	// )
+	ADD_MATCH( ch_add_match )
+
+	READS_BARCODE_MATCHING( ADD_MATCH.out )
 
 	// plot_barcode_align(
 	// 	reads_barcode_matching

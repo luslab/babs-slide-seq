@@ -77,16 +77,15 @@ process ADD_MATCH {
 	tag { "${name}" }
 
 	input:
-		tuple val(metadata), path(mapping), path(bam)
+	tuple val(metadata), path(mapping), path(bam)
 
 	output:
 	tuple val(metadata), file("${name}.matched.bam"), file("${name}.matched.bam.bai")
 
 	script:		
 	name = metadata["name"]
-
 	"""
-	./$script $mapping $bam "${name}.matched.bam"
+	add_match $mapping $bam "${name}.matched.bam"
 	samtools index "${name}.matched.bam"
 	"""
 }
