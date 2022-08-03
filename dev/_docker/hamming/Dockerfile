@@ -103,6 +103,5 @@ ADD hamming /home/hamming
 
 # Build files and add to path
 ENV PATH /home/hamming:${PATH}
-ENV PATH /home/hamming/cl:${PATH}
 WORKDIR /home/hamming
 RUN make hamming
