@@ -181,18 +181,17 @@ include { PLOT_HAMMING_HISTO } from "./modules/local/plot"
 // ///////////////////
 
 include { MATCHER } from "./modules/local/integration"
+include { PLOT as PLOT_BARCODE_MATCHING } from "./modules/local/plot"
+include { PLOT as PLOT_HISTO_ERROR } from "./modules/local/plot"
+
 
 // include { add_match } from "./modules/local/integration"
 // add_match_script = Channel.fromPath("bin/add_match")
 
-// include { plot_1_arg as plot_barcode_matching } from "./modules/local/plot"
-// plot_barcode_matching_script = Channel.fromPath("bin/plot/barcode_matching.py")
-
 // include { plot_1_arg as plot_barcode_align } from "./modules/local/plot"
 // plot_barcode_align_script = Channel.fromPath("bin/plot/barcode_align.py")
 
-// include { plot_1_arg as plot_histo_errors } from "./modules/local/plot"
-// plot_histo_errors_script = Channel.fromPath("bin/plot/histo_errors.py")
+
 
 // include { bam_filter as bam_filter_barcode_matched } from "./modules/local/bam"
 // ///////////////////
@@ -443,32 +442,25 @@ workflow {
 	
 	MATCHER( ch_matching )
 
-	// matcher
-	// 	.out
-	// 	.mapping
-	// 	.filter{ it[0]["barcodes"] == "ordered" }
-	// 	.combine(bam_filter_umi_threshold.out)
-	// 	.filter{ it[0]["name"] == it[2]["name"] }
-	// 	.map{ [ *it[0..1] , it[3] ] }
-	// 	.set{ TO_ADD_MATCH }
+	MATCHER.out.mapping
+		.filter{ it[0]["barcodes"] == "ordered" }
+		.combine(BAM_FILTER_UMI_THRESHOLD.out)
+		.filter{ it[0]["name"] == it[2]["name"] }
+		.map{ [ *it[0..1] , it[3] ] }
+		.set{ ch_add_match }
+	//ch_add_match | view
 
-	// plot_barcode_matching(
-	// 	matcher
-	// 		.out
-	// 		.metrics
-	// 		.filter{ it[0]["barcodes"] == "ordered" }
-	// 		.combine( Channel.from("barcode_matching") )
-	// 		.combine(plot_barcode_matching_script)
-	// )
+	PLOT_BARCODE_MATCHING(
+		MATCHER.out.metrics
+			.filter{ it[0]["barcodes"] == "ordered" }
+			.combine( Channel.from("barcode_matching") )
+	)
 
-	// plot_histo_errors(
-	// 	matcher
-	// 		.out
-	// 		.mapping
-	// 		.filter{ it[0]["barcodes"] == "ordered" }
-	// 		.combine( Channel.from("histo_errors") )
-	// 		.combine(plot_histo_errors_script)
-	// )
+	PLOT_HISTO_ERROR (
+		MATCHER.out.mapping
+			.filter{ it[0]["barcodes"] == "ordered" }
+			.combine( Channel.from("histo_errors") )
+	)
 
 	// add_match( TO_ADD_MATCH.combine(add_match_script) )
 
