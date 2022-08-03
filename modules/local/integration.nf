@@ -39,8 +39,6 @@ process HAMMING {
 	csv = "${name}.${bcd}.hamming.csv"
 	"""
 	hostname
-	cd /home/hamming/cl
-	ls -lah
 	hamming $read_barcodes $puck_barcodes "${csv}"
 	"""
 }
