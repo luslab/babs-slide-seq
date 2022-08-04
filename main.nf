@@ -189,13 +189,10 @@ include { PLOT as PLOT_BARCODE_ALIGN } from "./modules/local/plot"
 include { BAM_FILTER as BAM_FILTER_BARCODE_MATCHED } from "./modules/local/bam"
 
 // ///////////////////
-
-
-
 // ///////////////
 // // gene tagging
 
-// include { htseq } from "./modules/local/tagging"
+include { HTSEQ } from "./modules/local/tagging"
 
 // include { bam_metrics as count_gene_tags } from "./modules/local/bam"
 // count_gene_tags_script = Channel.fromPath("bin/bam/count_gene_tags.py")
@@ -471,7 +468,7 @@ workflow {
 	// ///////////////////////////////////////////////////////////////////////////
 	// // GENE COUNT
 
-	// htseq(bam_filter_barcode_matched.out)
+	HTSEQ( BAM_FILTER_BARCODE_MATCHED.out )
 
 	// count_gene_tags(
 	// 	htseq
