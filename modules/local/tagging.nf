@@ -99,9 +99,9 @@ process HTSEQ {
 
 	script:		
 	name = metadata["name"]
-	out_sam = "*.htseq.sam"
-	out_bam = "*.htseq.bam"
-	out_txt = "*.htseq.txt"
+	out_sam = "${name}.htseq.sam"
+	out_bam = "${name}.htseq.bam"
+	out_txt = "${name}.htseq.txt"
 	gtf = metadata["gtf"]
 
 	"""
