@@ -87,6 +87,7 @@ process UMIS_PER_BARCODE {
 
 process HTSEQ {
 	label "sequencing"
+	label "process_low"
 	tag { "${name}" }
 	
 	input:

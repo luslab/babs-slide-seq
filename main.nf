@@ -193,9 +193,7 @@ include { BAM_FILTER as BAM_FILTER_BARCODE_MATCHED } from "./modules/local/bam"
 // // gene tagging
 
 include { HTSEQ } from "./modules/local/tagging"
-
-// include { bam_metrics as count_gene_tags } from "./modules/local/bam"
-// count_gene_tags_script = Channel.fromPath("bin/bam/count_gene_tags.py")
+include { BAM_METRICS as COUNT_GENE_TAGS } from "./modules/local/bam"
 
 // include { bam_metrics as count_reads_per_umi } from "./modules/local/bam"
 // count_reads_per_umi_script = Channel.fromPath("bin/bam/reads_per_umi.py")
@@ -469,14 +467,7 @@ workflow {
 	// // GENE COUNT
 
 	HTSEQ( BAM_FILTER_BARCODE_MATCHED.out )
-
-	// count_gene_tags(
-	// 	htseq
-	// 		.out
-	// 		.bam
-	// 		.combine( Channel.from("gene_tags") )
-	// 		.combine(count_gene_tags_script)
-	// )
+	COUNT_GENE_TAGS( htseq.out.bam )
 
 	// plot_gene_tags(
 	// 	count_gene_tags
