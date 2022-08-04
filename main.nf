@@ -467,7 +467,7 @@ workflow {
 	// // GENE COUNT
 
 	HTSEQ( BAM_FILTER_BARCODE_MATCHED.out )
-	COUNT_GENE_TAGS( htseq.out.bam )
+	COUNT_GENE_TAGS( HTSEQ.out.bam )
 
 	// plot_gene_tags(
 	// 	count_gene_tags
