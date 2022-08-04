@@ -461,7 +461,7 @@ workflow {
 	READS_BARCODE_MATCHING( ADD_MATCH.out )
 
 	PLOT_BARCODE_ALIGN(
-		reads_barcode_matching
+		READS_BARCODE_MATCHING
 			.out
 			.combine( Channel.from("barcode_align") )
 	)
