@@ -92,6 +92,7 @@ process HTSEQ {
 	
 	input:
 	tuple val(metadata), path(bam), path(bai)
+	path gtf
 
 	output:
 	tuple val(metadata), path("${out_bam}"), path("${out_bam}.bai"), emit: bam
@@ -102,7 +103,6 @@ process HTSEQ {
 	out_sam = "${name}.htseq.sam"
 	out_bam = "${name}.htseq.bam"
 	out_txt = "${name}.htseq.txt"
-	gtf = metadata["gtf"]
 
 	"""
 	htseq-count --format bam --samout sample.sam $bam $gtf > $out_txt
