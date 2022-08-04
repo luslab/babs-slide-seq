@@ -184,14 +184,10 @@ include { MATCHER } from "./modules/local/integration"
 include { PLOT as PLOT_BARCODE_MATCHING } from "./modules/local/plot"
 include { PLOT as PLOT_HISTO_ERROR } from "./modules/local/plot"
 include { ADD_MATCH } from "./modules/local/integration"
-include { BAM_FILTER as READS_BARCODE_MATCHING } from "./modules/local/bam"
+include { BAM_METRICS as READS_BARCODE_MATCHING } from "./modules/local/bam"
+include { PLOT as PLOT_BARCODE_ALIGN } from "./modules/local/plot"
+include { BAM_FILTER as BAM_FILTER_BARCODE_MATCHED } from "./modules/local/bam"
 
-// include { plot_1_arg as plot_barcode_align } from "./modules/local/plot"
-// plot_barcode_align_script = Channel.fromPath("bin/plot/barcode_align.py")
-
-
-
-// include { bam_filter as bam_filter_barcode_matched } from "./modules/local/bam"
 // ///////////////////
 
 
@@ -464,19 +460,13 @@ workflow {
 
 	READS_BARCODE_MATCHING( ADD_MATCH.out )
 
-	// plot_barcode_align(
-	// 	reads_barcode_matching
-	// 		.out
-	// 		.combine( Channel.from("barcode_align") )
-	// 		.combine(plot_barcode_align_script)
-	// )
+	PLOT_BARCODE_ALIGN(
+		reads_barcode_matching
+			.out
+			.combine( Channel.from("barcode_align") )
+	)
 
-	// bam_filter_barcode_matched(
-	// 	add_match
-	// 		.out
-	// 		.combine( Channel.from("barcode_matched") )
-	// 		.combine( Channel.from("[bs]==\"MATCHED\"") )
-	// )
+	BAM_FILTER_BARCODE_MATCHED( ADD_MATCH.out )
 
 	// ///////////////////////////////////////////////////////////////////////////
 	// // GENE COUNT
