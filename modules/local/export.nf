@@ -1,70 +1,62 @@
 
-process merge_plots {
-
+process MERGE_PLOTS {
 	label "export"
 	label "python"
 	
 	tag { "${name}" }
 
 	input:
-		tuple val(name), path(pdfs)
+	tuple val(name), path(pdfs)
 
 	output:
-		file "${name}.pdf"
+	file "*.pdf"
 
 	script:		
-		"""
-		pdfunite $pdfs "${name}.pdf"
-		"""
+	"""
+	pdfunite $pdfs "${name}.pdf"
+	"""
 }
 
-process rename_coords {
-
-	label "export"
-	
+process RENAME_COORDS {
+	label "export"	
 	tag { "${name}" }
 
 	input:
-		tuple val(metadata), path(csv)
+	tuple val(metadata), path(csv)
 
 	output:
-		file "${name}.csv"
+	file "*.csv"
 
 	script:		
-		
-		name = metadata["name"]
-
-		"""
-		cp -v $csv "${name}.csv"
-		"""
+	name = metadata["name"]
+	"""
+	cp -v $csv "${name}.csv"
+	"""
 }
 
-process dge {
-
+process DGE {
 	label "export"
 	label "sequencing"
 
 	tag { "${name}" }
 
 	input:
-		tuple val(metadata), path(bam), path(script)
+	tuple val(metadata), path(bam)
+	path gtf
 
 	output:
-		tuple val(metadata), file("${directory}")
+	tuple val(metadata), file("${directory}")
 
-	script:		
-		
-		name = metadata["name"]
-		gtf = metadata["gtf"]
-		directory = "${name}_dge"
+	script:
+	name = metadata["name"]
+	directory = "${name}_dge"
+	"""
+	count --directory . $gtf $bam
 
-		"""
-		./$script --directory . $gtf $bam
-
-		mkdir $directory
-		cat matrix.mtx | gzip -c > $directory/matrix.mtx.gz
-		cat features.tsv | gzip -c > $directory/features.tsv.gz
-		cat barcodes.tsv | gzip -c > $directory/barcodes.tsv.gz
-		"""
+	mkdir $directory
+	cat matrix.mtx | gzip -c > $directory/matrix.mtx.gz
+	cat features.tsv | gzip -c > $directory/features.tsv.gz
+	cat barcodes.tsv | gzip -c > $directory/barcodes.tsv.gz
+	"""
 }
 

@@ -117,22 +117,8 @@ process SELECT {
 	label "sequencing"
 	tag { "${name}" }
 
-	publishDir Paths.get( params.out_dir ),
-		mode: "copy",
-		overwrite: "true",
-		saveAs: { filename ->
-			if ( filename.indexOf(".csv") != -1 )
-			{
-				"qc/${filename}"
-			}
-			else
-			{
-				"files/${filename}"
-			}
-		}
-
 	input:
-	tuple val(metadata), path(bam), val(suffix), path(script)
+	tuple val(metadata), path(bam)
 
 	output:
 	tuple val(metadata), path("*.bam"), path("*.bam.bai"), emit: bam
@@ -144,7 +130,7 @@ process SELECT {
 	name    = metadata["name"]
 	suffix  = task.ext.suffix ?: 'NO_SUFFIX'
 	"""
-	./$script "${name}.${suffix}" $bam "${name}.${suffix}.bam"
+	select "${name}.${suffix}" $bam "${name}.${suffix}.bam"
 	echo "Indexing..."
 	samtools index "${name}.${suffix}.bam"
 	"""

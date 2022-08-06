@@ -22,26 +22,22 @@ process FASTQC {
 }
 
 process DUPLICATES {
-
 	label "python"
 	//label "quality_control"
 	
-	tag { "${basename}" }
+	tag { "${name}" }
 
 	input:
-		tuple val(metadata), path(csv), path(fastq1), path(fastq2), path(script)
+	tuple val(metadata), path(csv), path(fastq1), path(fastq2)
 
 	output:
-		tuple val(metadata), file("${basename}.csv")
+	tuple val(metadata), file("${basename}.csv")
 
 	script:		
-
-		name = metadata["name"]
-		status = metadata["status"]
-		basename = "${name}.${status}"
-		
-		"""
-		python3 $script $csv $fastq1 $fastq2 "${basename}.csv"
-		"""
+	name = metadata["name"]
+	status = metadata["status"]
+	"""
+	duplicates.py $csv $fastq1 $fastq2 "${name}.${status}.csv"
+	"""
 }
 

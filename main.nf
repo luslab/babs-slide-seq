@@ -175,97 +175,67 @@ include { GET_BARCODES } from "./modules/local/integration"
 // ///////////////////
 // // hamming distance
 
-include { HAMMING } from "./modules/local/integration"
+include { HAMMING            } from "./modules/local/integration"
 include { PLOT_HAMMING_HISTO } from "./modules/local/plot"
 
 // ///////////////////
 
-include { MATCHER } from "./modules/local/integration"
-include { PLOT as PLOT_BARCODE_MATCHING } from "./modules/local/plot"
-include { PLOT as PLOT_HISTO_ERROR } from "./modules/local/plot"
-include { ADD_MATCH } from "./modules/local/integration"
-include { BAM_METRICS as READS_BARCODE_MATCHING } from "./modules/local/bam"
-include { PLOT as PLOT_BARCODE_ALIGN } from "./modules/local/plot"
+include { MATCHER                                  } from "./modules/local/integration"
+include { PLOT as PLOT_BARCODE_MATCHING            } from "./modules/local/plot"
+include { PLOT as PLOT_HISTO_ERROR                 } from "./modules/local/plot"
+include { ADD_MATCH                                } from "./modules/local/integration"
+include { BAM_METRICS as READS_BARCODE_MATCHING    } from "./modules/local/bam"
+include { PLOT as PLOT_BARCODE_ALIGN               } from "./modules/local/plot"
 include { BAM_FILTER as BAM_FILTER_BARCODE_MATCHED } from "./modules/local/bam"
 
 // ///////////////////
 // ///////////////
 // // gene tagging
 
-include { HTSEQ } from "./modules/local/tagging"
-include { BAM_METRICS as COUNT_GENE_TAGS } from "./modules/local/bam"
-
-// include { bam_metrics as count_reads_per_umi } from "./modules/local/bam"
-// count_reads_per_umi_script = Channel.fromPath("bin/bam/reads_per_umi.py")
-
-// include { bam_metrics as count_reads_per_umi_gene } from "./modules/local/bam"
-// count_reads_per_umi_gene_script = Channel.fromPath("bin/bam/reads_per_umi_gene.py")
-
-// include { plot_1_arg as plot_gene_tags } from "./modules/local/plot"
-// plot_gene_tags_script = Channel.fromPath("bin/plot/gene_tags.py")
-
-// include { bam_filter as bam_filter_gene_tags } from "./modules/local/bam"
+include { HTSEQ                                   } from "./modules/local/tagging"
+include { BAM_METRICS as COUNT_GENE_TAGS          } from "./modules/local/bam"
+include { PLOT as PLOT_GENE_TAGS                  } from "./modules/local/plot"
+include { BAM_FILTER as BAM_FILTER_GENE_TAGS      } from "./modules/local/bam"
+include { BAM_METRICS as COUNT_READS_PER_UMI      } from "./modules/local/bam"
+include { BAM_METRICS as COUNT_READS_PER_UMI_GENE } from "./modules/local/bam"
 
 // ///////////////
-
 // /////////////////////
 // // umis multi mapping
 
-// include { select } from "./modules/local/tagging"
-// select_script = Channel.fromPath("bin/select")
+include { SELECT                                    } from "./modules/local/tagging"
+include { DUPLICATES                                } from "./modules/local/quality_control"
+include { BAM_METRICS as BAM_METRICS_COUNT_SELECT   } from "./modules/local/bam"
+include { PLOT as PLOT_SELECT                       } from "./modules/local/plot"
+include { BAM_FILTER as BAM_FILTER_MULTIMAPPED_UMIS } from "./modules/local/bam"
 
-// include { duplicates } from "./modules/local/quality_control"
-// duplicates_script = Channel.fromPath("bin/duplicates.py")
-
-// include { bam_metrics as count_select } from "./modules/local/bam"
-// count_select_script = Channel.fromPath("bin/bam/count_select.py")
-
-// include { plot_1_arg as plot_select } from "./modules/local/plot"
-// plot_select_script = Channel.fromPath("bin/plot/select.py")
-
-// include { bam_filter as bam_filter_multimapped_umis } from "./modules/local/bam"
 // /////////////////////
-
 // ////////////
 // // sequences
 
-// include { bam_metrics as reads_per_barcode_umi } from "./modules/local/bam"
-// reads_per_barcode_umi_script = Channel.fromPath("bin/bam/reads_per_barcode_umi.py")
+include { BAM_METRICS as BAM_METRICS_READS_PER_BARCODE_UMI } from "./modules/local/bam"
+include { PLOT as PLOT_BALANCE_BARCODE                     } from "./modules/local/plot"
+include { PLOT as PLOT_BALANCE_UMI                         } from "./modules/local/plot"
+include { PLOT as PLOT_READS_FRACTION                      } from "./modules/local/plot"
 
-// include { plot_1_arg as plot_balance_barcode } from "./modules/local/plot"
-// plot_balance_barcode_script = Channel.fromPath("bin/plot/balance_barcode.py")
-
-// include { plot_1_arg as plot_balance_umi } from "./modules/local/plot"
-// plot_balance_umi_script  = Channel.fromPath("bin/plot/balance_umi.py")
-
-// include { plot_1_arg as plot_reads_fraction } from "./modules/local/plot"
-// plot_reads_fraction_script = Channel.fromPath("bin/plot/reads_fraction.py")
 // ////////////
-
 // //////
 // // dge
 
-// include { dge } from "./modules/local/export"
-// count_script = Channel.fromPath("bin/count")
+include { DGE                           } from "./modules/local/export"
+include { PLOT as PLOT_HISTO_GENES      } from "./modules/local/plot"
+include { PLOT as PLOT_HISTO_UMIS       } from "./modules/local/plot"
+include { PLOT as PLOT_UMIS_PER_BARCODE } from "./modules/local/plot"
+include { PLOT as PLOT_SPATIAL_UMIS     } from "./modules/local/plot"
 
-// plot_histo_genes_script = Channel.fromPath("bin/plot/histo_genes.py")
-// plot_histo_umis_script = Channel.fromPath("bin/plot/histo_umis.py")
-// plot_spatial_umis_script  = Channel.fromPath("bin/plot/spatial_umi.py")
-// plot_umis_per_barcode_script = Channel.fromPath("bin/plot/umis_per_barcode.py")
-
-// include { plot_1_arg as plot_histo_genes } from "./modules/local/plot"
-// include { plot_1_arg as plot_histo_umis } from "./modules/local/plot"
-// include { plot_1_arg as plot_umis_per_barcode } from "./modules/local/plot"
-// include { plot_2_args as plot_spatial_umis } from "./modules/local/plot"
 // //////
-
 // /////////
 // // output 
 
-// include { merge_plots } from "./modules/local/export"
-// include { rename_coords } from "./modules/local/export"
-// /////////
+include { MERGE_PLOTS   } from "./modules/local/export"
+include { RENAME_COORDS } from "./modules/local/export"
 
+// /////////
 
 ///////////////////////////////////////////////////////////////////////////////
 //// DESIGN ///////////////////////////////////////////////////////////////////
@@ -467,182 +437,103 @@ workflow {
 	// // GENE COUNT
 
 	HTSEQ( BAM_FILTER_BARCODE_MATCHED.out, params.gtf )
+
 	COUNT_GENE_TAGS( HTSEQ.out.bam )
 
-	// plot_gene_tags(
-	// 	count_gene_tags
-	// 		.out
-	// 		.combine( Channel.from("gene_tags") )
-	// 		.combine(plot_gene_tags_script)
-	// )
+	PLOT_GENE_TAGS( COUNT_GENE_TAGS.out.map{ [ it[0] , it[1], '' ] } )
 
-	// bam_filter_gene_tags(
-	// 	htseq
-	// 		.out
-	// 		.bam
-	// 		.combine( Channel.from("gene_tags") )
-	// 		.combine( Channel.from("[XF]!~\"^__.+\"") )
-	// )
+	BAM_FILTER_GENE_TAGS( HTSEQ.out.bam )
 
-	// count_reads_per_umi(
-	// 	bam_filter_gene_tags
-	// 		.out
-	// 		.combine( Channel.from("reads_per_umi") )
-	// 		.combine(count_reads_per_umi_script)
-	// )
+	COUNT_READS_PER_UMI( BAM_FILTER_GENE_TAGS.out )
 
-	// count_reads_per_umi_gene(
-	// 	bam_filter_gene_tags
-	// 		.out
-	// 		.combine( Channel.from("reads_per_umi_gene") )
-	// 		.combine(count_reads_per_umi_gene_script)
-	// )
+	COUNT_READS_PER_UMI_GENE( BAM_FILTER_GENE_TAGS.out )
 
 	// ///////////////////////////////////////////////////////////////////////////
 	// // UMIS MAPPINGS
 
-	// select(
-	// 	bam_filter_gene_tags
-	// 		.out
-	// 		.map{ it[0..1] }
-	// 		.combine( Channel.from("select") )
-	// 		.combine(select_script)
-	// )
+	SELECT( BAM_FILTER_GENE_TAGS.out.map{ it[0..1] } )
 
-	// select
-	// 	.out
-	// 	.unique_reads
-	// 	.concat(select.out.resolved_reads)
-	// 	.concat(select.out.unresolved_reads)
-	// 	.combine(merge_lanes.out)
-	// 	.filter{ it[0]["name"] == it[3]["name"] }
-	// 	.map{ [ addValue(it[0], "status", it[1]) , it[2] , *it[4..5] ] }
-	// 	.set{ TO_DUPLICATES }
-	// duplicates(TO_DUPLICATES.combine(duplicates_script))
+	SELECT.out
+		.unique_reads
+		.concat(SELECT.out.resolved_reads)
+		.concat(SELECT.out.unresolved_reads)
+		.combine(MERGE_LANES.out)
+		.filter{ it[0]["name"] == it[3]["name"] }
+		.map{ [ addValue(it[0], "status", it[1]) , it[2] , *it[4..5] ] }
+		.set{ ch_duplicates }
 
-	// count_select(
-	// 	select
-	// 		.out
-	// 		.bam
-	// 		.combine( Channel.from("count_select") )
-	// 		.combine(count_select_script)
-	// )
-	// plot_select(
-	// 	count_select
-	// 		.out
-	// 		.combine( Channel.from("selected") )
-	// 		.combine(plot_select_script)
-	// )
+	DUPLICATES( ch_duplicates )
 
-	// bam_filter_multimapped_umis(
-	// 	select
-	// 		.out
-	// 		.bam
-	// 		.combine( Channel.from("multimap_umis") )
-	// 		.combine( Channel.from("[cs]==\"UNIQUE\" || [cs]==\"INCLUDED\"") )
-	// )
+	BAM_METRICS_COUNT_SELECT( SELECT.out.bam )
+
+	PLOT_SELECT ( BAM_METRICS_COUNT_SELECT.out.map{ [ it[0] , it[1], '' ] } )
+
+	BAM_FILTER_MULTIMAPPED_UMIS( SELECT.out.bam )
 
 	// ///////////////////////////////////////////////////////////////////////////
 	// // SEQUENCES
 
-	// reads_per_barcode_umi(
-	// 	bam_filter_multimapped_umis
-	// 		.out
-	// 		.combine( Channel.from("reads_per_barcode_umi") )
-	// 		.combine(reads_per_barcode_umi_script)
-	// )
+	BAM_METRICS_READS_PER_BARCODE_UMI( BAM_FILTER_MULTIMAPPED_UMIS.out )
 
-	// plot_balance_barcode(
-	// 	reads_per_barcode_umi
-	// 		.out
-	// 		.combine( Channel.from("balance_barcode") )
-	// 		.combine(plot_balance_barcode_script)
-	// )
+	PLOT_BALANCE_BARCODE ( BAM_METRICS_READS_PER_BARCODE_UMI.out.map{ [ it[0] , it[1], '' ] } )
 
-	// plot_balance_umi(
-	// 	reads_per_barcode_umi
-	// 		.out
-	// 		.combine( Channel.from("balance_umi") )
-	// 		.combine(plot_balance_umi_script)
-	// )
+	PLOT_BALANCE_UMI ( BAM_METRICS_READS_PER_BARCODE_UMI.out.map{ [ it[0] , it[1], '' ] } )
 
-	// plot_reads_fraction(
-	// 	reads_per_barcode_umi
-	// 		.out
-	// 		.combine( Channel.from("reads_fraction") )
-	// 		.combine(plot_reads_fraction_script)
-	// )
+	PLOT_READS_FRACTION ( BAM_METRICS_READS_PER_BARCODE_UMI.out.map{ [ it[0] , it[1], '' ] } )
 
 	// ///////////////////////////////////////////////////////////////////////////
 	// // EXPRESSION MATRIX
 
-	// dge( bam_filter_multimapped_umis.out.map{it[0..1]}.combine(count_script) )
+	DGE( BAM_FILTER_MULTIMAPPED_UMIS.out.map{it[0..1]} )
 
-	// plot_histo_umis(
-	// 	dge
-	// 		.out
-	// 		.combine( Channel.from("histo_umis") )
-	// 		.combine(plot_histo_umis_script)
-	// )
+	PLOT_HISTO_UMIS ( DGE.out.map{ [ it[0] , it[1], '' ] } )
 
-	// plot_histo_genes(
-	// 	dge
-	// 		.out
-	// 		.combine( Channel.from("histo_genes") )
-	// 		.combine(plot_histo_genes_script)
-	// )
+	PLOT_HISTO_GENES ( DGE.out.map{ [ it[0] , it[1], '' ] } )
 
-	// plot_umis_per_barcode(
-	// 	dge
-	// 		.out
-	// 		.combine( Channel.from("umis_per_barcode") )
-	// 		.combine(plot_umis_per_barcode_script)
-	// )
+	PLOT_UMIS_PER_BARCODE ( DGE.out.map{ [ it[0] , it[1], '' ] } )
 
 	// ///////////////
 	// // spatial umis
-	// plot_spatial_umis(
-	// 	dge
-	// 		.out
-	// 		.combine(matcher.out.coords)
-	// 		.filter{ it[2]["barcodes"] == "ordered" }
-	// 		.filter{ it[0]["name"] == it[2]["name"] }
-	// 		.map{ [ * it[0..1] , it[3] ] }
-	// 		.combine( Channel.from("spatial_umis") )
-	// 		.combine(plot_spatial_umis_script)
-	// )
+	PLOT_SPATIAL_UMIS(
+		DGE.out
+			.combine(matcher.out.coords)
+			.filter{ it[2]["barcodes"] == "ordered" }
+			.filter{ it[0]["name"] == it[2]["name"] }
+			.map{ [ * it[0..1] , it[3] ] }
+			.combine( Channel.from("spatial_umis") )
+	)
 	// ////////////////
 
 	// ///////////////////////////////////////////////////////////////////////////
 	// // OUTPUT
 	
-	// plot_barcode_extraction
-	// 	.out
-	// 	.pdf
-	// 	.concat(
-	// 		plot_up_matching.out.pdf,
-	// 		plot_up_align.out.pdf,
-	// 		plot_umi_threshold.out.pdf,
-	// 		plot_barcode_align.out.pdf,
-	// 		plot_gene_tags.out.pdf,
-	// 		plot_select.out.pdf,
-	// 		plot_balance_barcode.out.pdf,
-	// 		plot_balance_umi.out.pdf,
-	// 		plot_reads_fraction.out.pdf,
-	// 		plot_histo_umis.out.pdf,
-	// 		plot_histo_genes.out.pdf,
-	// 		plot_barcode_matching.out.pdf,
-	// 		plot_histo_errors.out.pdf,
-	// 		plot_histo_hamming.out.pdf,
-	// 		plot_umis_per_barcode.out.pdf,
-	// 		plot_spatial_umis.out.pdf
-	// 	)
-	// 	.map{ [ it[0]["name"] , it[1] ] }
-	// 	.groupTuple()
-	// 	.set{ TO_MERGE_PLOTS }
+	PLOT_BARCODE_EXTRACTION
+		.out
+		.pdf
+		.concat(
+			PLOT_UP_MATCHING.out.pdf,
+			PLOT_UP_ALIGN.out.pdf,
+			PLOT_UMI_THRESHOLD.out.pdf,
+			PLOT_BARCODE_ALIGN.out.pdf,
+			PLOT_GENE_TAGS.out.pdf,
+			PLOT_SELECT.out.pdf,
+			PLOT_BALANCE_BARCODE.out.pdf,
+			PLOT_BALANCE_UMI.out.pdf,
+			PLOT_READS_FRACTION.out.pdf,
+			PLOT_HISTO_UMIS.out.pdf,
+			PLOT_HISTO_GENES.out.pdf,
+			PLOT_BARCODE_MATCHING.out.pdf,
+			PLOT_HISTO_ERROR.out.pdf,
+			PLOT_HAMMING_HISTO.out.pdf,
+			PLOT_UMIS_PER_BARCODE.out.pdf,
+			PLOT_SPATIAL_UMIS.out.pdf
+		)
+		.map{ [ it[0]["name"] , it[1] ] }
+		.groupTuple()
+		.set{ ch_merged_plots }
 	
-	// merge_plots(TO_MERGE_PLOTS)
+	MERGE_PLOTS(ch_merged_plots)
 
-	// rename_coords( matcher.out.coords.filter{ it[0]["barcodes"] == "ordered"} )
+	RENAME_COORDS( MATCHER.out.coords.filter{ it[0]["barcodes"] == "ordered"} )
 }
 
