@@ -131,7 +131,7 @@ process SELECT {
     suffix  = task.ext.suffix ?: 'NO_SUFFIX'
     """
     cp $bam test.bam
-    select test test.bam test.bam
+    select test jdjhdjhdhj.bam test.bam
     echo "Indexing..."
     samtools index "${name}.${suffix}.bam"
     """
