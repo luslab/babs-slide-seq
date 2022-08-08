@@ -1,11 +1,10 @@
-
 # Pipeline output
 
 The pipeline outputs are in the `results` directory.
 For example, here we have two samples (`sample1` and `sample2`):
 
 ```
-$ ls results 
+$ ls results
 files  qc  sample1.csv  sample1_dge  sample1.pdf  sample2.csv  sample2_dge  sample2.pdf
 ```
 
@@ -14,12 +13,11 @@ So, they can be both deleted.
 
 You are interested in the following files:
 
- * `sample1.pdf`: the QC plots
- * `sample1_dge`: the digital expression matrix
- * `sample1.csv`: the beads coordinates
+- `sample1.pdf`: the QC plots
+- `sample1_dge`: the digital expression matrix
+- `sample1.csv`: the beads coordinates
 
 ## Digital matrix expression and bead coordinates
-
 
 The `sample1.csv` file contains the barcodes coordinates and the `sample1_dge` contains the count matrix files.
 
@@ -68,16 +66,16 @@ adata.obs = coords.loc[ adata.obs.index ]
 
 ## QC metrics
 
- 1. [First step: checking for barcode length (page 1)](#first-step-checking-for-barcode-length-page-1)
- 2. [Second step: matching UP primer (page 2)](#second-step-matching-up-primer-page-2)
- 3. [Third step: mapping read 2 on the genome (page 3)](#third-step-mapping-read-2-on-the-genome-page-3)
- 4. [Fourth step: filtering the barcodes with too few UMIs (page 4)](#fourth-step-filtering-the-barcodes-with-too-few-umis-page-4)
- 5. [Fifth step: barcode matching (pages 5, 13, 14, and 15)](#fifth-step-barcode-matching-pages-5-13-14-and-15)
- 6. [Sixth step: gene annotation of reads 2 (page 6)](#sixth-step-gene-annotation-of-reads-2-page-6)
- 7. [Seventh step: deduplication (page 7)](#seventh-step-deduplication-page-7)
- 8. [Checking the read structure specification (pages 8 and 9)](#checking-the-read-structure-specification-pages-8-and-9)
- 9. [Library complexity (pages 10, 11, 12 and 16)](#library-complexity-pages-10-11-12-and-16)
- 10. [Looking for histological structures](#looking-for-histological-structures)
+1.  [First step: checking for barcode length (page 1)](#first-step-checking-for-barcode-length-page-1)
+2.  [Second step: matching UP primer (page 2)](#second-step-matching-up-primer-page-2)
+3.  [Third step: mapping read 2 on the genome (page 3)](#third-step-mapping-read-2-on-the-genome-page-3)
+4.  [Fourth step: filtering the barcodes with too few UMIs (page 4)](#fourth-step-filtering-the-barcodes-with-too-few-umis-page-4)
+5.  [Fifth step: barcode matching (pages 5, 13, 14, and 15)](#fifth-step-barcode-matching-pages-5-13-14-and-15)
+6.  [Sixth step: gene annotation of reads 2 (page 6)](#sixth-step-gene-annotation-of-reads-2-page-6)
+7.  [Seventh step: deduplication (page 7)](#seventh-step-deduplication-page-7)
+8.  [Checking the read structure specification (pages 8 and 9)](#checking-the-read-structure-specification-pages-8-and-9)
+9.  [Library complexity (pages 10, 11, 12 and 16)](#library-complexity-pages-10-11-12-and-16)
+10. [Looking for histological structures](#looking-for-histological-structures)
 
 ### First step: checking for barcode length (page 1)
 
@@ -154,19 +152,19 @@ In this case, we don't need to do anything and we can just pick this tuple.
 The `Included` and `Excluded` correspond to the case where there are multiple (barcode,UMI,gene) tuples, but one of these mappings has an alignmnent score that stands out.
 For example:
 
- * (`ACGTACTTCATGCA`,`TGCAACGT`,GeneA,54)
- * (`ACGTACTTCATGCA`,`TGCAACGT`,GeneB,54)
- * (`ACGTACTTCATGCA`,`TGCAACGT`,GeneB,61)
- * (`ACGTACTTCATGCA`,`TGCAACGT`,GeneC,49)
+- (`ACGTACTTCATGCA`,`TGCAACGT`,GeneA,54)
+- (`ACGTACTTCATGCA`,`TGCAACGT`,GeneB,54)
+- (`ACGTACTTCATGCA`,`TGCAACGT`,GeneB,61)
+- (`ACGTACTTCATGCA`,`TGCAACGT`,GeneC,49)
 
 In this situation, we can include the third (`Included`) and exclude the others (`Excluded`).
 
 The `Unresolved` column is the case where there are multiple (barcode,UMI,gene) tuples, but none of them stands out.
 For example:
 
- * (`ACGTACTTCATGCA`,`TGCAACGT`,GeneA,60)
- * (`ACGTACTTCATGCA`,`TGCAACGT`,GeneB,60)
- * (`ACGTACTTCATGCA`,`TGCAACGT`,GeneC,60)
+- (`ACGTACTTCATGCA`,`TGCAACGT`,GeneA,60)
+- (`ACGTACTTCATGCA`,`TGCAACGT`,GeneB,60)
+- (`ACGTACTTCATGCA`,`TGCAACGT`,GeneC,60)
 
 In this situation we throw everything.
 
@@ -177,7 +175,6 @@ In this situation we throw everything.
 Barcodes and UMIs are generated randomly.
 So, we should get ~25 % of all bases at each position.
 Therefore, we plot the bases frequencies in order to spot possible mistakes in the read structure specification.
-
 
 For the barcodes:
 
@@ -214,4 +211,3 @@ Histogram of the number of genes per barcode (page 11).
 The best way to see if the pipeline was successul is to plot the number of UMIs per bead on the XY plane and search for known histological structures.
 
 ![Page 17](example_output/pages/page-17.png)
-
