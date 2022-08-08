@@ -451,7 +451,7 @@ workflow {
     // ///////////////////////////////////////////////////////////////////////////
     // // UMIS MAPPINGS
 
-    SELECT( BAM_FILTER_GENE_TAGS.out.map{ it[0]} )
+    SELECT( BAM_FILTER_GENE_TAGS.out.map{ it[0], it[1]} )
 
     SELECT.out
         .unique_reads
