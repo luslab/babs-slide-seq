@@ -130,7 +130,7 @@ process SELECT {
     name    = metadata["name"]
     suffix  = task.ext.suffix ?: 'NO_SUFFIX'
     """
-    echo ${name}.${suffix} $bam ${name}.${suffix}.bam
+    select test $bam test.bam
     echo "Indexing..."
     samtools index "${name}.${suffix}.bam"
     """
