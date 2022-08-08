@@ -484,7 +484,7 @@ workflow {
 	// ///////////////////////////////////////////////////////////////////////////
 	// // EXPRESSION MATRIX
 
-	DGE( BAM_FILTER_MULTIMAPPED_UMIS.out.map{it[0..1]} )
+	DGE( BAM_FILTER_MULTIMAPPED_UMIS.out.map{it[0..1]}, params.gtf )
 
 	PLOT_HISTO_UMIS ( DGE.out.map{ [ it[0] , it[1], '' ] } )
 
