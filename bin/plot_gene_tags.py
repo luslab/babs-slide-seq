@@ -1,11 +1,9 @@
 #!/usr/bin/env python3
 
 import sys
-from itertools import product
 import numpy as np
 import pandas as pd
 from matplotlib.figure import Figure
-from matplotlib.backends.backend_pdf import PdfPages
 
 import matplotlib as mpl
 mpl.rc('font', size=16)
@@ -17,7 +15,11 @@ def tag_plot(df, title):#
 	least 2 columns named "Tag" and "Reads". The function returns the modified
 	data frame and a Figure object."""
 
-	success = df.loc[df.Tag == "Success"].iloc[0]["Reads"]
+	df_success = df.loc[df.Tag == "Success"]
+	if df_success.empty:
+		success = 0
+	else:
+		success = df_success.iloc[0]["Reads"]
 	total = df.Reads.sum()
 
 	# Percentage of total reads
