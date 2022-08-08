@@ -496,7 +496,7 @@ workflow {
 	// // spatial umis
 	PLOT_SPATIAL_UMIS(
 		DGE.out
-			.combine(matcher.out.coords)
+			.combine(MATCHER.out.coords)
 			.filter{ it[2]["barcodes"] == "ordered" }
 			.filter{ it[0]["name"] == it[2]["name"] }
 			.map{ [ * it[0..1] , it[3] ] }
