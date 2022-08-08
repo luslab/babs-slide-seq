@@ -172,7 +172,7 @@ metrics = pd.DataFrame.from_records([
 
 final = d.loc[ d.Matched == "MATCHED" ]
 final = final[ ["SeqBarcode", "PuckBarcode", "x", "y", "Distance", "Number", "Reads" ] ]
-final.to_csv(f"{base_path}.csv", index=False)
+final.to_csv(f"{base_path}.coord.csv", index=False)
 d.to_csv(f"{base_path}.values.matching.csv", index=False)
 metrics.to_csv(f"{base_path}.metrics.matching.csv", index=False)
 matching.drop("Matched", axis=1).to_csv(f"{base_path}.map.matching.csv", index=False)

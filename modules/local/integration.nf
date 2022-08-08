@@ -56,7 +56,7 @@ process MATCHER {
 	tuple val(metadata), file("*.map.matching.csv"    ), emit: mapping
 	tuple val(metadata), file("*values.matching.csv"  ), emit: values
 	tuple val(metadata), file("*.metrics.matching.csv"), emit: metrics
-	tuple val(metadata), file("*.csv"                 ), emit: coords
+	tuple val(metadata), file("*.coord.csv"                 ), emit: coords
 
 	script:				
 	name = metadata["name"]
