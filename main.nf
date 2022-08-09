@@ -112,6 +112,8 @@ if (anno_readme && file(anno_readme).exists()) {
 // // Stage dummy file to be used as an optional input where required
 // ch_dummy_file = file("$projectDir/assets/dummy_file.txt", checkIfExists: true)
 
+ch_select_script = Channel.fromPath("bin/select")
+
 
 ///////////////////////////////////////////////////////////////////////////////
 //// INCLUDES ////////////////////////////////////////////////////////////////
@@ -451,7 +453,6 @@ workflow {
     // ///////////////////////////////////////////////////////////////////////////
     // // UMIS MAPPINGS
 
-    ch_select_script = Channel.fromPath("bin/select")
     SELECT( BAM_FILTER_GENE_TAGS.out.map{ [ it[0], it[1] ]}.combine( ch_select_script ))
 
     SELECT.out
