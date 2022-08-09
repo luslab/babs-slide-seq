@@ -225,7 +225,7 @@ include { DGE                           } from "./modules/local/export"
 include { PLOT as PLOT_HISTO_GENES      } from "./modules/local/plot"
 include { PLOT as PLOT_HISTO_UMIS       } from "./modules/local/plot"
 include { PLOT as PLOT_UMIS_PER_BARCODE } from "./modules/local/plot"
-include { PLOT as PLOT_SPATIAL_UMIS     } from "./modules/local/plot"
+include { PLOT_SPATIAL_UMI              } from "./modules/local/plot"
 
 // //////
 // /////////
@@ -499,9 +499,9 @@ workflow {
         .filter{ it[0]["name"] == it[2]["name"] }
         .map{ [ * it[0..1] , it[3] ] }
         .set{ ch_spatial }
-    ch_spatial | view
+    //ch_spatial | view
 
-    PLOT_SPATIAL_UMIS( ch_spatial )
+    PLOT_SPATIAL_UMI ( ch_spatial )
     // ////////////////
 
     // ///////////////////////////////////////////////////////////////////////////
