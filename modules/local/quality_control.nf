@@ -31,7 +31,7 @@ process DUPLICATES {
     tuple val(metadata), path(csv), path(fastq1), path(fastq2)
 
     output:
-    tuple val(metadata), file("${basename}.csv")
+    tuple val(metadata), file("*.csv")
 
     script:		
     name = metadata["name"]
