@@ -118,8 +118,7 @@ process SELECT {
     tag { "${name}" }
 
     input:
-    tuple val(metadata), path(bam)
-    path script
+    tuple val(metadata), path(bam), path(script)
 
     output:
     tuple val(metadata), path("*.bam"), path("*.bam.bai"), emit: bam

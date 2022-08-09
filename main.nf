@@ -451,7 +451,8 @@ workflow {
     // ///////////////////////////////////////////////////////////////////////////
     // // UMIS MAPPINGS
 
-    SELECT( BAM_FILTER_GENE_TAGS.out.map{ [ it[0], it[1] ]}, Channel.fromPath("bin/select") )
+    ch_select_script = Channel.fromPath("bin/select")
+    SELECT( BAM_FILTER_GENE_TAGS.out.map{ [ it[0], it[1] ]}.combine( ch_select_script ))
 
     SELECT.out
         .unique_reads
