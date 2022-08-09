@@ -526,7 +526,7 @@ workflow {
             PLOT_HISTO_ERROR.out.pdf,
             PLOT_HAMMING_HISTO.out.pdf,
             PLOT_UMIS_PER_BARCODE.out.pdf,
-            PLOT_SPATIAL_UMIS.out.pdf
+            PLOT_SPATIAL_UMI.out.pdf
         )
         .map{ [ it[0]["name"] , it[1] ] }
         .groupTuple()
