@@ -118,7 +118,7 @@ process SELECT {
     tag { "${name}" }
 
     input:
-    tuple val(metadata), path(bam), path(script)
+    tuple val(metadata), path(bam)
 
     output:
     tuple val(metadata), path("*.bam"), path("*.bam.bai"), emit: bam
@@ -130,7 +130,7 @@ process SELECT {
     name    = metadata["name"]
     suffix  = task.ext.suffix ?: 'NO_SUFFIX'
     """
-    ./$script ${name}.${suffix} $bam ${name}.${suffix}.bam
+    select ${name}.${suffix} $bam ${name}.${suffix}.bam
     echo "Indexing..."
     samtools index "${name}.${suffix}.bam"
     """
