@@ -248,7 +248,7 @@ Channel
     .map{ addValue(it, "fastq_1", new File(it["fastq_1"]).getAbsolutePath()) }
     .map{ addValue(it, "fastq_2", new File(it["fastq_2"]).getAbsolutePath()) }
     .set{ ch_fastq }
-ch_fastq | view
+//ch_fastq | view
 
 ///////////////////////////////////////////////////////////////////////////////
 //// PUCKS ////////////////////////////////////////////////////////////////////
