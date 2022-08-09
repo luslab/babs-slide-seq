@@ -126,11 +126,13 @@ process SELECT {
     tuple val(metadata), val("resolved"), path("*.resolved.csv"), emit: resolved_reads
     tuple val(metadata), val("unresolved"), path("*.unresolved.csv"), emit: unresolved_reads
 
-    script:	
+    script:
     name    = metadata["name"]
     suffix  = task.ext.suffix ?: 'NO_SUFFIX'
     """
-    select_matches  test test.bam test.out
+    select_matches ${name}.${suffix} $bam ${name}.${suffix}.bam
+    echo "Indexing..."
+    samtools index "${name}.${suffix}.bam"
     """
 }
 
