@@ -130,7 +130,7 @@ process SELECT {
     name    = metadata["name"]
     suffix  = task.ext.suffix ?: 'NO_SUFFIX'
     """
-    selectio  test test.bam test.out
+    select_matches  test test.bam test.out
     """
 }
 
