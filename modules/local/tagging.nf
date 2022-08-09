@@ -130,7 +130,7 @@ process SELECT {
     name    = metadata["name"]
     suffix  = task.ext.suffix ?: 'NO_SUFFIX'
     """
-    select ${name}.${suffix}
+    select  test test.bam test.out
     """
 }
 
