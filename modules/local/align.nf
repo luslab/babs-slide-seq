@@ -3,7 +3,7 @@ import java.nio.file.Paths
 process STAR {
     tag { "${name}" }
     label 'process_high'
-    container = 'quay.io/biocontainers/mulled-v2-1fa26d1ce03c295fe2fdcf85831a92fbcbd7e8c2:afaaa4c6f5b308b4b6aa2dd8e99e1466b2a6b0cd-0'
+    container = 'quay.io/biocontainers/star:2.7.4a--0'
 
     publishDir Paths.get( params.outdir ),
         mode: "copy",
