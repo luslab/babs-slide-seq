@@ -1,5 +1,4 @@
 process GET_BARCODES {
-    label "integration"
     label "process_low"
     tag { "${name}" }
     container 'ubuntu:20.04'
@@ -22,8 +21,9 @@ process GET_BARCODES {
 }
 
 process HAMMING {
-    label "integration"
-    label "process_low"
+    label "process_medium"
+    label "gpu"
+
     tag { "${name}" }
     container 'chrischeshire/slideseq-hamming:latest'
 
@@ -44,7 +44,6 @@ process HAMMING {
 }
 
 process MATCHER {
-    label "integration"
     label "python"
     label "process_low"
     tag { "${name}" }
@@ -71,7 +70,6 @@ process MATCHER {
 }
 
 process ADD_MATCH {
-    label "integration"
     label "sequencing"
     label "process_low"
     tag { "${name}" }
