@@ -1,9 +1,6 @@
 import sys
-from itertools import product
-import numpy as np
 import pandas as pd
 from matplotlib.figure import Figure
-from matplotlib.backends.backend_pdf import PdfPages
 
 import matplotlib as mpl
 mpl.rc('font', size=16)
