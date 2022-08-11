@@ -21,7 +21,7 @@ process BAM_METRICS {
 
 process BAM_FILTER {
     label "samtools"
-    label 'process_low'
+    label 'process_medium'
 
     tag { "${name}" }
 
