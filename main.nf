@@ -123,7 +123,6 @@ include { UNTAR as UNTAR_STAR_INDEX } from './modules/nf-core/modules/untar/main
 //////////
 // samples
 
-include { BCL2FASTQ   } from "./modules/local/demultiplexing"
 include { MERGE_LANES } from "./modules/local/demultiplexing"
 include { FASTQC      } from "./modules/local/quality_control"
 //////////
