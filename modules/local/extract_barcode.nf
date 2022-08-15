@@ -1,22 +1,6 @@
-import java.nio.file.Paths
-
 process EXTRACT_BARCODE {
     label "sequencing"
     tag { "${name}" }
-
-    publishDir Paths.get( params.outdir ),
-        mode: "copy",
-        overwrite: "true",
-        saveAs: { filename ->
-            if ( filename.indexOf(".csv") != -1 )
-            {
-                "qc/${filename}"
-            }
-            else
-            {
-                "files/${filename}"
-            }
-        }
 
     input:
     tuple val(metadata), path(read1), path(read2)

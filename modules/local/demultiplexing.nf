@@ -1,43 +1,4 @@
-import java.nio.file.Paths
-
-process BCL2FASTQ {
-
-    //label "demultiplexing"
-
-    // publishDir Paths.get( params.out_dir ),
-    // 	mode: "copy",
-    // 	overwrite: "true",
-    // 	saveAs: { filename ->
-    // 		if (filename.indexOf("Reports")!=-1 || filename.indexOf("Stats")!=-1)
-    // 		{
-    // 			"qc/demultiplexing/${filename}"
-    // 		}
-    // 		else
-    // 		{
-    // 			"files/demultiplexing/${filename}"
-    // 		}
-    // 	}
-
-    input:
-        tuple file(data_dir), path(sample_sheet)
-
-    output:
-        path "*.fastq.gz", emit: fastqs
-        path "Reports", emit: reports
-        path "Stats", emit: stats
-
-    script:
-
-        processing_threads = task.cpus
-        loading_threads = 8
-        writing_threads = 6
-        barcode_mismatches = 0
-
-        template "bcl2fastq.sh"
-}
-
 process MERGE_LANES {
-    label "demultiplexing"
     tag { "${name}" }
     container 'ubuntu:20.04'
 

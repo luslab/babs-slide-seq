@@ -1,23 +1,7 @@
-import java.nio.file.Paths
-
 process STAR {
     tag { "${name}" }
     label 'process_high'
     container = 'quay.io/biocontainers/star:2.6.1a--1'
-
-    publishDir Paths.get( params.outdir ),
-        mode: "copy",
-        overwrite: "true",
-        saveAs: { filename ->
-            if ( filename.indexOf(".Log.") != -1 )
-            {
-                "qc/align/${filename}"
-            }
-            else
-            {
-                "files/align/${filename}"
-            }
-        }
 
     input:
     tuple val(metadata), path(fastq)

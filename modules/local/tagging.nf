@@ -1,43 +1,24 @@
-import java.nio.file.Paths
-
 process MARK_DUPLICATES {
     label "sequencing"
     label 'process_high'
-
     tag { "${name}" }
 
-    publishDir Paths.get( params.outdir ),
-        mode: "copy",
-        overwrite: "true",
-        saveAs: { filename ->
-            if ( filename.indexOf(".txt") != -1 )
-            {
-                "qc/${filename}"
-            }
-            else
-            {
-                "files/${filename}"
-            }
-        }
-
     input:
-        tuple val(metadata), path(bam)
+    tuple val(metadata), path(bam)
     
     output:
-        tuple val(metadata), path("${name}.dup.bam"), emit: bam
-        tuple val(metadata), path("${name}.dup.txt"), emit: metrics
-    
-    script:
-        
-        name = metadata["name"]
+    tuple val(metadata), path("${name}.dup.bam"), emit: bam
+    tuple val(metadata), path("${name}.dup.txt"), emit: metrics
 
-        """
-        picard-tools \
-            MarkDuplicates \
-                I=$bam \
-                O=${name}.dup.bam \
-                M=${name}.dup.txt
-        """
+    script:
+    name = metadata["name"]
+    """
+    picard-tools \
+        MarkDuplicates \
+            I=$bam \
+            O=${name}.dup.bam \
+            M=${name}.dup.txt
+    """
 }
 
 process TAG_BAM {

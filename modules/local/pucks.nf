@@ -1,7 +1,6 @@
 process SHUFFLING {
     tag { "${name}" }
 
-    label "pucks"
     label "python"
     label "ultra_low"
 
