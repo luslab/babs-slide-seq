@@ -96,6 +96,7 @@ process HTSEQ {
 
 process SELECT {
     label "sequencing"
+    label "process_medium"
     tag { "${name}" }
 
     input:
