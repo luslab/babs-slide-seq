@@ -1,5 +1,6 @@
 process EXTRACT_BARCODE {
     label "sequencing"
+    label "ultra_low"
     tag { "${name}" }
 
     input:

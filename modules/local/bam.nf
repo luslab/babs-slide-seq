@@ -1,7 +1,7 @@
 process BAM_METRICS {
     label "python"
     label "bam_merics"
-    label "process_low"
+    label "process_medium"
     tag { "${name}" }
 
     input:
