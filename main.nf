@@ -129,13 +129,13 @@ include { FASTQC      } from "./modules/local/quality_control"
 
 ////////
 // pucks
-include { SHUFFLING } from "./modules/local/pucks"
+include { SHUFFLE_PUCK_BARCODES } from "./modules/local/shuffle_puck_barcodes"
 ////////
 
 /////////////////////
 // barcode extraction
 
-include { EXTRACT_BARCODE                 } from "./modules/local/extract_barcode"
+include { EXTRACT_BARCODES                } from "./modules/local/extract_barcodes"
 include { PLOT as PLOT_UP_MATCHING        } from "./modules/local/plot"
 include { PLOT as PLOT_BARCODE_EXTRACTION } from "./modules/local/plot"
 /////////////////////
@@ -320,8 +320,8 @@ workflow {
     ///////////////////////////////////////////////////////////////////////////
     // SEQUENCING BARCODES
 
-    EXTRACT_BARCODE( MERGE_LANES.out )
-    //EXTRACT_BARCODE.out.metrics | view
+    EXTRACT_BARCODES( MERGE_LANES.out )
+    //EXTRACT_BARCODES.out.metrics | view
 
     PLOT_UP_MATCHING( EXTRACT_BARCODE.out.metrics.map{ [ it[0] , it[1], '' ] } )
     PLOT_BARCODE_EXTRACTION( EXTRACT_BARCODE.out.metrics.map{ [ it[0] , it[1], it[0]["min_length"] ] } )

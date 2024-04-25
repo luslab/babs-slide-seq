@@ -1,4 +1,4 @@
-process SHUFFLING {
+process SHUFFLE_PUCK_BARCODES {
     tag { "${name}" }
 
     label "python"
